@@ -5,5 +5,5 @@ export interface BaseEntity {
   /**
    * The unique identifier for the entity.
    */
-  id: String;
+  id: string;
 }

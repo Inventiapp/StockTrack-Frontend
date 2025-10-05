@@ -3,7 +3,7 @@ import {BaseEntity} from '../../../shared/infrastructure/base-entity';
 /**
  * Represents a Product entity int the application.
  * @remarks
- * This class is used as a domain model for products in stocktrack
+ * This class is used as a domain model for products in inventory
  * It implements the BaseEntity interface to ensure consistency across entities.
  * @see {@link BaseEntity}
  */
