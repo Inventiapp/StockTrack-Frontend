@@ -1,0 +1,33 @@
+<div class="sidebar" [class.expanded]="isExpanded" (mouseenter)="expandSidebar()" (mouseleave)="collapseSidebar()">
+  <div class="toggle-btn" (click)="toggleSidebar()">
+    <i class="material-icons">{{ isExpanded ? 'chevron_left' : 'chevron_right' }}</i>
+  </div>
+
+  <div class="header-container">
+    <div class="logo-container">
+      <span class="sidebar-title" *ngIf="isExpanded">StockTrack</span>
+    </div>
+  </div>
+
+  <div class="menu">
+    <ul>
+      <li *ngFor="let item of menuItems">
+        <a [routerLink]="item.route" routerLinkActive="active">
+          <i class="material-icons">{{item.icon}}</i>
+          <span *ngIf="isExpanded">{{item.title}}</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="sidebar-footer">
+    <a routerLink="/configuracion" routerLinkActive="active">
+      <i class="material-icons">settings</i>
+      <span *ngIf="isExpanded">Configuración</span>
+    </a>
+    <a routerLink="/perfil" routerLinkActive="active">
+      <i class="material-icons">person</i>
+      <span *ngIf="isExpanded">Perfil</span>
+    </a>
+  </div>
+</div>
