@@ -5,7 +5,7 @@
 
   <div class="header-container">
     <div class="logo-container">
-      <span class="sidebar-title" *ngIf="isExpanded">StockTrack</span>
+      <span class="sidebar-title" *ngIf="isExpanded">{{ t('sidebar.title') }}</span>
     </div>
   </div>
 
@@ -14,20 +14,24 @@
       <li *ngFor="let item of menuItems">
         <a [routerLink]="item.route" routerLinkActive="active">
           <i class="material-icons">{{item.icon}}</i>
-          <span *ngIf="isExpanded">{{item.title}}</span>
+          <span *ngIf="isExpanded">{{ t(item.titleKey) }}</span>
         </a>
       </li>
     </ul>
   </div>
 
+  <div class="language-section" *ngIf="isExpanded">
+    <app-language-switcher></app-language-switcher>
+  </div>
+
   <div class="sidebar-footer">
     <a routerLink="/configuracion" routerLinkActive="active">
       <i class="material-icons">settings</i>
-      <span *ngIf="isExpanded">Configuración</span>
+      <span *ngIf="isExpanded">{{ t('sidebar.footer.settings') }}</span>
     </a>
     <a routerLink="/perfil" routerLinkActive="active">
       <i class="material-icons">person</i>
-      <span *ngIf="isExpanded">Perfil</span>
+      <span *ngIf="isExpanded">{{ t('sidebar.footer.profile') }}</span>
     </a>
   </div>
 </div>

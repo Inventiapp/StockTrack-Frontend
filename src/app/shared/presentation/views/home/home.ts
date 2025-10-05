@@ -1,19 +1,17 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-inventory-list',
-  templateUrl: './inventory-list.html',
-  styleUrls: ['./inventory-list.css'],
+  selector: 'app-home',
+  templateUrl: './home.html',
+  styleUrls: ['./home.css'],
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [TranslateModule],
 })
-export class InventoryListComponent {
+export class HomeComponent {
   private translate = inject(TranslateService);
 
   protected t(key: string): string {
     return this.translate.instant(key);
   }
 }
-

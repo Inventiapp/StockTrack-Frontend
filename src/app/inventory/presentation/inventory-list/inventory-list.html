@@ -1,15 +1,15 @@
 <div class="inventory-container">
   <div class="header">
-    <h1>{{ title }}</h1>
-    <p>Administra tus productos y stock</p>
+    <h1>{{ t('inventory.title') }}</h1>
+    <p>{{ t('inventory.subtitle') }}</p>
   </div>
 
   <div class="content">
     <div class="empty-state">
       <i class="material-icons">inventory_2</i>
-      <h2>Inventario</h2>
-      <p>Esta es la pantalla de inventario</p>
-      <p>Próximamente podrás gestionar todos tus productos aquí</p>
+      <h2>{{ t('inventory.emptyState.title') }}</h2>
+      <p>{{ t('inventory.emptyState.description') }}</p>
+      <p>{{ t('inventory.emptyState.message') }}</p>
     </div>
   </div>
 </div>

@@ -1,0 +1,30 @@
+{
+  "sidebar": {
+    "title": "StockTrack",
+    "menu": {
+      "home": "Home",
+      "inventory": "Inventory",
+      "providers": "Providers",
+      "sales": "Sales",
+      "reports": "Reports"
+    },
+    "footer": {
+      "settings": "Settings",
+      "profile": "Profile"
+    }
+  },
+  "home": {
+    "title": "Welcome to StockTrack",
+    "subtitle": "Inventory management system"
+  },
+  "inventory": {
+    "title": "Inventory Management",
+    "subtitle": "Manage your products and stock",
+    "emptyState": {
+      "title": "Inventory",
+      "description": "This is the inventory screen",
+      "message": "Soon you will be able to manage all your products here"
+    }
+  }
+}
+

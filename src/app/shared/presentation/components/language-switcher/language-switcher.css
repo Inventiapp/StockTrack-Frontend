@@ -1,0 +1,55 @@
+.language-switcher {
+  display: flex;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 4px;
+  backdrop-filter: blur(10px);
+}
+
+.lang-btn {
+  padding: 8px 16px;
+  border: none;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  min-width: 50px;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+}
+
+.lang-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: white;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.lang-btn:hover::before {
+  opacity: 0.1;
+}
+
+.lang-btn:hover {
+  transform: translateY(-2px);
+}
+
+.lang-btn.active {
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  font-weight: 700;
+}
+
+.lang-btn:active {
+  transform: translateY(0);
+}

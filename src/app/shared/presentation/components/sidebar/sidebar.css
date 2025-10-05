@@ -143,8 +143,15 @@
   background: rgba(255, 255, 255, 0.25);
 }
 
-.sidebar .sidebar-footer {
+.sidebar .language-section {
   margin-top: auto;
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sidebar .sidebar-footer {
   padding: 16px;
   display: flex;
   flex-direction: column;

@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { LanguageSwitcher } from '../language-switcher/language-switcher';
 
 interface MenuItem {
-  title: string;
+  titleKey: string;
   icon: string;
   route: string;
 }
@@ -13,35 +15,36 @@ interface MenuItem {
   templateUrl: './sidebar.html',
   styleUrls: ['./sidebar.css'],
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, LanguageSwitcher, TranslateModule],
 })
 export class SidebarComponent {
+  private translate = inject(TranslateService);
   isExpanded = true;
 
-  // Menú dinámico basado en la imagen
+  // Menú dinámico con keys de traducción
   menuItems: MenuItem[] = [
     {
-      title: 'Inicio',
+      titleKey: 'sidebar.menu.home',
       icon: 'home',
       route: '/',
     },
     {
-      title: 'Inventario',
+      titleKey: 'sidebar.menu.inventory',
       icon: 'inventory_2',
       route: '/inventario',
     },
     {
-      title: 'Proveedores',
+      titleKey: 'sidebar.menu.providers',
       icon: 'people',
       route: '/proveedores',
     },
     {
-      title: 'Venta',
+      titleKey: 'sidebar.menu.sales',
       icon: 'shopping_cart',
       route: '/venta',
     },
     {
-      title: 'Reportes',
+      titleKey: 'sidebar.menu.reports',
       icon: 'description',
       route: '/reportes',
     },
@@ -57,5 +60,9 @@ export class SidebarComponent {
 
   collapseSidebar() {
     this.isExpanded = false;
+  }
+
+  protected t(key: string): string {
+    return this.translate.instant(key);
   }
 }
