@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {KitItem} from '../../../../stocktrack/presentation/kit-item/kit-item';
+import {KitItem} from '../../../../inventory/presentation/kit-item/kit-item';
 
 @Component({
   selector: 'app-layout',
