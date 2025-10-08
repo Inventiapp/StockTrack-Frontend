@@ -12,6 +12,8 @@ import {MatSort} from '@angular/material/sort';
 import {TranslatePipe} from '@ngx-translate/core';
 import {ProvidersApi} from '../../../infrastructure/providers-api';
 import {Provider} from '../../../../inventory/domain/model/provider.entity';
+import {MatIconModule} from '@angular/material/icon';
+import {MatIconButton} from '@angular/material/button';
 
 @Component({
   selector: 'app-providers-table',
@@ -27,13 +29,15 @@ import {Provider} from '../../../../inventory/domain/model/provider.entity';
     MatHeaderRow,
     MatRow,
     MatHeaderRowDef,
-    MatRowDef
+    MatRowDef,
+    MatIconModule,
+    MatIconButton
   ],
   templateUrl: './providers-table.html',
   styleUrl: './providers-table.css'
 })
 export class ProvidersTable {
-  displayedColumns: string[] = ['firstName', 'phone', 'email', 'ruc'];
+  displayedColumns: string[] = ['firstName', 'phone', 'email', 'ruc','actions'];
   dataSource: Provider[] = [];
 
   constructor(private providersApi: ProvidersApi) {}
@@ -42,6 +46,14 @@ export class ProvidersTable {
     this.providersApi.getProviders().subscribe((providers: Provider[]) => {
       this.dataSource = providers;
     });
+  }
+
+  onEdit(onClick: any) {
+
+  }
+
+  onDelete(onClick: any) {
+
   }
 }
 

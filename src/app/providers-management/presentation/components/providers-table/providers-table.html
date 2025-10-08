@@ -1,30 +1,55 @@
-<section class="example-container mat-elevation-z8" tabindex="0">
+<section class="table-providers-container" tabindex="0">
   <table mat-table [dataSource]="dataSource" class="mat-table" matSort>
 
-    <!-- name Column -->
     <ng-container matColumnDef="firstName">
-      <th mat-header-cell *matHeaderCellDef> {{ 'providers-table.name' | translate }}</th>
-      <td mat-cell *matCellDef="let provider"> {{ provider.firstName }} {{provider.lastName}}</td>
+      <th mat-header-cell *matHeaderCellDef>
+        {{ 'providers-view.providers-table.name' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let p">
+        {{ p.firstName }} {{ p.lastName }}
+      </td>
     </ng-container>
 
-    <!-- phone Column -->
     <ng-container matColumnDef="phone">
-      <th mat-header-cell *matHeaderCellDef> {{ 'providers-table.phone' | translate }}</th>
-      <td mat-cell *matCellDef="let provider"> {{ provider.phoneNumber }}</td>
+      <th mat-header-cell *matHeaderCellDef>
+        {{ 'providers-view.providers-table.phone' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let p">
+        {{ p.phoneNumber }}
+      </td>
     </ng-container>
 
-    <!-- email Column -->
     <ng-container matColumnDef="email">
-      <th mat-header-cell *matHeaderCellDef> {{ 'providers-table.email' | translate }}</th>
-      <td mat-cell *matCellDef="let provider"> {{ provider.email }}</td>
+      <th mat-header-cell *matHeaderCellDef>
+        {{ 'providers-view.providers-table.email' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let p">
+        <a [href]="'mailto:' + p.email" class="mail-link">{{ p.email }}</a>
+      </td>
     </ng-container>
 
-    <!-- ruc Column -->
     <ng-container matColumnDef="ruc">
-      <th mat-header-cell *matHeaderCellDef> {{ 'providers-table.ruc' | translate }}</th>
-      <td mat-cell *matCellDef="let provider"> {{ provider.ruc }}</td>
+      <th mat-header-cell *matHeaderCellDef>
+        {{ 'providers-view.providers-table.ruc' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let p">
+        {{ p.ruc }}
+      </td>
     </ng-container>
 
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ 'providers-view.providers-table.actions' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let p" class="actions-cell">
+        <button mat-icon-button class="icon-edit" (click)="onEdit(p)" aria-label="Editar">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button class="icon-delete" (click)="onDelete(p)" aria-label="Eliminar">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
