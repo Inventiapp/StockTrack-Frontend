@@ -1,0 +1,17 @@
+.providers-content {
+  width: 100%;
+  height: 100%;
+  background-color: #00ffff;
+}
+
+.providers-top-section{
+  background-color: #666666;
+  flex:1;
+  padding-top: 4rem;
+}
+
+.providers-bottom-section {
+  background-color: #FF6B35;
+  flex:1;
+  padding-top: 4rem;
+}
