@@ -26,16 +26,23 @@
       "message": "Soon you will be able to manage all your products here"
     }
   },
-  "providers-table": {
-    "name": "Name",
-    "contact": "Contact",
-    "phone": "Cellphone",
-    "email": "Email",
-    "ruc": "RUC",
-    "address": "Address",
-    "actions": "Actions",
-    "edit": "Edit",
-    "delete": "Delete"
+  "providers-view": {
+    "providers-table": {
+      "name": "Name",
+      "contact": "Contact",
+      "phone": "Cellphone",
+      "email": "Email",
+      "ruc": "RUC",
+      "address": "Address",
+      "actions": "Actions",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "providers-toolbar": {
+      "search": "Search",
+      "filter": "Filter",
+      "add-provider": "Add Provider"
+    }
   }
 }
 

@@ -26,16 +26,23 @@
       "message": "Próximamente podrás gestionar todos tus productos aquí"
     }
   },
-  "providers-table": {
-    "name": "Nombre",
-    "contact": "Contacto",
-    "phone": "Celular",
-    "email": "Correo Electrónico",
-    "ruc": "RUC",
-    "address": "Dirección",
-    "actions": "Acciones",
-    "edit": "Editar",
-    "delete": "Eliminar"
+  "providers-view": {
+    "providers-table": {
+      "name": "Nombre",
+      "contact": "Contacto",
+      "phone": "Celular",
+      "email": "Correo Electrónico",
+      "ruc": "RUC",
+      "address": "Dirección",
+      "actions": "Acciones",
+      "edit": "Editar",
+      "delete": "Eliminar"
+    },
+    "providers-toolbar": {
+      "search": "Buscar",
+      "filter": "Filtrar",
+      "add-provider": "Agregar Proveedor"
+    }
   }
 }
 
