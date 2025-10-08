@@ -25,6 +25,17 @@
       "description": "This is the inventory screen",
       "message": "Soon you will be able to manage all your products here"
     }
+  },
+  "providers-table": {
+    "name": "Name",
+    "contact": "Contact",
+    "phone": "Cellphone",
+    "email": "Email",
+    "ruc": "RUC",
+    "address": "Address",
+    "actions": "Actions",
+    "edit": "Edit",
+    "delete": "Delete"
   }
 }
 

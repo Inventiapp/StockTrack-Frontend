@@ -1,0 +1,36 @@
+{
+  "providers": [
+    {
+      "id": 1,
+      "firstName": "John",
+      "lastName": "Doe",
+      "phoneNumber": "123-456-789",
+      "email": "test2@hotmail.com",
+      "ruc": "12345678901"
+    },
+    {
+      "id": 2,
+      "firstName": "Mark",
+      "lastName": "Smith",
+      "phoneNumber": "987-654-321",
+      "email": "test@hotmail.com",
+      "ruc": "10987654321"
+    },
+    {
+      "id": 3,
+      "firstName": "Ariana",
+      "lastName": "Yasan",
+      "phoneNumber": "555-987-654",
+      "email": "arigatito@hotmail.com",
+      "ruc": "20987654321"
+    },
+    {
+      "id": 4,
+      "firstName": "lucas",
+      "lastName": "escarpati",
+      "phoneNumber": "555-123-456",
+      "email": "lucas@hotmail.com",
+      "ruc": "20123456789"
+    }
+  ]
+}

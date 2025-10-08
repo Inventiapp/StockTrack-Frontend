@@ -25,6 +25,17 @@
       "description": "Esta es la pantalla de inventario",
       "message": "Próximamente podrás gestionar todos tus productos aquí"
     }
+  },
+  "providers-table": {
+    "name": "Nombre",
+    "contact": "Contacto",
+    "phone": "Celular",
+    "email": "Correo Electrónico",
+    "ruc": "RUC",
+    "address": "Dirección",
+    "actions": "Acciones",
+    "edit": "Editar",
+    "delete": "Eliminar"
   }
 }
 
