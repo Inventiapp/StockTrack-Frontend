@@ -23,7 +23,7 @@
   display: flex;
   gap: 0.5rem;
   align-items: center;
-  position: relative; /* 🟢 Nuevo: para que el dropdown se alinee al botón */
+  position: relative; 
 }
 
 .search-filter input {
@@ -33,7 +33,6 @@
   width: 200px;
 }
 
-/* Botón del filtro */
 .filter-btn {
   background-color: #007bff;
   color: white;
@@ -96,7 +95,6 @@
   color: #dc3545;
 }
 
-/* === MODAL === */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -201,17 +199,16 @@
 }
 
 .perm-item input[type="checkbox"] {
-  accent-color: #007bff; /* azul */
+  accent-color: #007bff; 
   width: 16px;
   height: 16px;
   cursor: pointer;
 }
 
-/* === Filtro desplegable === */
 .filter-dropdown {
   position: absolute;
   top: 110%;
-  right: 0; /* 🟢 Nuevo: lo coloca debajo del botón Filtro */
+  right: 0; 
   background: white;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -221,7 +218,6 @@
   min-width: 200px;
 }
 
-/* Etiquetas y selects */
 .filter-dropdown label {
   display: block;
   margin-top: 8px;
@@ -236,7 +232,6 @@
   border: 1px solid #ccc;
 }
 
-/* Botones dentro del menú */
 .filter-actions {
   margin-top: 10px;
   display: flex;

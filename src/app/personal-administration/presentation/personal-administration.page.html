@@ -8,7 +8,6 @@
       <div class="filter-container">
         <button class="filter-btn" (click)="toggleFilterDropdown()">🔍 Filtro</button>
 
-        <!-- Menú desplegable -->
         <div *ngIf="showFilterDropdown" class="filter-dropdown">
           <label>Estado:</label>
           <select [(ngModel)]="filterStatus">
@@ -63,7 +62,6 @@
   </table>
 </section>
 
-<!-- Modal Nuevo Usuario -->
 <div class="modal-overlay" *ngIf="showUserModal">
   <div class="modal">
     <h3>Nuevo Personal</h3>
@@ -93,7 +91,6 @@
   </div>
 </div>
 
-<!-- Modal Editar Usuario -->
 <div class="modal-overlay" *ngIf="showEditModal">
   <div class="modal">
     <h3>Editar Usuario</h3>
@@ -123,7 +120,6 @@
   </div>
 </div>
 
-<!-- Modal Eliminar Usuario -->
 <div class="modal-overlay" *ngIf="showDeleteModal">
   <div class="modal small">
     <h3>Confirmar eliminación</h3>
@@ -135,7 +131,6 @@
   </div>
 </div>
 
-<!-- Modal Nuevo Rol -->
 <div class="modal-overlay" *ngIf="showRoleModal">
   <div class="modal">
     <h3>Nuevo Rol</h3>
