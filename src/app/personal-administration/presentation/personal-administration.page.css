@@ -1,0 +1,284 @@
+.personal-admin-container {
+  padding: 1.5rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.header {
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: #ff662a;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #ff662a;
+  padding-bottom: 0.3rem;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.search-filter {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  position: relative; /* 🟢 Nuevo: para que el dropdown se alinee al botón */
+}
+
+.search-filter input {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  width: 200px;
+}
+
+/* Botón del filtro */
+.filter-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.toolbar-buttons button {
+  margin-left: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-role {
+  background-color: #6f42c1;
+}
+
+.btn-user {
+  background-color: #28a745;
+}
+
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.user-table th {
+  background-color: #3c2a68;
+  color: white;
+  text-align: left;
+  padding: 0.75rem;
+}
+
+.user-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.edit, .delete {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.edit {
+  color: #007bff;
+}
+
+.delete {
+  color: #dc3545;
+}
+
+/* === MODAL === */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 420px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.modal h3 {
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.modal label {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.modal input, .modal select {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-top: 0.25rem;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+}
+
+.modal-actions button {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.modal-actions .cancel {
+  background-color: white;
+  border: 1px solid #dc3545;
+  color: #dc3545;
+  margin-right: 1rem;
+}
+
+.modal-actions .save {
+  background-color: #28a745;
+  border: none;
+  color: white;
+}
+
+.modal.small {
+  width: 320px;
+  text-align: center;
+}
+
+.modal.small p {
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.modal-actions .delete {
+  background-color: #dc3545;
+}
+
+.perm-title {
+  display: block;
+  margin-top: 1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.permissions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 0.5rem 0 1rem;
+}
+
+.perm-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.95rem;
+  color: #444;
+}
+
+.perm-item input[type="checkbox"] {
+  accent-color: #007bff; /* azul */
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+/* === Filtro desplegable === */
+.filter-dropdown {
+  position: absolute;
+  top: 110%;
+  right: 0; /* 🟢 Nuevo: lo coloca debajo del botón Filtro */
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  min-width: 200px;
+}
+
+/* Etiquetas y selects */
+.filter-dropdown label {
+  display: block;
+  margin-top: 8px;
+  font-weight: 500;
+}
+
+.filter-dropdown select {
+  width: 100%;
+  margin-top: 4px;
+  padding: 4px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+/* Botones dentro del menú */
+.filter-actions {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.filter-actions button {
+  background-color: #007bff;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.filter-actions button:hover {
+  background-color: #0056b3;
+}
+
+.filter-actions .clear {
+  background-color: #6c757d;
+}
+
+.filter-actions .clear:hover {
+  background-color: #5a6268;
+}
+
+.filter-actions button:first-child {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.filter-actions button:last-child {
+  background-color: #e5e5e5;
+}
+
+.filter-container {
+  position: relative;
+  display: inline-block;
+}
+
+.filter-btn:hover {
+  background-color: #0056b3;
+}
