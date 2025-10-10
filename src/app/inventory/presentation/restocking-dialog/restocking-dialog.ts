@@ -117,10 +117,8 @@ export class RestockingDialogComponent implements OnInit {
     item.total = item.currentStock + item.quantity;
   }
 
-  // Para mostrar errores cuando intenten guardar
   touched = false;
 
-  // ---- Validaciones ----
   isValidDate(d: string): boolean {
     return !!d && !isNaN(Date.parse(d));
   }

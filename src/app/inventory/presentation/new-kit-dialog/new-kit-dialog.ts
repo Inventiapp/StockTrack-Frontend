@@ -57,7 +57,6 @@ export class NewKitDialogComponent implements OnInit {
     this.loading = true;
     this.error = '';
 
-    // Cargar productos y stock en paralelo
     forkJoin({
       products: this.productsApi.getProducts(),
       stock: this.stockApi.getStock()
@@ -65,7 +64,6 @@ export class NewKitDialogComponent implements OnInit {
       next: ({ products, stock }) => {
         const stockMap = new Map(stock.map(s => [s.productId, s.currentStock]));
 
-        // Filtrar solo productos activos y mapear con stock real
         this.items = products
           .filter(p => p.isActive === true)
           .map(product => {
@@ -75,7 +73,7 @@ export class NewKitDialogComponent implements OnInit {
               name: product.name,
               currentStock: currentStock,
               quantity: 0,
-              selected: false  // Inicialmente ningún producto está seleccionado
+              selected: false
             };
           });
 
@@ -100,7 +98,6 @@ export class NewKitDialogComponent implements OnInit {
   }
 
   onSave(): void {
-    // Validaciones
     if (!this.nombre.trim()) {
       this.error = 'El nombre del kit es obligatorio';
       return;
@@ -116,11 +113,9 @@ export class NewKitDialogComponent implements OnInit {
       return;
     }
 
-    // Limpiar error
     this.error = '';
     this.saving = true;
 
-    // Crear el kit con los productos seleccionados
     const kitProducts: KitProduct[] = itemsToSave.map(item => ({
       productId: item.productId,
       name: item.name,
@@ -128,14 +123,13 @@ export class NewKitDialogComponent implements OnInit {
     }));
 
     const newKit = new Kit({
-      id: '', // El ID será generado por el backend
+      id: '',
       name: this.nombre,
       price: this.precio,
       isEnabled: true,
       products: kitProducts
     });
 
-    // Enviar al backend
     this.kitApi.createKit(newKit).subscribe({
       next: (createdKit) => {
         console.log('Kit creado exitosamente:', createdKit);
@@ -158,7 +152,6 @@ export class NewKitDialogComponent implements OnInit {
   }
 
   incrementQuantity(item: NewKitItem): void {
-    // Solo permitir incrementar si el item está seleccionado
     if (!item.selected) {
       item.selected = true;
     }
@@ -168,7 +161,6 @@ export class NewKitDialogComponent implements OnInit {
   decrementQuantity(item: NewKitItem): void {
     if (item.quantity > 0) {
       item.quantity--;
-      // Si la cantidad llega a 0, deseleccionar automáticamente
       if (item.quantity === 0) {
         item.selected = false;
       }

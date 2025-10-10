@@ -54,7 +54,7 @@ export class ProvidersTable {
     });
 
     ref.afterClosed().subscribe((updated?: Provider) => {
-      if (!updated) return; // cancelado
+      if (!updated) return; 
       this.store.updateProvider(updated);
     });
   }

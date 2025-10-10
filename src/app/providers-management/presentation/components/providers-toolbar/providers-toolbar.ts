@@ -39,7 +39,7 @@ export class ProvidersToolbar {
     });
 
     ref.afterClosed().subscribe((created?: Provider) => {
-      if (!created) return; // cancelado
+      if (!created) return;
       this.store.addProvider(created);
     });
   }

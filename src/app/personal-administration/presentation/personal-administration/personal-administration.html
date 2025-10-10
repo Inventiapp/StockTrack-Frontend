@@ -6,22 +6,23 @@
       <input
         type="text"
         [placeholder]="t('personalAdministration.search')"
-        [(ngModel)]="searchTerm"
+        [ngModel]="searchTerm()"
+        (ngModelChange)="searchTerm.set($event)"
       />
 
       <div class="filter-container">
         <button class="filter-btn" (click)="toggleFilterDropdown()">🔍 {{ t('personalAdministration.filter') }}</button>
 
-        <div *ngIf="showFilterDropdown" class="filter-dropdown">
+        <div *ngIf="showFilterDropdown()" class="filter-dropdown">
           <label>{{ t('personalAdministration.status') }}:</label>
-          <select [(ngModel)]="filterStatus">
+          <select [ngModel]="filterStatus()" (ngModelChange)="filterStatus.set($event)">
             <option value="todos">{{ t('personalAdministration.all') }}</option>
             <option value="Activo">{{ t('personalAdministration.active') }}</option>
             <option value="Inactivo">{{ t('personalAdministration.inactive') }}</option>
           </select>
 
           <label>{{ t('personalAdministration.role') }}:</label>
-          <select [(ngModel)]="filterRole">
+          <select [ngModel]="filterRole()" (ngModelChange)="filterRole.set($event)">
             <option value="todos">{{ t('personalAdministration.all') }}</option>
             <option *ngFor="let role of roles" [value]="role.name">{{ role.name }}</option>
           </select>
@@ -53,9 +54,9 @@
     <tbody>
       <tr *ngFor="let user of filteredUsers">
         <td>{{ user.name }}</td>
-        <td>{{ user.role }}</td>
-        <td>{{ user.account }}</td>
-        <td>{{ user.status }}</td>
+        <td>{{ getUserRoleDisplay(user.role) }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ getUserStatusDisplay(user.status) }}</td>
         <td>
           <button class="edit" (click)="openEditModal(user)">✏️</button>
           <button class="delete" (click)="openDeleteModal(user)">🗑️</button>
@@ -65,24 +66,24 @@
   </table>
 </section>
 
-<div class="modal-overlay" *ngIf="showUserModal">
+<div class="modal-overlay" *ngIf="showUserModal()">
   <div class="modal">
     <h3>{{ t('personalAdministration.newUserTitle') }}</h3>
     <form (ngSubmit)="saveUser()">
       <label>{{ t('personalAdministration.nameLabel') }}</label>
-      <input type="text" [(ngModel)]="newUser.name" name="name" required />
+      <input type="text" [ngModel]="newUser().name" (ngModelChange)="newUser.update(u => ({...u, name: $event}))" name="name" required />
 
       <label>{{ t('personalAdministration.lastnameLabel') }}</label>
-      <input type="text" [(ngModel)]="newUser.lastname" name="lastname" required />
+      <input type="text" [ngModel]="newUser().lastname" (ngModelChange)="newUser.update(u => ({...u, lastname: $event}))" name="lastname" required />
 
       <label>{{ t('personalAdministration.phoneLabel') }}</label>
-      <input type="text" [(ngModel)]="newUser.phone" name="phone" required />
+      <input type="text" [ngModel]="newUser().phone" (ngModelChange)="newUser.update(u => ({...u, phone: $event}))" name="phone" required />
 
       <label>{{ t('personalAdministration.emailLabel') }}</label>
-      <input type="email" [(ngModel)]="newUser.email" name="email" required />
+      <input type="email" [ngModel]="newUser().email" (ngModelChange)="newUser.update(u => ({...u, email: $event}))" name="email" required />
 
       <label>{{ t('personalAdministration.roleLabel') }}</label>
-      <select [(ngModel)]="newUser.role" name="role" required>
+      <select [ngModel]="newUser().role" (ngModelChange)="newUser.update(u => ({...u, role: $event}))" name="role" required>
         <option *ngFor="let role of roles" [value]="role.name">{{ role.name }}</option>
       </select>
 
@@ -94,23 +95,23 @@
   </div>
 </div>
 
-<div class="modal-overlay" *ngIf="showEditModal">
+<div class="modal-overlay" *ngIf="showEditModal()">
   <div class="modal">
     <h3>{{ t('personalAdministration.editUserTitle') }}</h3>
     <form (ngSubmit)="saveEditedUser()">
       <label>{{ t('personalAdministration.fullNameLabel') }}</label>
-      <input type="text" [(ngModel)]="selectedUser.name" name="editName" />
+      <input type="text" [ngModel]="selectedUser()?.name" (ngModelChange)="selectedUser.update(u => u ? {...u, name: $event} : null)" name="editName" />
 
       <label>{{ t('personalAdministration.roleLabel') }}</label>
-      <select [(ngModel)]="selectedUser.role" name="editRole">
+      <select [ngModel]="selectedUser()?.role" (ngModelChange)="selectedUser.update(u => u ? {...u, role: $event === 'Administrador' ? 'ADMIN' : 'VENDOR'} : null)" name="editRole">
         <option *ngFor="let role of roles" [value]="role.name">{{ role.name }}</option>
       </select>
 
       <label>{{ t('personalAdministration.accountLabel') }}</label>
-      <input type="email" [(ngModel)]="selectedUser.account" name="editAccount" />
+      <input type="email" [ngModel]="selectedUser()?.email" (ngModelChange)="selectedUser.update(u => u ? {...u, email: $event} : null)" name="editAccount" />
 
       <label>{{ t('personalAdministration.statusLabel') }}</label>
-      <select [(ngModel)]="selectedUser.status" name="editStatus">
+      <select [ngModel]="selectedUser()?.status" (ngModelChange)="selectedUser.update(u => u ? {...u, status: $event === 'Activo' ? 'ACTIVE' : 'INACTIVE'} : null)" name="editStatus">
         <option value="Activo">{{ t('personalAdministration.active') }}</option>
         <option value="Inactivo">{{ t('personalAdministration.inactive') }}</option>
       </select>
@@ -123,10 +124,10 @@
   </div>
 </div>
 
-<div class="modal-overlay" *ngIf="showDeleteModal">
+<div class="modal-overlay" *ngIf="showDeleteModal()">
   <div class="modal small">
     <h3>{{ t('personalAdministration.confirmDeleteTitle') }}</h3>
-    <p>{{ t('personalAdministration.confirmDeleteMessage', { name: selectedUser?.name }) }}</p>
+    <p>{{ t('personalAdministration.confirmDeleteMessage', { name: selectedUser()?.name }) }}</p>
     <div class="modal-actions">
       <button type="button" class="cancel" (click)="closeDeleteModal()">{{ t('common.cancel') }}</button>
       <button type="button" class="save delete" (click)="confirmDeleteUser()">{{ t('common.delete') }}</button>
@@ -134,14 +135,15 @@
   </div>
 </div>
 
-<div class="modal-overlay" *ngIf="showRoleModal">
+<div class="modal-overlay" *ngIf="showRoleModal()">
   <div class="modal">
     <h3>{{ t('personalAdministration.newRoleTitle') }}</h3>
     <form (ngSubmit)="saveRole()">
       <label>{{ t('personalAdministration.roleNameLabel') }}</label>
       <input
         type="text"
-        [(ngModel)]="newRole.name"
+        [ngModel]="newRole().name"
+        (ngModelChange)="newRole.update(r => ({...r, name: $event}))"
         name="roleName"
         [placeholder]="t('personalAdministration.rolePlaceholder')"
         required
@@ -150,19 +152,19 @@
       <label class="perm-title">{{ t('personalAdministration.permissionsTitle') }}</label>
       <div class="permissions">
         <label class="perm-item">
-          <input type="checkbox" [(ngModel)]="newRole.permissions.productos" name="permProducts" />
+          <input type="checkbox" [ngModel]="newRole().permissions.productos" (ngModelChange)="newRole.update(r => ({...r, permissions: {...r.permissions, productos: $event}}))" name="permProducts" />
           {{ t('personalAdministration.permissionProducts') }}
         </label>
         <label class="perm-item">
-          <input type="checkbox" [(ngModel)]="newRole.permissions.compras" name="permPurchases" />
+          <input type="checkbox" [ngModel]="newRole().permissions.compras" (ngModelChange)="newRole.update(r => ({...r, permissions: {...r.permissions, compras: $event}}))" name="permPurchases" />
           {{ t('personalAdministration.permissionPurchases') }}
         </label>
         <label class="perm-item">
-          <input type="checkbox" [(ngModel)]="newRole.permissions.estadisticas" name="permStats" />
+          <input type="checkbox" [ngModel]="newRole().permissions.estadisticas" (ngModelChange)="newRole.update(r => ({...r, permissions: {...r.permissions, estadisticas: $event}}))" name="permStats" />
           {{ t('personalAdministration.permissionStats') }}
         </label>
         <label class="perm-item">
-          <input type="checkbox" [(ngModel)]="newRole.permissions.usuarios" name="permUsers" />
+          <input type="checkbox" [ngModel]="newRole().permissions.usuarios" (ngModelChange)="newRole.update(r => ({...r, permissions: {...r.permissions, usuarios: $event}}))" name="permUsers" />
           {{ t('personalAdministration.permissionUsers') }}
         </label>
       </div>

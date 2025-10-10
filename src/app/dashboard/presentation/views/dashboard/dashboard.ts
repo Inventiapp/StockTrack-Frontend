@@ -42,7 +42,6 @@ export class DashboardComponent {
 
   protected currentUserName = computed(() => {
     // TODO: Get from auth store when implemented
-    // For now, return mock data
     return 'Juan Perez';
   });
 

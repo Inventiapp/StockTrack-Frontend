@@ -69,7 +69,6 @@ export class DashboardStore {
       }
     });
 
-    // Load notifications
     this.dashboardApi.getNotifications().subscribe({
       next: (data: Notification[]) => {
         this.notificationsSignal.set(data);

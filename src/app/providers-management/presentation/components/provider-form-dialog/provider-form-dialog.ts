@@ -34,7 +34,7 @@ import {TranslatePipe} from '@ngx-translate/core';
 })
 export class ProviderFormDialog implements OnInit {
   saving = false;
-  form!: FormGroup; // se inicializa en ngOnInit
+  form!: FormGroup;
 
   constructor(
     private fb: FormBuilder,

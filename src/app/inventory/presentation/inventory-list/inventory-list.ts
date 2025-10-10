@@ -104,11 +104,9 @@ export class InventoryListComponent implements OnInit {
       items: restockingItems
     });
 
-    // Guardar la reposición y actualizar el stock
     this.restockingApi.createRestocking(restocking).subscribe({
       next: (savedRestocking) => {
         console.log('Reposición creada:', savedRestocking);
-        // Actualizar el stock de cada producto
         this.updateStockForProducts(data.items);
       },
       error: (error: any) => {
@@ -132,7 +130,6 @@ export class InventoryListComponent implements OnInit {
           return null;
         }).filter(obs => obs !== null);
 
-        // Ejecutar todas las actualizaciones
         if (updates.length > 0) {
           forkJoin(updates).subscribe({
             next: () => {
@@ -166,24 +163,19 @@ export class InventoryListComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         console.log('Kit creado exitosamente:', result);
-        // Recargar los kits para mostrar el nuevo
         this.loadKits();
       }
     });
   }
 
-  // Calcula el total del kit sumando los productos
   calculateKitTotal(kit: Kit): number {
     return kit.products.reduce((sum, product) => sum + product.quantity, 0);
   }
 
-
-  /* PRODUCTOS */
-
   loadProducts(): void {
     forkJoin({
-      stock: this.stockApi.getStock(),           // StockResource[]
-      restockings: this.restockingApi.getRestockings() // [{lot,receptionDate,expirationDate,items:[{productId,...}]}]
+      stock: this.stockApi.getStock(),          
+      restockings: this.restockingApi.getRestockings()
     }).subscribe({
       next: ({ stock, restockings }) => {
         const stockByProduct = new Map(stock.map(s => [s.productId, s.currentStock]));
@@ -209,7 +201,7 @@ export class InventoryListComponent implements OnInit {
           minStock: p.minStock,
           currentStock: stockByProduct.get(p.id) ?? 0,
           categoryName: categoryMap.get(p.categoryId) ?? '-',
-          lot: latestByProduct.get(p.id)?.lot ?? '-',                       // ⬅️ lote
+          lot: latestByProduct.get(p.id)?.lot ?? '-',
           lastReception: latestByProduct.get(p.id)?.receptionDate ?? undefined,
           expirationDate: latestByProduct.get(p.id)?.expirationDate ?? undefined
         }));
@@ -242,8 +234,6 @@ export class InventoryListComponent implements OnInit {
       data
     });
   }
-
-  /* NUEVO PRODUCTO */
 
   openNewProductDialog(): void {
     const dialogRef = this.dialog.open(NewProductDialogComponent, {
