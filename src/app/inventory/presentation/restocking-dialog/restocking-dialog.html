@@ -1,0 +1,95 @@
+<div class="dialog-container">
+  <div class="dialog-header">
+    <h2>{{ 'inventory.newReplacement' | translate }}</h2>
+    <button mat-icon-button (click)="onCancel()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="dialog-content">
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>{{ 'inventory.lot' | translate }}</mat-label>
+        <input matInput [(ngModel)]="lote" placeholder="L-02">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>{{ 'inventory.receiptDate' | translate }}</mat-label>
+        <input matInput type="date" [(ngModel)]="fechaRecepcion">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>{{ 'inventory.expirationDate' | translate }}</mat-label>
+        <input matInput type="date" [(ngModel)]="fechaVencimiento">
+      </mat-form-field>
+    </div>
+
+    <div class="table-container">
+      <!-- Loading State -->
+      <div *ngIf="loading" class="loading-container">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p>Cargando productos...</p>
+      </div>
+
+      <!-- Error State -->
+      <div *ngIf="error && !loading" class="error-container">
+        <mat-icon color="warn">error</mat-icon>
+        <p>{{ error }}</p>
+        <button mat-button (click)="loadProductsWithStock()">{{ 'inventory.retry' | translate }}</button>
+      </div>
+
+      <!-- Data Table -->
+      <table class="items-table" *ngIf="!loading && !error">
+        <thead>
+          <tr>
+            <th>{{ 'inventory.name' | translate }}</th>
+            <th>{{ 'inventory.currentStock' | translate }}</th>
+            <th>{{ 'inventory.amountEntering' | translate }}</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of items">
+            <td>{{ item.name }}</td>
+            <td class="text-center">{{ item.currentStock }}</td>
+            <td class="quantity-cell">
+              <div class="quantity-control">
+                <button mat-icon-button (click)="decrementQuantity(item)">
+                  <mat-icon>expand_more</mat-icon>
+                </button>
+                <input
+                  type="number"
+                  [(ngModel)]="item.quantity"
+                  (ngModelChange)="updateTotal(item)"
+                  class="quantity-input">
+                <button mat-icon-button (click)="incrementQuantity(item)">
+                  <mat-icon>expand_less</mat-icon>
+                </button>
+              </div>
+            </td>
+            <td class="text-center">{{ item.total }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Empty State -->
+      <div *ngIf="!loading && !error && items.length === 0" class="empty-container">
+        <mat-icon>inventory_2</mat-icon>
+        <p>No hay productos activos disponibles</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="dialog-actions">
+    <button mat-stroked-button (click)="onCancel()">
+      {{ 'global.cancel' | translate }}
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      [disabled]="!canSave"
+      (click)="onSave()">
+      {{ 'global.save' | translate }}
+    </button>
+  </div>
+</div>

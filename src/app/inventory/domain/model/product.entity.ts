@@ -67,8 +67,28 @@ export class Product implements BaseEntity {
   }
 
   private _categoryId: string;
+  get categoryId(): string {
+    return this._categoryId;
+  }
+  set categoryId(value: string) {
+    this._categoryId = value;
+  }
+
   private _providerId: string;
+  get providerId(): string {
+    return this._providerId;
+  }
+  set providerId(value: string) {
+    this._providerId = value;
+  }
+
   private _minStock: number;
+  get minStock(): number {
+    return this._minStock;
+  }
+  set minStock(value: number) {
+    this._minStock = value;
+  }
 
   /**
    * The unit price of the product
@@ -82,4 +102,10 @@ export class Product implements BaseEntity {
   }
 
   private _isActive: boolean;
+  get isActive(): boolean {
+    return this._isActive;
+  }
+  set isActive(value: boolean) {
+    this._isActive = value;
+  }
 }

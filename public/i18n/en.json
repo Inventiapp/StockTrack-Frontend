@@ -1,4 +1,9 @@
 {
+  "global": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "exit": "Exit"
+  },
   "sidebar": {
     "title": "StockTrack",
     "menu": {
@@ -24,7 +29,66 @@
       "title": "Inventory",
       "description": "This is the inventory screen",
       "message": "Soon you will be able to manage all your products here"
-    }
+    },
+    "header": "Inventory",
+    "products": "Products",
+    "name": "Name",
+    "unitPrice": "Unit price",
+    "currentStock": "Current stock",
+    "minimumStock": "Minimum stock",
+    "informationProduct": "Information",
+    "filter": "Filter",
+    "search": "Search",
+    "loadingKits": "Loading kits...",
+    "loadingProducts": "Loading products...",
+    "retry": "Retry",
+    "product": "Product",
+    "newReplacement": "Enter replacement",
+    "noKits": "There are no kits",
+    "startKits": "Start by creating your first kit by clicking the button",
+    "newKit": "New kit",
+    "priceKit": "Kit Price",
+    "quantity": "Quantity to select",
+    "category": "Category",
+    "provider": "Provider",
+    "select": "Select",
+    "newProduct": "New product",
+    "lot": "Lot",
+    "receiptDate": "Receipt date",
+    "expirationDate": "Expiration date",
+    "amountEntering": "Amount entering",
+    "lastReception": "Last reception"
+  },
+  "providers-view": {
+    "providers": "Providers",
+    "providers-table": {
+      "name": "Name",
+      "contact": "Contact",
+      "phone": "Cellphone",
+      "email": "Email",
+      "ruc": "RUC",
+      "address": "Address",
+      "actions": "Actions",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "providers-toolbar": {
+      "search": "Search",
+      "filter": "Filter",
+      "add-provider": "Add Provider"
+    },
+    "form-dialog": {
+      "add": "Add Provider",
+      "edit": "Edit Provider",
+      "title": "Add/Edit Provider",
+      "first-name": "First Name",
+      "last-name": "Last Name",
+      "phone-number": "Cellphone",
+      "email": "Email",
+      "ruc": "RUC",
+      "cancel": "Cancel",
+      "save": "Save"
+      }
   },
   "auth": {
     "login": {

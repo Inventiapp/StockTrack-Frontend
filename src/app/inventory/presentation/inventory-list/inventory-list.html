@@ -1,15 +1,109 @@
 <div class="inventory-container">
-  <div class="header">
-    <h1>{{ t('inventory.title') }}</h1>
-    <p>{{ t('inventory.subtitle') }}</p>
+  <!-- Título principal -->
+  <h2 class="header">{{ 'inventory.header' | translate }}</h2>
+
+  <!-- Barra de acciones -->
+  <div class="action-bar">
+    <div class="search-filter-group">
+      <div class="search-box">
+        <i class="material-icons">search</i>
+        <input type="text" placeholder="{{ 'inventory.search' | translate }}" />
+      </div>
+      <button class="btn-filter">
+        <i class="material-icons">tune</i>
+        <span>{{ 'inventory.filter' | translate }}</span>
+      </button>
+    </div>
+
+    <div class="toolbar-buttons">
+      <button class="btn-purple" (click)="openNewKitDialog()">＋ Kit</button>
+      <button class="btn-green" (click)="openNewProductDialog()">＋ {{ 'inventory.product' | translate}}</button>
+      <button class="btn-orange" (click)="openRestockingDialog()">＋ {{ 'inventory.newReplacement' | translate }}</button>
+    </div>
   </div>
 
-  <div class="content">
+  <!-- Sección de Productos -->
+  <div class="section-title">
+    <h2>{{ 'inventory.products' | translate }}</h2>
+  </div>
+
+  <!-- Lista de Productos -->
+  <div class="products-list" *ngIf="!loading && !error && productsRow.length > 0">
+    <div class="table-wrapper">
+      <table class="products-table">
+        <thead>
+        <tr>
+          <th>{{ 'inventory.name' | translate }}</th>
+          <th>{{ 'inventory.unitPrice' | translate }}</th>
+          <th>{{ 'inventory.currentStock' | translate }}</th>
+          <th>{{ 'inventory.minimumStock' | translate }}</th>
+          <th>{{ 'inventory.informationProduct' | translate }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let p of productsRow; trackBy: trackByProductId">
+          <td>{{ p.name }}</td>
+          <td>S/. {{ p.unitPrice | number:'1.2-2' }}</td>
+          <td>{{ p.currentStock }}</td>
+          <td>{{ p.minStock }}</td>
+          <td>
+            <button class="icon-btn" (click)="openProductInfo(p)">
+              <i class="material-icons">info_outline</i>
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Sección de Kits -->
+  <div class="section-title">
+    <h2>Kits</h2>
+  </div>
+
+  <!-- Estado de carga -->
+  <div class="content" *ngIf="loading">
+    <div class="loading-state">
+      <i class="material-icons rotating">refresh</i>
+      <p>{{ 'inventory.loadingKits' | translate }}</p>
+    </div>
+  </div>
+
+  <!-- Estado de error -->
+  <div class="content" *ngIf="error && !loading">
+    <div class="error-state">
+      <i class="material-icons">error_outline</i>
+      <p>{{ error }}</p>
+      <button class="btn-retry" (click)="loadKits()">{{ 'inventory.retry' | translate }}</button>
+    </div>
+  </div>
+
+  <!-- Lista de Kits -->
+  <div class="kits-grid" *ngIf="!loading && !error && kits.length > 0">
+    <div class="kit-card" *ngFor="let kit of kits">
+      <div class="kit-header">
+        <h3>{{ kit.name }}</h3>
+      </div>
+      <div class="kit-body">
+        <div class="kit-product" *ngFor="let product of kit.products">
+          <span class="product-quantity">{{ product.quantity }}</span>
+          <span class="product-name">{{ product.name }}</span>
+        </div>
+      </div>
+      <div class="kit-footer">
+        <span class="kit-total-label">Total:</span>
+        <span class="kit-price">s/ {{ kit.price | number: '1.2-2' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estado vacío -->
+  <div class="content" *ngIf="!loading && !error && kits.length === 0">
     <div class="empty-state">
       <i class="material-icons">inventory_2</i>
-      <h2>{{ t('inventory.emptyState.title') }}</h2>
-      <p>{{ t('inventory.emptyState.description') }}</p>
-      <p>{{ t('inventory.emptyState.message') }}</p>
+      <h2>{{ 'inventory.noKits' | translate }}</h2>
+      <p>{{ 'inventory.startKits' | translate }} + Kit"</p>
     </div>
   </div>
 </div>

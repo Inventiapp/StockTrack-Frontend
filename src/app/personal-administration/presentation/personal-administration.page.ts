@@ -14,24 +14,20 @@ export class PersonalAdministrationPage {
   filterStatus: string = 'todos';
   filterRole: string = 'todos';
   showFilterDropdown: boolean = false;
-
   showUserModal = false;
   showRoleModal = false;
   showEditModal = false;
   showDeleteModal = false;
-
   roles = [
     { name: 'Vendedor', permissions: { productos: true, compras: true, estadisticas: false, usuarios: false } },
     { name: 'Administrador', permissions: { productos: true, compras: true, estadisticas: true, usuarios: true } }
   ];
-
   users = [
     { id: 1, name: 'Juan Pérez Díaz', role: 'Vendedor', account: 'perez.j@company.com', status: 'Activo' },
     { id: 2, name: 'María López Gonzales', role: 'Vendedor', account: 'lopez.m@company.com', status: 'Inactivo' },
     { id: 3, name: 'Luis Ramírez Hurtado', role: 'Vendedor', account: 'ramirez.l@company.com', status: 'Activo' },
     { id: 4, name: 'Juan Pérez Aguirre', role: 'Administrador', account: 'admin@company.com', status: 'Activo' }
   ];
-
   newUser = { name: '', lastname: '', phone: '', email: '', role: '' };
   selectedUser: any = null;
 

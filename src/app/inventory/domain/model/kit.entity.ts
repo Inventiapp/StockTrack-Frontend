@@ -7,10 +7,19 @@ import {BaseEntity} from '../../../shared/infrastructure/base-entity';
  * It implements the BaseEntity interface to ensure consistency across entities.
  * @see {@link BaseEntity}
  */
+/**
+ * Represents a product within a kit with its quantity
+ */
+export interface KitProduct {
+  productId: string;
+  name: string;
+  quantity: number;
+}
+
 export class Kit implements BaseEntity {
   /**
    * Creates a new Kit instance.
-   * @param kit - An object containing the id, name, price, isEnabled of the kit.
+   * @param kit - An object containing the id, name, price, isEnabled and products of the kit.
    * @returns A new instance of Kit.
    */
   constructor(kit: {
@@ -18,11 +27,13 @@ export class Kit implements BaseEntity {
     name: string;
     price: number;
     isEnabled: boolean;
+    products?: KitProduct[];
   }) {
     this._id = kit.id;
     this._name = kit.name;
     this._price = kit.price;
     this._isEnabled = kit.isEnabled;
+    this._products = kit.products || [];
   }
 
   /**
@@ -59,4 +70,21 @@ export class Kit implements BaseEntity {
   }
 
   private _isEnabled: boolean;
+  get isEnabled(): boolean {
+    return this._isEnabled;
+  }
+  set isEnabled(value: boolean) {
+    this._isEnabled = value;
+  }
+
+  /**
+   * The products included in the kit with their quantities
+   */
+  private _products: KitProduct[];
+  get products(): KitProduct[] {
+    return this._products;
+  }
+  set products(value: KitProduct[]) {
+    this._products = value;
+  }
 }

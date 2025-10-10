@@ -1,0 +1,38 @@
+<h2 mat-dialog-title>
+  {{ (data?.id ? 'providers-view.form-dialog.edit' : 'providers-view.form-dialog.add') | translate }}
+</h2>
+<mat-dialog-content [formGroup]="form" class="form-grid">
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>{{ 'providers-view.form-dialog.first-name' | translate }}</mat-label>
+    <input matInput formControlName="firstName"/>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>{{ 'providers-view.form-dialog.last-name' | translate }}</mat-label>
+    <input matInput formControlName="lastName"/>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>{{ 'providers-view.form-dialog.phone-number' | translate }}</mat-label>
+    <input matInput formControlName="phoneNumber"/>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>{{ 'providers-view.form-dialog.email' | translate }}</mat-label>
+    <input matInput type="email" formControlName="email"/>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>{{ 'providers-view.form-dialog.ruc' | translate }}</mat-label>
+    <input matInput formControlName="ruc"/>
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="actions-row">
+  <button mat-stroked-button class="btn-cancel" (click)="cancel()"
+          [disabled]="saving">{{ 'providers-view.form-dialog.cancel' | translate }}
+  </button>
+  <button mat-raised-button class="btn-save" (click)="save()"
+          [disabled]="saving">{{ 'providers-view.form-dialog.save' | translate }}
+  </button>
+</mat-dialog-actions>
