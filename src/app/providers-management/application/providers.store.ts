@@ -3,7 +3,7 @@ import { Provider } from '../../inventory/domain/model/provider.entity';
 import { ProvidersApi } from '../infrastructure/providers-api';
 
 /**
- * Store for managing providers state and operations.
+ * Store for managing provider state and operations.
  * @remarks
  * This service orchestrates provider use cases and manages provider state.
  */
@@ -25,13 +25,15 @@ export class ProvidersStore {
     this.loadProviders();
   }
 
-  private loadProviders(): void {
+  /**
+   * Loads all providers from the API.
+   */
+  loadProviders(): void {
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
-
     this.providersApi.getProviders().subscribe({
-      next: (providers) => {
-        this.providersSignal.set(providers);
+      next: (data) => {
+        this.providersSignal.set(data);
         this.loadingSignal.set(false);
       },
       error: (err) => {
@@ -46,22 +48,17 @@ export class ProvidersStore {
    * @param provider - The provider to add.
    */
   addProvider(provider: Provider): void {
-    const currentProviders = this.providersSignal();
-    this.providersSignal.set([...currentProviders, provider]);
+    this.providersSignal.update(providers => [...providers, provider]);
   }
 
   /**
    * Updates an existing provider in the store.
-   * @param provider - The updated provider.
+   * @param updatedProvider - The updated provider.
    */
-  updateProvider(provider: Provider): void {
-    const currentProviders = this.providersSignal();
-    const index = currentProviders.findIndex(p => p.id === provider.id);
-    if (index > -1) {
-      const updatedProviders = [...currentProviders];
-      updatedProviders[index] = provider;
-      this.providersSignal.set(updatedProviders);
-    }
+  updateProvider(updatedProvider: Provider): void {
+    this.providersSignal.update(providers =>
+      providers.map(p => (p.id === updatedProvider.id ? updatedProvider : p))
+    );
   }
 
   /**
@@ -69,12 +66,13 @@ export class ProvidersStore {
    * @param providerId - The ID of the provider to remove.
    */
   removeProvider(providerId: string): void {
-    const currentProviders = this.providersSignal();
-    this.providersSignal.set(currentProviders.filter(p => p.id !== providerId));
+    this.providersSignal.update(providers =>
+      providers.filter(p => p.id !== providerId)
+    );
   }
 
   /**
-   * Refreshes providers data.
+   * Refreshes provider data.
    */
   refresh(): void {
     this.loadProviders();
