@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {
   MatCell,
   MatCellDef,
@@ -16,6 +16,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatIconButton} from '@angular/material/button';
 import {MatDialog} from '@angular/material/dialog';
 import {ProviderFormDialog} from '../provider-form-dialog/provider-form-dialog';
+import {ProvidersStore} from '../../../application/providers.store';
 
 @Component({
   selector: 'app-providers-table',
@@ -39,17 +40,11 @@ import {ProviderFormDialog} from '../provider-form-dialog/provider-form-dialog';
   styleUrl: './providers-table.css'
 })
 export class ProvidersTable {
+  protected readonly store = inject(ProvidersStore);
+  private readonly providersApi = inject(ProvidersApi);
+  private readonly dialog = inject(MatDialog);
+
   displayedColumns: string[] = ['firstName', 'phone', 'email', 'ruc', 'actions'];
-  dataSource: Provider[] = [];
-
-  constructor(private providersApi: ProvidersApi, private dialog: MatDialog) {
-  }
-
-  ngOnInit(): void {
-    this.providersApi.getProviders().subscribe((providers: Provider[]) => {
-      this.dataSource = providers;
-    });
-  }
 
   onEdit(p: Provider) {
     const ref = this.dialog.open(ProviderFormDialog, {
@@ -60,21 +55,14 @@ export class ProvidersTable {
 
     ref.afterClosed().subscribe((updated?: Provider) => {
       if (!updated) return; // cancelado
-
-      // Reemplaza en dataSource sin recargar
-      const data = [...this.dataSource];
-      const i = data.findIndex(x => x.id === updated.id);
-      if (i > -1) {
-        data[i] = updated;
-        this.dataSource = data;
-      }
+      this.store.updateProvider(updated);
     });
   }
 
   onDelete(provider: Provider) {
     if (confirm('¿Estás seguro de que deseas eliminar este proveedor?')) {
       this.providersApi.deleteProvider(+(provider.id)).subscribe(() => {
-        this.dataSource = this.dataSource.filter(p => p.id !== provider.id);
+        this.store.removeProvider(provider.id);
       });
     }
   }

@@ -46,11 +46,11 @@ export class ProviderFormDialog implements OnInit {
 
   ngOnInit(): void {
     this.form = this.fb.group({
-      firstName: [this.data?.firstName ?? '', [Validators.required, Validators.maxLength(60)]],
-      lastName: [this.data?.lastName ?? '', [Validators.required, Validators.maxLength(80)]],
-      phoneNumber: [this.data?.phoneNumber ?? '', [Validators.required]],
-      email: [this.data?.email ?? '', [Validators.required, Validators.email]],
-      ruc: [this.data?.ruc ?? '', [Validators.required, Validators.minLength(11), Validators.maxLength(11)]]
+      firstName: [this.data?.firstName || '', [Validators.required, Validators.minLength(2), Validators.maxLength(60)]],
+      lastName: [this.data?.lastName || '', [Validators.required, Validators.minLength(2), Validators.maxLength(80)]],
+      phoneNumber: [this.data?.phoneNumber || '', [Validators.required, Validators.pattern(/^[0-9+\-\s()]+$/)]],
+      email: [this.data?.email || '', [Validators.required, Validators.email]],
+      ruc: [this.data?.ruc || '', [Validators.required, Validators.pattern(/^[0-9]{11}$/)]]
     });
   }
 
@@ -67,7 +67,7 @@ export class ProviderFormDialog implements OnInit {
 
     const changes = this.form.getRawValue();
     const payload = new Provider({
-      id: this.data.id,
+      id: this.data?.id || '',
       firstName: changes.firstName!,
       lastName: changes.lastName!,
       phoneNumber: changes.phoneNumber!,
@@ -75,17 +75,23 @@ export class ProviderFormDialog implements OnInit {
       ruc: changes.ruc!
     });
 
-    if (this.data.id) {
+    if (this.data?.id) {
       const idNum = +this.data.id;
       this.api.updateProviderById(payload, idNum).subscribe({
         next: (updated: any) => this.ref.close(updated ?? payload),
-        error: () => this.saving = false,
+        error: (error) => {
+          console.error('Error updating provider:', error);
+          this.saving = false;
+        },
         complete: () => this.saving = false
       });
     } else {
       this.api.createProvider(payload).subscribe({
         next: (created: any) => this.ref.close(created ?? payload),
-        error: () => this.saving = false,
+        error: (error) => {
+          console.error('Error creating provider:', error);
+          this.saving = false;
+        },
         complete: () => this.saving = false
       });
     }

@@ -6,7 +6,7 @@ export class ProviderAssembler implements BaseAssembler<Provider, ProviderResour
 
   toEntityFromResource(resource: ProviderResource): Provider {
     return new Provider({
-      id: resource.id,
+      id: resource.id.toString(),
       firstName: resource.firstName,
       lastName: resource.lastName,
       phoneNumber: resource.phoneNumber,
@@ -21,7 +21,7 @@ export class ProviderAssembler implements BaseAssembler<Provider, ProviderResour
 
   toResourceFromEntity(entity: Provider): ProviderResource {
     return {
-      id: entity.id,
+      id: entity.id ? entity.id : '',
       firstName: entity.firstName,
       lastName: entity.lastName,
       phoneNumber: entity.phoneNumber,

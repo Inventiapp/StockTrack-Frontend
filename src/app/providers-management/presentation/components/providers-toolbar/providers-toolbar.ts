@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 
 import {MatInput} from '@angular/material/input';
@@ -9,7 +9,7 @@ import {MatButton, MatFabButton} from '@angular/material/button';
 import {ProviderFormDialog} from '../provider-form-dialog/provider-form-dialog';
 import {MatDialog} from '@angular/material/dialog';
 import {Provider} from '../../../../inventory/domain/model/provider.entity';
-import {ProvidersApi} from '../../../infrastructure/providers-api';
+import {ProvidersStore} from '../../../application/providers.store';
 
 @Component({
   selector: 'app-providers-toolbar',
@@ -26,18 +26,10 @@ import {ProvidersApi} from '../../../infrastructure/providers-api';
   styleUrl: './providers-toolbar.css'
 })
 export class ProvidersToolbar {
+  protected readonly store = inject(ProvidersStore);
+  private readonly dialog = inject(MatDialog);
+
   searchTerm = '';
-  dataSource: Provider[] = [];
-
-  ngOnInit(): void {
-    this.providersApi.getProviders().subscribe((providers: Provider[]) => {
-      this.dataSource = providers;
-    });
-  }
-
-  constructor(private providersApi: ProvidersApi, private dialog: MatDialog) {
-  }
-
 
   onCreate() {
     const ref = this.dialog.open(ProviderFormDialog, {
@@ -46,5 +38,9 @@ export class ProvidersToolbar {
       data: {}
     });
 
+    ref.afterClosed().subscribe((created?: Provider) => {
+      if (!created) return; // cancelado
+      this.store.addProvider(created);
+    });
   }
 }

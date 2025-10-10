@@ -87,8 +87,18 @@
       "email": "Email",
       "ruc": "RUC",
       "cancel": "Cancel",
-      "save": "Save"
-      }
+      "save": "Save",
+      "first-name-required": "First name is required",
+      "first-name-minlength": "First name must be at least 2 characters",
+      "last-name-required": "Last name is required",
+      "last-name-minlength": "Last name must be at least 2 characters",
+      "phone-number-required": "Phone number is required",
+      "phone-number-invalid": "Invalid phone number format",
+      "email-required": "Email is required",
+      "email-invalid": "Invalid email format",
+      "ruc-required": "RUC is required",
+      "ruc-invalid": "RUC must have exactly 11 digits"
+    }
   },
   "auth": {
     "login": {

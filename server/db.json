@@ -23,6 +23,22 @@
       "phoneNumber": "555-123-456",
       "email": "lucas@hotmail.com",
       "ruc": "20123456789"
+    },
+    {
+      "firstName": "juan",
+      "lastName": "perez",
+      "phoneNumber": "987654321",
+      "email": "juan@gmail.com",
+      "ruc": "20123456786",
+      "id": 5
+    },
+    {
+      "id": 6,
+      "firstName": "juana",
+      "lastName": "manuel",
+      "phoneNumber": "987654321",
+      "email": "juan@gmail.com",
+      "ruc": "12345678901"
     }
   ],
   "categories": [
@@ -53,16 +69,6 @@
     }
   ],
   "products": [
-    {
-      "id": "prod-001",
-      "name": "Leche Gloria Entera 1L",
-      "description": "Leche entera UHT de larga duración, rica en calcio y vitaminas",
-      "categoryId": "cat-001",
-      "providerId": "1",
-      "minStock": 20,
-      "unitPrice": 4.5,
-      "isActive": true
-    },
     {
       "id": "prod-002",
       "name": "Coca Cola 1.5L",
@@ -104,16 +110,6 @@
       "isActive": true
     },
     {
-      "id": "prod-006",
-      "name": "Galletas Oreo 432g",
-      "description": "Galletas Oreo clásicas con crema, paquete familiar",
-      "categoryId": "cat-004",
-      "providerId": "1",
-      "minStock": 12,
-      "unitPrice": 8.9,
-      "isActive": true
-    },
-    {
       "id": "prod-007",
       "name": "Agua San Luis 2.5L",
       "description": "Agua mineral sin gas en bidón de 2.5 litros",
@@ -132,16 +128,6 @@
       "minStock": 10,
       "unitPrice": 12,
       "isActive": false
-    },
-    {
-      "id": "prod-1760110655720",
-      "name": "Sprite 500ml",
-      "description": "",
-      "categoryId": "cat-002",
-      "providerId": "1",
-      "minStock": 10,
-      "unitPrice": 1.5,
-      "isActive": true
     },
     {
       "id": "prod-1760118675427",
@@ -343,34 +329,97 @@
   "dashboard": {
     "stats": {
       "productsInInventory": 9,
-      "monthlyIncome": 1250.50,
+      "monthlyIncome": 1250.5,
       "salesThisMonth": 15,
       "productsWithAlerts": 2
     },
     "monthlyIncome": [
-      { "month": "Jan", "amount": 350 },
-      { "month": "Feb", "amount": 420 },
-      { "month": "Mar", "amount": 300 },
-      { "month": "Apr", "amount": 480 },
-      { "month": "May", "amount": 520 },
-      { "month": "Jun", "amount": 150 },
-      { "month": "Jul", "amount": 380 },
-      { "month": "Aug", "amount": 580 },
-      { "month": "Sep", "amount": 450 },
-      { "month": "Oct", "amount": 520 },
-      { "month": "Nov", "amount": 380 },
-      { "month": "Dec", "amount": 1250 }
+      {
+        "month": "Jan",
+        "amount": 350
+      },
+      {
+        "month": "Feb",
+        "amount": 420
+      },
+      {
+        "month": "Mar",
+        "amount": 300
+      },
+      {
+        "month": "Apr",
+        "amount": 480
+      },
+      {
+        "month": "May",
+        "amount": 520
+      },
+      {
+        "month": "Jun",
+        "amount": 150
+      },
+      {
+        "month": "Jul",
+        "amount": 380
+      },
+      {
+        "month": "Aug",
+        "amount": 580
+      },
+      {
+        "month": "Sep",
+        "amount": 450
+      },
+      {
+        "month": "Oct",
+        "amount": 520
+      },
+      {
+        "month": "Nov",
+        "amount": 380
+      },
+      {
+        "month": "Dec",
+        "amount": 1250
+      }
     ],
     "productSales": [
-      { "productName": "Leche Gloria Entera 1L", "percentage": 25.5 },
-      { "productName": "Coca Cola 1.5L", "percentage": 18.2 },
-      { "productName": "Pan Francés (unidad)", "percentage": 15.8 },
-      { "productName": "Papas Lays Clásicas 130g", "percentage": 12.3 },
-      { "productName": "Arroz Costeño 1kg", "percentage": 10.1 },
-      { "productName": "Galletas Oreo 432g", "percentage": 8.7 },
-      { "productName": "Agua San Luis 2.5L", "percentage": 5.2 },
-      { "productName": "Sprite 500ml", "percentage": 2.8 },
-      { "productName": "Inca Kola 3L", "percentage": 1.4 }
+      {
+        "productName": "Leche Gloria Entera 1L",
+        "percentage": 25.5
+      },
+      {
+        "productName": "Coca Cola 1.5L",
+        "percentage": 18.2
+      },
+      {
+        "productName": "Pan Francés (unidad)",
+        "percentage": 15.8
+      },
+      {
+        "productName": "Papas Lays Clásicas 130g",
+        "percentage": 12.3
+      },
+      {
+        "productName": "Arroz Costeño 1kg",
+        "percentage": 10.1
+      },
+      {
+        "productName": "Galletas Oreo 432g",
+        "percentage": 8.7
+      },
+      {
+        "productName": "Agua San Luis 2.5L",
+        "percentage": 5.2
+      },
+      {
+        "productName": "Sprite 500ml",
+        "percentage": 2.8
+      },
+      {
+        "productName": "Inca Kola 3L",
+        "percentage": 1.4
+      }
     ],
     "notifications": [
       {
