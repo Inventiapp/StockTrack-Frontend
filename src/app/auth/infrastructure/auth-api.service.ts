@@ -29,7 +29,6 @@ export class AuthApiService {
    * @returns An Observable of the authenticated User.
    */
   login(credentials: LoginCredentials): Observable<User> {
-    // Mock implementation - replace with actual API call
     return of({
       user: {
         id: '1',
@@ -40,17 +39,10 @@ export class AuthApiService {
       },
       token: 'mock-jwt-token-' + Date.now()
     } as LoginResponse).pipe(
-      delay(1000), // Simulate network delay
+      delay(1000),
       map(response => this.assembler.toEntityFromResource(response.user))
     );
 
-    // Real implementation (uncomment when backend is ready):
-    // return this.http.post<LoginResponse>(`${this.apiUrl}/login`, {
-    //   email: credentials.email,
-    //   password: credentials.password
-    // }).pipe(
-    //   map(response => this.assembler.toEntityFromResource(response.user))
-    // );
   }
 
   /**
@@ -59,7 +51,6 @@ export class AuthApiService {
    * @returns An Observable of the created User.
    */
   register(data: RegisterData): Observable<User> {
-    // Mock implementation - replace with actual API call
     return of({
       user: {
         id: '2',
@@ -70,18 +61,11 @@ export class AuthApiService {
       },
       token: 'mock-jwt-token-' + Date.now()
     } as RegisterResponse).pipe(
-      delay(1000), // Simulate network delay
+      delay(1000), 
       map(response => this.assembler.toEntityFromResource(response.user))
     );
 
-    // Real implementation (uncomment when backend is ready):
-    // return this.http.post<RegisterResponse>(`${this.apiUrl}/register`, {
-    //   email: data.email,
-    //   password: data.password,
-    //   name: data.name
-    // }).pipe(
-    //   map(response => this.assembler.toEntityFromResource(response.user))
-    // );
+
   }
 
   /**
@@ -89,11 +73,8 @@ export class AuthApiService {
    * @returns An Observable that completes when logout is successful.
    */
   logout(): Observable<void> {
-    // Mock implementation
     return of(void 0).pipe(delay(500));
 
-    // Real implementation (uncomment when backend is ready):
-    // return this.http.post<void>(`${this.apiUrl}/logout`, {});
   }
 }
 
