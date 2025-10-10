@@ -1,6 +1,6 @@
 <div class="dialog-container">
   <div class="dialog-header">
-    <h2>Ingresar reposición</h2>
+    <h2>{{ 'inventory.newReplacement' | translate }}</h2>
     <button mat-icon-button (click)="onCancel()">
       <mat-icon>close</mat-icon>
     </button>
@@ -9,17 +9,17 @@
   <div class="dialog-content">
     <div class="form-row">
       <mat-form-field appearance="outline" class="form-field">
-        <mat-label>Lote</mat-label>
+        <mat-label>{{ 'inventory.lot' | translate }}</mat-label>
         <input matInput [(ngModel)]="lote" placeholder="L-02">
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="form-field">
-        <mat-label>Fecha recepción</mat-label>
+        <mat-label>{{ 'inventory.receiptDate' | translate }}</mat-label>
         <input matInput type="date" [(ngModel)]="fechaRecepcion">
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="form-field">
-        <mat-label>Fecha de vencimiento</mat-label>
+        <mat-label>{{ 'inventory.expirationDate' | translate }}</mat-label>
         <input matInput type="date" [(ngModel)]="fechaVencimiento">
       </mat-form-field>
     </div>
@@ -35,16 +35,16 @@
       <div *ngIf="error && !loading" class="error-container">
         <mat-icon color="warn">error</mat-icon>
         <p>{{ error }}</p>
-        <button mat-button (click)="loadProductsWithStock()">Reintentar</button>
+        <button mat-button (click)="loadProductsWithStock()">{{ 'inventory.retry' | translate }}</button>
       </div>
 
       <!-- Data Table -->
       <table class="items-table" *ngIf="!loading && !error">
         <thead>
           <tr>
-            <th>Nombre</th>
-            <th>Stock actual</th>
-            <th>Cantidad ingresando</th>
+            <th>{{ 'inventory.name' | translate }}</th>
+            <th>{{ 'inventory.currentStock' | translate }}</th>
+            <th>{{ 'inventory.amountEntering' | translate }}</th>
             <th>Total</th>
           </tr>
         </thead>
@@ -82,10 +82,10 @@
 
   <div class="dialog-actions">
     <button mat-stroked-button (click)="onCancel()">
-      Cancelar
+      {{ 'global.cancel' | translate }}
     </button>
     <button mat-raised-button color="primary" (click)="onSave()">
-      Guardar
+      {{ 'global.save' | translate }}
     </button>
   </div>
 </div>

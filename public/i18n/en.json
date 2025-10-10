@@ -51,7 +51,12 @@
     "category": "Category",
     "provider": "Provider",
     "select": "Select",
-    "newProduct": "New product"
+    "newProduct": "New product",
+    "lot": "Lot",
+    "receiptDate": "Receipt date",
+    "expirationDate": "Expiration date",
+    "amountEntering": "Amount entering",
+    "total": "Total"
   },
   "providers-table": {
     "name": "Name",

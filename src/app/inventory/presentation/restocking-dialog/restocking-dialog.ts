@@ -11,6 +11,7 @@ import { StockApi } from '../../infrastructure/stock-api';
 import { Product } from '../../domain/model/product.entity';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { forkJoin } from 'rxjs';
+import {TranslatePipe} from '@ngx-translate/core';
 
 interface RestockingItem {
   productId: string;
@@ -33,7 +34,8 @@ interface RestockingItem {
     MatFormFieldModule,
     MatIconModule,
     FormsModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    TranslatePipe
   ],
 })
 export class RestockingDialogComponent implements OnInit {

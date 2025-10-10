@@ -51,7 +51,11 @@
     "category": "Categoría",
     "provider": "Proveedor",
     "select": "Seleccionar",
-    "newProduct": "Nuevo producto"
+    "newProduct": "Nuevo producto",
+    "lot": "Lote",
+    "receiptDate": "Fecha de recepción",
+    "expirationDate": "Fecha de vencimiento",
+    "amountEntering": "Cantidad ingresando"
   },
   "providers-table": {
     "name": "Nombre",
