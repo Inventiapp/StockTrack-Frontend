@@ -1,8 +1,6 @@
 <div class="inventory-container">
-  <!-- Título principal -->
   <h2 class="header">{{ 'inventory.header' | translate }}</h2>
 
-  <!-- Barra de acciones -->
   <div class="action-bar">
     <div class="search-filter-group">
       <div class="search-box">
@@ -22,13 +20,11 @@
     </div>
   </div>
 
-  <!-- Sección de Productos -->
   <div class="section-title">
     <h2>{{ 'inventory.products' | translate }}</h2>
   </div>
 
-  <!-- Lista de Productos -->
-  <div class="products-list" *ngIf="!loading && !error && productsRow.length > 0">
+  <div class="products-list" *ngIf="!store.loading() && !store.error() && productsRow.length > 0">
     <div class="table-wrapper">
       <table class="products-table">
         <thead>
@@ -57,12 +53,10 @@
     </div>
   </div>
 
-  <!-- Sección de Kits -->
   <div class="section-title">
     <h2>Kits</h2>
   </div>
 
-  <!-- Estado de carga -->
   <div class="content" *ngIf="loading">
     <div class="loading-state">
       <i class="material-icons rotating">refresh</i>
@@ -70,7 +64,6 @@
     </div>
   </div>
 
-  <!-- Estado de error -->
   <div class="content" *ngIf="error && !loading">
     <div class="error-state">
       <i class="material-icons">error_outline</i>
@@ -79,7 +72,6 @@
     </div>
   </div>
 
-  <!-- Lista de Kits -->
   <div class="kits-grid" *ngIf="!loading && !error && kits.length > 0">
     <div class="kit-card" *ngFor="let kit of kits">
       <div class="kit-header">
@@ -98,7 +90,6 @@
     </div>
   </div>
 
-  <!-- Estado vacío -->
   <div class="content" *ngIf="!loading && !error && kits.length === 0">
     <div class="empty-state">
       <i class="material-icons">inventory_2</i>

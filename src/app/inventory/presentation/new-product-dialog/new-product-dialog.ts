@@ -5,8 +5,7 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 
 import { ProductsApi } from '../../infrastructure/products-api';
 import { StockApi } from '../../infrastructure/stock-api';
-import { CategoryApi } from '../../infrastructure/category-api';
-import { ProvidersApi } from '../../../providers-management/infrastructure/providers-api';
+import { InventoryStore } from '../../application/inventory.store';
 import {TranslatePipe} from '@ngx-translate/core';
 
 @Component({
@@ -17,14 +16,10 @@ import {TranslatePipe} from '@ngx-translate/core';
   styleUrls: ['./new-product-dialog.css'],
 })
 export class NewProductDialogComponent {
+  protected readonly store = inject(InventoryStore);
   private dialogRef   = inject(MatDialogRef<NewProductDialogComponent>);
   private productsApi = inject(ProductsApi);
   private stockApi    = inject(StockApi);
-  private categoryApi = inject(CategoryApi);
-  private providersApi= inject(ProvidersApi);
-
-  categories: { id: string; name: string }[] = [];
-  providers:  { id: string | number; firstName: string; lastName: string }[] = [];
 
   form = {
     name: '',
@@ -34,10 +29,6 @@ export class NewProductDialogComponent {
     unitPrice: '' as string | number
   };
 
-  ngOnInit() {
-    this.categoryApi.getAll().subscribe(c => this.categories = c);
-    this.providersApi.getProviders().subscribe(p => this.providers = p);
-  }
 
   get isValid(): boolean {
     const price = Number(String(this.form.unitPrice).replace(',', '.'));
@@ -66,12 +57,13 @@ export class NewProductDialogComponent {
       isActive: true
     };
 
-    // 1) Crear producto
     this.productsApi.createProduct(product).subscribe({
-      next: () => {
-        // 2) Crear registro de stock inicial = 0
+      next: (createdProduct) => {
         this.stockApi.createStock(product.id, 0).subscribe({
-          next: () => this.dialogRef.close(true),
+          next: () => {
+            this.store.addProduct(createdProduct);
+            this.dialogRef.close(true);
+          },
           error: () => this.dialogRef.close(true)
         });
       },

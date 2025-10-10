@@ -12,6 +12,7 @@ import { Product } from '../../domain/model/product.entity';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { forkJoin } from 'rxjs';
 import {TranslatePipe} from '@ngx-translate/core';
+import { InventoryStore } from '../../application/inventory.store';
 
 interface RestockingItem {
   productId: string;
@@ -39,6 +40,7 @@ interface RestockingItem {
   ],
 })
 export class RestockingDialogComponent implements OnInit {
+  protected readonly store = inject(InventoryStore);
   private dialogRef = inject(MatDialogRef<RestockingDialogComponent>);
   private productsApi = inject(ProductsApi);
   private stockApi = inject(StockApi);
@@ -56,20 +58,10 @@ export class RestockingDialogComponent implements OnInit {
   }
 
   loadProductsWithStock(): void {
-    this.loading = true;
-    this.error = '';
-
-    // Cargar productos y stock en paralelo
-    forkJoin({
-      products: this.productsApi.getProducts(),
-      stock: this.stockApi.getStock()
-    }).subscribe({
-      next: ({ products, stock }) => {
-        // Crear mapa de stock por productId para búsqueda rápida
+    this.stockApi.getStock().subscribe({
+      next: (stock) => {
         const stockMap = new Map(stock.map(s => [s.productId, s.currentStock]));
-
-        // Filtrar solo productos activos y mapear con stock real
-        this.items = products
+        this.items = this.store.products()
           .filter(p => p.isActive === true)
           .map(product => {
             const currentStock = stockMap.get(product.id) || 0;
@@ -81,13 +73,9 @@ export class RestockingDialogComponent implements OnInit {
               total: currentStock
             };
           });
-
-        this.loading = false;
       },
       error: (error: any) => {
-        console.error('Error al cargar datos:', error);
-        this.error = 'Error al cargar los productos y stock';
-        this.loading = false;
+        console.error('Error al cargar stock:', error);
       }
     });
   }
@@ -97,9 +85,8 @@ export class RestockingDialogComponent implements OnInit {
   }
 
   onSave(): void {
-    // Filtrar solo items con cantidad mayor a 0
     this.touched = true;
-    if (!this.canSave) return;  // No permite guardar
+    if (!this.canSave) return;
     const itemsToSave = this.items.filter(item => item.quantity > 0);
 
     const data = {

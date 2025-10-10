@@ -16,6 +16,7 @@ import { RestockingApi } from '../../infrastructure/restocking-api';
 import { Restocking } from '../../domain/model/restocking.entity';
 import { RestockingItem } from '../../domain/model/restocking-item.entity';
 import {NewProductDialogComponent} from '../new-product-dialog/new-product-dialog';
+import { InventoryStore } from '../../application/inventory.store';
 
 type ProductRow = {
   id: string,
@@ -38,6 +39,7 @@ type ProductRow = {
   imports: [CommonModule, TranslateModule],
 })
 export class InventoryListComponent implements OnInit {
+  protected readonly store = inject(InventoryStore);
   private translate = inject(TranslateService);
   private dialog = inject(MatDialog);
   private kitApi = inject(KitApi);
@@ -47,8 +49,6 @@ export class InventoryListComponent implements OnInit {
   private restockingApi = inject(RestockingApi);
 
   kits: Kit[] = [];
-  loading: boolean = true;
-  error: string = '';
   productsRow: ProductRow[] = [];
 
   ngOnInit(): void {
@@ -61,18 +61,12 @@ export class InventoryListComponent implements OnInit {
   }
 
   loadKits(): void {
-    this.loading = true;
-    this.error = '';
-
     this.kitApi.getKits().subscribe({
       next: (kits) => {
         this.kits = kits.filter(k => k.isEnabled);
-        this.loading = false;
       },
       error: (error: any) => {
         console.error('Error al cargar kits:', error);
-        this.error = 'Error al cargar los kits';
-        this.loading = false;
       }
     });
   }
@@ -94,18 +88,14 @@ export class InventoryListComponent implements OnInit {
   }
 
   private saveRestocking(data: any): void {
-    // Crear el ID único para la reposición
     const restockingId = this.generateId();
 
-    // Transformar items del diálogo a RestockingItem entidades
     const restockingItems = data.items.map((item: any) =>
       new RestockingItem({
         productId: item.productId,
         quantityToAdd: item.quantity
       })
     );
-
-    // Crear la entidad Restocking
     const restocking = new Restocking({
       id: restockingId,
       lot: data.lote,
@@ -123,22 +113,16 @@ export class InventoryListComponent implements OnInit {
       },
       error: (error: any) => {
         console.error('Error al crear reposición:', error);
-        this.error = 'Error al guardar la reposición';
       }
     });
   }
 
   private updateStockForProducts(items: any[]): void {
-    // Crear array de observables para actualizar el stock
     const updateObservables = items.map(item => {
-      // Obtener el stock actual del producto
       return this.stockApi.getStockByProductId(item.productId);
     });
-
-    // Ejecutar todas las consultas en paralelo
     forkJoin(updateObservables).subscribe({
       next: (stockResources) => {
-        // Actualizar cada stock con la nueva cantidad
         const updates = items.map((item, index) => {
           const stockResource = stockResources[index];
           if (stockResource) {
@@ -156,20 +140,17 @@ export class InventoryListComponent implements OnInit {
             },
             error: (error: any) => {
               console.error('Error al actualizar stock:', error);
-              this.error = 'Error al actualizar el stock';
             }
           });
         }
       },
       error: (error: any) => {
         console.error('Error al obtener stock:', error);
-        this.error = 'Error al obtener el stock actual';
       }
     });
   }
 
   private generateId(): string {
-    // Generar un ID único simple
     return Math.random().toString(36).substring(2, 11);
   }
 
@@ -200,18 +181,13 @@ export class InventoryListComponent implements OnInit {
   /* PRODUCTOS */
 
   loadProducts(): void {
-    this.loading = true;
-    this.error = '';
-
     forkJoin({
-      products: this.productsApi.getProducts(), // Product[]
       stock: this.stockApi.getStock(),           // StockResource[]
-      categories: this.categoriesApi.getAll(),     // CategoryResource[]
       restockings: this.restockingApi.getRestockings() // [{lot,receptionDate,expirationDate,items:[{productId,...}]}]
     }).subscribe({
-      next: ({ products, stock, categories, restockings }) => {
+      next: ({ stock, restockings }) => {
         const stockByProduct = new Map(stock.map(s => [s.productId, s.currentStock]));
-        const categoryMap = new Map(categories.map(c => [c.id, c.name]));
+        const categoryMap = new Map(this.store.categories().map(c => [c.id, c.name]));
         const latestByProduct = new Map<string, { lot: string; receptionDate: string; expirationDate: string }>();
         for (const r of restockings) {
           const recDate = new Date(r.receptionDate);
@@ -226,7 +202,7 @@ export class InventoryListComponent implements OnInit {
             }
           }
         }
-        this.productsRow = products.map(p => ({
+        this.productsRow = this.store.products().map(p => ({
           id: p.id,
           name: p.name,
           unitPrice: p.unitPrice,
@@ -237,12 +213,9 @@ export class InventoryListComponent implements OnInit {
           lastReception: latestByProduct.get(p.id)?.receptionDate ?? undefined,
           expirationDate: latestByProduct.get(p.id)?.expirationDate ?? undefined
         }));
-        this.loading = false;
       },
       error: (err) => {
         console.error('Error al cargar productos', err);
-        this.error = 'Error al cargar los productos';
-        this.loading = false;
       }
     });
   }

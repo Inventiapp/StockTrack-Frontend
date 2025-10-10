@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { KitItem } from './kit-item';
+import { NewKitDialogComponent } from './new-kit-dialog';
 
-describe('KitItem', () => {
-  let component: KitItem;
-  let fixture: ComponentFixture<KitItem>;
+describe('NewKitDialogComponent', () => {
+  let component: NewKitDialogComponent;
+  let fixture: ComponentFixture<NewKitDialogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [KitItem]
+      imports: [NewKitDialogComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(KitItem);
+    fixture = TestBed.createComponent(NewKitDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

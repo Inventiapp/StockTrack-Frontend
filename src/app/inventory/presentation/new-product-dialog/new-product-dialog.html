@@ -7,13 +7,13 @@
   <label>{{ 'inventory.category' | translate }}</label>
   <select [(ngModel)]="form.categoryId">
     <option [ngValue]="''" disabled>{{ 'inventory.select' | translate }}</option>
-    <option *ngFor="let c of categories" [ngValue]="c.id">{{ c.name }}</option>
+    <option *ngFor="let c of store.categories()" [ngValue]="c.id">{{ c.name }}</option>
   </select>
 
   <label>{{ 'inventory.provider' | translate }}</label>
   <select [(ngModel)]="form.providerId">
     <option [ngValue]="''" disabled>{{ 'inventory.select' | translate }}</option>
-    <option *ngFor="let p of providers" [ngValue]="p.id">{{ p.firstName }} {{ p.lastName }}</option>
+    <option *ngFor="let p of store.providers()" [ngValue]="p.id">{{ p.firstName }} {{ p.lastName }}</option>
   </select>
 
   <label>{{ 'inventory.minimumStock' | translate }}</label>
