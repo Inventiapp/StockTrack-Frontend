@@ -21,7 +21,6 @@ export class SidebarComponent {
   private translate = inject(TranslateService);
   isExpanded = true;
 
-  // Menú dinámico con keys de traducción
   menuItems: MenuItem[] = [
     {
       titleKey: 'sidebar.menu.home',
