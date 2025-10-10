@@ -40,7 +40,11 @@ export class DashboardComponent {
   protected expandedNotification: number | null = null;
   protected expandedSidebarNotification: number | null = null;
 
-  protected currentUserName = 'Juan Perez';
+  protected currentUserName = computed(() => {
+    // TODO: Get from auth store when implemented
+    // For now, return mock data
+    return 'Juan Perez';
+  });
 
   public barChartType: ChartType = 'bar';
   public barChartData = computed<ChartData<'bar'>>(() => {
@@ -158,5 +162,16 @@ export class DashboardComponent {
    */
   protected getNotificationMessage(notification: any): string {
     return this.translate.instant(`dashboard.notificationMessages.${notification.title}`, notification.data);
+  }
+
+  /**
+   * Gets the color for a product in the chart legend.
+   * @param productName - The name of the product.
+   * @param index - The index of the product in the array.
+   * @returns The color hex code for the product.
+   */
+  protected getProductColor(productName: string, index: number): string {
+    const colors = ['#FCD34D', '#F97316', '#FBBF24', '#F59E0B', '#D97706', '#B45309'];
+    return colors[index % colors.length];
   }
 }

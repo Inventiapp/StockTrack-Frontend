@@ -129,6 +129,7 @@
     "notifications": {
       "title": "Notificaciones",
       "button": "Abrir notificaciones",
+      "icon": "notifications",
       "empty": "No hay notificaciones",
       "types": {
         "warning": "Advertencia",

@@ -130,6 +130,7 @@
     "notifications": {
       "title": "Notifications",
       "button": "Open notifications",
+      "icon": "notifications",
       "empty": "No notifications",
       "types": {
         "warning": "Warning",

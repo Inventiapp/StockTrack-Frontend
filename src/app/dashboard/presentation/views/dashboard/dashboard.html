@@ -3,7 +3,7 @@
     <div class="dashboard-header">
       <div>
         <h1 class="dashboard-title">{{ t('dashboard.greeting') }}</h1>
-        <h2 class="dashboard-subtitle">{{ currentUserName }}</h2>
+        <h2 class="dashboard-subtitle">{{ currentUserName() }}</h2>
       </div>
       <div class="notifications-trigger-mobile">
         <button 
@@ -11,7 +11,7 @@
           [matMenuTriggerFor]="notificationsMenu" 
           class="notifications-button"
           [attr.aria-label]="t('dashboard.notifications.button')">
-          <mat-icon [matBadge]="store.notifications().length" matBadgeColor="warn" matBadgeSize="small">notifications</mat-icon>
+          <mat-icon [matBadge]="store.notifications().length" matBadgeColor="warn" matBadgeSize="small" aria-hidden="false">{{ t('dashboard.notifications.icon') }}</mat-icon>
         </button>
       </div>
     </div>
@@ -91,16 +91,13 @@
           </canvas>
         </div>
         <div class="chart-legend" role="list" [attr.aria-label]="t('dashboard.charts.topProducts')">
-          @for (item of store.productSales(); track item.productName) {
-            <div class="legend-item" role="listitem">
-              <span class="legend-color" [style.background-color]="
-                item.productName === 'Galletas Animalitos' ? '#FCD34D' :
-                item.productName === 'Chocolate Sublime' ? '#F97316' : '#FBBF24'
-              " [attr.aria-hidden]="true"></span>
-              <span class="legend-label">{{ item.productName }}</span>
-              <span class="legend-value" [attr.aria-label]="item.percentage + '%'">{{ item.percentage }}%</span>
-            </div>
-          }
+                @for (item of store.productSales(); track item.productName; let i = $index) {
+                  <div class="legend-item" role="listitem">
+                    <span class="legend-color" [style.background-color]="getProductColor(item.productName, i)" [attr.aria-hidden]="true"></span>
+                    <span class="legend-label">{{ item.productName }}</span>
+                    <span class="legend-value" [attr.aria-label]="item.percentage + '%'">{{ item.percentage }}%</span>
+                  </div>
+                }
         </div>
       </mat-card-content>
     </mat-card>
@@ -125,7 +122,7 @@
   <div class="dashboard-sidebar" role="complementary" [attr.aria-label]="t('dashboard.notifications.title')">
     <div class="notifications-header">
       <button mat-icon-button [attr.aria-label]="t('dashboard.notifications.title')">
-        <mat-icon [matBadge]="store.notifications().length" matBadgeColor="warn" matBadgeSize="small">notifications</mat-icon>
+        <mat-icon [matBadge]="store.notifications().length" matBadgeColor="warn" matBadgeSize="small" aria-hidden="false">{{ t('dashboard.notifications.icon') }}</mat-icon>
       </button>
       <span class="notifications-label">{{ t('dashboard.notifications.title') }}</span>
     </div>
