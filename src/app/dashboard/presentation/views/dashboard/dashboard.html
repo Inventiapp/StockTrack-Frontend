@@ -2,37 +2,57 @@
   <div class="dashboard-main">
     <div class="dashboard-header">
       <div>
-        <h1 class="dashboard-title">Buenos días</h1>
-        <h2 class="dashboard-subtitle">Usuario XXXXXX</h2>
+        <h1 class="dashboard-title">{{ t('dashboard.greeting') }}</h1>
+        <h2 class="dashboard-subtitle">{{ currentUserName }}</h2>
       </div>
       <div class="notifications-trigger-mobile">
-        <button mat-icon-button [matMenuTriggerFor]="notificationsMenu" class="notifications-button">
+        <button 
+          mat-icon-button 
+          [matMenuTriggerFor]="notificationsMenu" 
+          class="notifications-button"
+          [attr.aria-label]="t('dashboard.notifications.button')">
           <mat-icon [matBadge]="2" matBadgeColor="warn" matBadgeSize="small">notifications</mat-icon>
         </button>
       </div>
     </div>
 
     <mat-menu #notificationsMenu="matMenu" class="notifications-menu" xPosition="before">
-      <div class="notifications-dropdown" (click)="$event.stopPropagation()">
+      <div class="notifications-dropdown" (click)="$event.stopPropagation()" role="menu" [attr.aria-label]="t('dashboard.notifications.title')">
         <div class="notifications-header-mobile">
-          <h3 class="notifications-title">Notificaciones</h3>
+          <h3 class="notifications-title">{{ t('dashboard.notifications.title') }}</h3>
         </div>
         <div class="notifications-list">
-          <div class="notification-item notification-warning" [class.expanded]="expandedNotification === 0" (click)="toggleNotification(0)">
-            <mat-icon class="notification-icon">warning</mat-icon>
+          <div 
+            class="notification-item notification-warning" 
+            [class.expanded]="expandedNotification === 0" 
+            (click)="toggleNotification(0)"
+            role="menuitem"
+            [attr.aria-label]="t('dashboard.notificationItems.expiringProduct.title')"
+            tabindex="0"
+            (keydown.enter)="toggleNotification(0)"
+            (keydown.space)="toggleNotification(0)">
+            <mat-icon class="notification-icon" [attr.aria-label]="t('dashboard.notifications.types.warning')">warning</mat-icon>
             <div class="notification-content">
-              <div class="notification-text-title">Producto pronto a caducar</div>
+              <div class="notification-text-title">{{ t('dashboard.notificationTitles.expiringProduct') }}</div>
               <div class="notification-text" [class.expanded]="expandedNotification === 0">
-                El producto "Leche evaporada" está por vencerse el 29/04/25
+                {{ getExpiringProductMessage('Leche evaporada', '29/04/25') }}
               </div>
             </div>
           </div>
-          <div class="notification-item notification-alert" [class.expanded]="expandedNotification === 1" (click)="toggleNotification(1)">
-            <mat-icon class="notification-icon">error</mat-icon>
+          <div 
+            class="notification-item notification-alert" 
+            [class.expanded]="expandedNotification === 1" 
+            (click)="toggleNotification(1)"
+            role="menuitem"
+            [attr.aria-label]="t('dashboard.notificationTitles.lowStock')"
+            tabindex="0"
+            (keydown.enter)="toggleNotification(1)"
+            (keydown.space)="toggleNotification(1)">
+            <mat-icon class="notification-icon" [attr.aria-label]="t('dashboard.notifications.types.alert')">error</mat-icon>
             <div class="notification-content">
-              <div class="notification-text-title">Producto a agotarse</div>
+              <div class="notification-text-title">{{ t('dashboard.notificationTitles.lowStock') }}</div>
               <div class="notification-text" [class.expanded]="expandedNotification === 1">
-                El producto "Papel toalla" solo tiene 5 unidades en stock
+                {{ getLowStockMessage('Papel toalla', 5) }}
               </div>
             </div>
           </div>
@@ -40,72 +60,74 @@
       </div>
     </mat-menu>
 
-    <div class="stats-grid">
-    <mat-card class="stat-card stat-card-dark">
+    <div class="stats-grid" role="region" [attr.aria-label]="t('dashboard.stats.productsInInventory')">
+    <mat-card class="stat-card stat-card-dark" role="article" [attr.aria-label]="t('dashboard.stats.productsInInventory')">
       <mat-card-content>
-        <div class="stat-label">Productos en inventario</div>
-        <div class="stat-value">{{ store.stats()?.productsInInventory || 0 }}</div>
+        <div class="stat-label">{{ t('dashboard.stats.productsInInventory') }}</div>
+        <div class="stat-value" [attr.aria-label]="store.stats()?.productsInInventory || 0">{{ store.stats()?.productsInInventory || 0 }}</div>
       </mat-card-content>
     </mat-card>
 
-    <mat-card class="stat-card stat-card-green">
+    <mat-card class="stat-card stat-card-green" role="article" [attr.aria-label]="t('dashboard.stats.monthlyIncome')">
       <mat-card-content>
-        <div class="stat-label">Ingresos del mes</div>
-        <div class="stat-value">s/. {{ store.stats()?.monthlyIncome || 0 | number:'1.2-2' }}</div>
+        <div class="stat-label">{{ t('dashboard.stats.monthlyIncome') }}</div>
+        <div class="stat-value" [attr.aria-label]="'s/. ' + (store.stats()?.monthlyIncome || 0)">s/. {{ store.stats()?.monthlyIncome || 0 | number:'1.2-2' }}</div>
       </mat-card-content>
     </mat-card>
 
-    <mat-card class="stat-card stat-card-dark">
+    <mat-card class="stat-card stat-card-dark" role="article" [attr.aria-label]="t('dashboard.stats.salesThisMonth')">
       <mat-card-content>
-        <div class="stat-label">Ventas realizadas este mes</div>
-        <div class="stat-value">{{ store.stats()?.salesThisMonth || 0 }}</div>
+        <div class="stat-label">{{ t('dashboard.stats.salesThisMonth') }}</div>
+        <div class="stat-value" [attr.aria-label]="store.stats()?.salesThisMonth || 0">{{ store.stats()?.salesThisMonth || 0 }}</div>
       </mat-card-content>
     </mat-card>
 
-    <mat-card class="stat-card stat-card-red">
+    <mat-card class="stat-card stat-card-red" role="article" [attr.aria-label]="t('dashboard.stats.productsWithAlerts')">
       <mat-card-content>
-        <div class="stat-label">Productos con alertas</div>
-        <div class="stat-value">{{ store.stats()?.productsWithAlerts || 0 }}</div>
+        <div class="stat-label">{{ t('dashboard.stats.productsWithAlerts') }}</div>
+        <div class="stat-value" [attr.aria-label]="store.stats()?.productsWithAlerts || 0">{{ store.stats()?.productsWithAlerts || 0 }}</div>
       </mat-card-content>
     </mat-card>
   </div>
 
   <div class="charts-grid">
-    <mat-card class="chart-card">
+    <mat-card class="chart-card" role="article" [attr.aria-label]="t('dashboard.charts.topProducts')">
       <mat-card-content>
-        <h3 class="chart-title">Productos más vendidos</h3>
-        <div class="chart-container doughnut-container">
+        <h3 class="chart-title">{{ t('dashboard.charts.topProducts') }}</h3>
+        <div class="chart-container doughnut-container" role="img" [attr.aria-label]="t('dashboard.charts.topProducts')">
           <canvas
             baseChart
             [data]="doughnutChartData()"
             [type]="doughnutChartType"
-            [options]="doughnutChartOptions">
+            [options]="doughnutChartOptions"
+            [attr.aria-label]="t('dashboard.charts.topProducts')">
           </canvas>
         </div>
-        <div class="chart-legend">
+        <div class="chart-legend" role="list" [attr.aria-label]="t('dashboard.charts.topProducts')">
           @for (item of store.productSales(); track item.productName) {
-            <div class="legend-item">
+            <div class="legend-item" role="listitem">
               <span class="legend-color" [style.background-color]="
                 item.productName === 'Galletas Animalitos' ? '#FCD34D' :
                 item.productName === 'Chocolate Sublime' ? '#F97316' : '#FBBF24'
-              "></span>
+              " [attr.aria-hidden]="true"></span>
               <span class="legend-label">{{ item.productName }}</span>
-              <span class="legend-value">{{ item.percentage }}%</span>
+              <span class="legend-value" [attr.aria-label]="item.percentage + '%'">{{ item.percentage }}%</span>
             </div>
           }
         </div>
       </mat-card-content>
     </mat-card>
 
-    <mat-card class="chart-card">
+    <mat-card class="chart-card" role="article" [attr.aria-label]="t('dashboard.charts.monthlyIncome')">
       <mat-card-content>
-        <h3 class="chart-title">Ingresos mensuales</h3>
-        <div class="chart-container bar-container">
+        <h3 class="chart-title">{{ t('dashboard.charts.monthlyIncome') }}</h3>
+        <div class="chart-container bar-container" role="img" [attr.aria-label]="t('dashboard.charts.monthlyIncome')">
           <canvas
             baseChart
             [data]="barChartData()"
             [type]="barChartType"
-            [options]="barChartOptions">
+            [options]="barChartOptions"
+            [attr.aria-label]="t('dashboard.charts.monthlyIncome')">
           </canvas>
         </div>
       </mat-card-content>
@@ -113,29 +135,45 @@
   </div>
   </div>
 
-  <div class="dashboard-sidebar">
+  <div class="dashboard-sidebar" role="complementary" [attr.aria-label]="t('dashboard.notifications.title')">
     <div class="notifications-header">
-      <button mat-icon-button>
+      <button mat-icon-button [attr.aria-label]="t('dashboard.notifications.title')">
         <mat-icon [matBadge]="2" matBadgeColor="warn" matBadgeSize="small">notifications</mat-icon>
       </button>
-      <span class="notifications-label">Notificaciones</span>
+      <span class="notifications-label">{{ t('dashboard.notifications.title') }}</span>
     </div>
-    <div class="notifications-panel">
-      <div class="notification-item notification-warning" [class.expanded]="expandedSidebarNotification === 0" (click)="toggleSidebarNotification(0)">
-        <mat-icon class="notification-icon">warning</mat-icon>
+    <div class="notifications-panel" role="list">
+      <div 
+        class="notification-item notification-warning" 
+        [class.expanded]="expandedSidebarNotification === 0" 
+        (click)="toggleSidebarNotification(0)"
+        role="listitem"
+        [attr.aria-label]="t('dashboard.notificationItems.expiringProduct.title')"
+        tabindex="0"
+        (keydown.enter)="toggleSidebarNotification(0)"
+        (keydown.space)="toggleSidebarNotification(0)">
+        <mat-icon class="notification-icon" [attr.aria-label]="t('dashboard.notifications.types.warning')">warning</mat-icon>
         <div class="notification-content">
-          <div class="notification-text-title">Producto pronto a caducar</div>
+          <div class="notification-text-title">{{ t('dashboard.notificationTitles.expiringProduct') }}</div>
           <div class="notification-text" [class.expanded]="expandedSidebarNotification === 0">
-            El producto "Leche evaporada" está por vencerse el 29/04/25
+            {{ getExpiringProductMessage('Leche evaporada', '29/04/25') }}
           </div>
         </div>
       </div>
-      <div class="notification-item notification-alert" [class.expanded]="expandedSidebarNotification === 1" (click)="toggleSidebarNotification(1)">
-        <mat-icon class="notification-icon">error</mat-icon>
+      <div 
+        class="notification-item notification-alert" 
+        [class.expanded]="expandedSidebarNotification === 1" 
+        (click)="toggleSidebarNotification(1)"
+        role="listitem"
+        [attr.aria-label]="t('dashboard.notificationTitles.lowStock')"
+        tabindex="0"
+        (keydown.enter)="toggleSidebarNotification(1)"
+        (keydown.space)="toggleSidebarNotification(1)">
+        <mat-icon class="notification-icon" [attr.aria-label]="t('dashboard.notifications.types.alert')">error</mat-icon>
         <div class="notification-content">
-          <div class="notification-text-title">Producto a agotarse</div>
+          <div class="notification-text-title">{{ t('dashboard.notificationTitles.lowStock') }}</div>
           <div class="notification-text" [class.expanded]="expandedSidebarNotification === 1">
-            El producto "Papel toalla" solo tiene 5 unidades en stock
+            {{ getLowStockMessage('Papel toalla', 5) }}
           </div>
         </div>
       </div>

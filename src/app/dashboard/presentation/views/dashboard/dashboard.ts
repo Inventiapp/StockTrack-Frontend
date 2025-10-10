@@ -37,11 +37,11 @@ export class DashboardComponent {
 
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 
-  // Track expanded notifications
   protected expandedNotification: number | null = null;
   protected expandedSidebarNotification: number | null = null;
 
-  // Bar Chart Configuration
+  protected currentUserName = 'Juan Perez';
+
   public barChartType: ChartType = 'bar';
   public barChartData = computed<ChartData<'bar'>>(() => {
     const data = this.store.monthlyIncome();
@@ -99,7 +99,6 @@ export class DashboardComponent {
     }
   };
 
-  // Doughnut Chart Configuration
   public doughnutChartType: ChartType = 'doughnut';
   public doughnutChartData = computed<ChartData<'doughnut'>>(() => {
     const data = this.store.productSales();
@@ -150,5 +149,25 @@ export class DashboardComponent {
    */
   protected toggleSidebarNotification(index: number): void {
     this.expandedSidebarNotification = this.expandedSidebarNotification === index ? null : index;
+  }
+
+  /**
+   * Gets the translated message for an expiring product notification.
+   * @param product - The product name.
+   * @param date - The expiration date.
+   * @returns The translated message with interpolated values.
+   */
+  protected getExpiringProductMessage(product: string, date: string): string {
+    return this.translate.instant('dashboard.notificationMessages.expiringProduct', { product, date });
+  }
+
+  /**
+   * Gets the translated message for a low stock notification.
+   * @param product - The product name.
+   * @param quantity - The remaining quantity.
+   * @returns The translated message with interpolated values.
+   */
+  protected getLowStockMessage(product: string, quantity: number): string {
+    return this.translate.instant('dashboard.notificationMessages.lowStock', { product, quantity });
   }
 }

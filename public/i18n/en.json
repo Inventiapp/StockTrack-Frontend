@@ -62,7 +62,6 @@
   },
   "dashboard": {
     "greeting": "Good morning",
-    "user": "User",
     "notifications": {
       "title": "Notifications",
       "button": "Open notifications",

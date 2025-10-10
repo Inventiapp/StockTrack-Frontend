@@ -62,7 +62,6 @@
   },
   "dashboard": {
     "greeting": "Buenos días",
-    "user": "Usuario",
     "notifications": {
       "title": "Notificaciones",
       "button": "Abrir notificaciones",
