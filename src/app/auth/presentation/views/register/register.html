@@ -3,7 +3,6 @@
     <app-language-switcher></app-language-switcher>
   </div>
 
-  <!-- Left side - Branding -->
   <div class="auth-branding">
     <div class="branding-content">
       <div class="logo-section">
@@ -22,7 +21,6 @@
         <h2 class="auth-title">{{ t('auth.register.title') }}</h2>
 
         <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
-          <!-- Name Field -->
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>{{ t('auth.register.name') }}</mat-label>
             <input
@@ -41,7 +39,6 @@
             }
           </mat-form-field>
 
-          <!-- Email Field -->
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>{{ t('auth.register.email') }}</mat-label>
             <input
@@ -60,7 +57,6 @@
             }
           </mat-form-field>
 
-          <!-- Password Field -->
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>{{ t('auth.register.password') }}</mat-label>
             <input
@@ -79,7 +75,6 @@
             }
           </mat-form-field>
 
-          <!-- Confirm Password Field -->
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>{{ t('auth.register.confirmPassword') }}</mat-label>
             <input
@@ -95,14 +90,12 @@
             }
           </mat-form-field>
 
-          <!-- Error Message -->
           @if (authStore.error()) {
             <div class="error-message" role="alert">
               {{ t(authStore.error()!) }}
             </div>
           }
 
-          <!-- Submit Button -->
           <button
             mat-raised-button
             color="primary"
@@ -118,7 +111,6 @@
             }
           </button>
 
-          <!-- Login Link -->
           <div class="alternative-action">
             <span class="alternative-text">{{ t('auth.register.hasAccount') }}</span>
             <a routerLink="/auth/login" class="link-text">{{ t('auth.register.login') }}</a>
