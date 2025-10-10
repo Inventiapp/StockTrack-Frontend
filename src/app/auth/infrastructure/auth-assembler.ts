@@ -7,7 +7,7 @@ import { UserResource, LoginResponse, RegisterResponse } from './auth-response';
  * @remarks
  * This class handles the conversion between domain entities and API resources.
  */
-export class AuthAssembler implements BaseAssembler<User, UserResource, any> {
+export class AuthAssembler implements BaseAssembler<User, UserResource, LoginResponse> {
   /**
    * Converts a UserResource DTO to a User entity.
    * @param resource - The user resource from the API.
@@ -61,11 +61,8 @@ export class AuthAssembler implements BaseAssembler<User, UserResource, any> {
    * @param response - The response containing user resources.
    * @returns Array of User entity instances.
    */
-  toEntitiesFromResponse(response: any): User[] {
-    if (response.users && Array.isArray(response.users)) {
-      return this.toEntitiesFromResources(response.users);
-    }
-    return [];
+  toEntitiesFromResponse(response: LoginResponse): User[] {
+    return [this.toEntityFromResource(response.user)];
   }
 }
 

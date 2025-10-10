@@ -1,4 +1,4 @@
-import { NotificationData } from './notification-data.types';
+import { NotificationData } from './notification-data';
 
 /**
  * Represents a notification in the dashboard.

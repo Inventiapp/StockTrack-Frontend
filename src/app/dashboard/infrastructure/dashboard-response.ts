@@ -1,5 +1,5 @@
 import { BaseResponse, BaseResource } from '../../shared/infrastructure/base-response';
-import { NotificationData } from '../domain/model/notification-data.types';
+import { NotificationData } from '../domain/model/notification-data';
 
 /**
  * DTO for dashboard statistics from the API.

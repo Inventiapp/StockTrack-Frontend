@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { map } from 'rxjs/operators';
 
-export class AuthApiEndpoint extends BaseApiEndpoint<User, UserResource, any, AuthAssembler> {
+export class AuthApiEndpoint extends BaseApiEndpoint<User, UserResource, LoginResponse, AuthAssembler> {
   constructor(http: HttpClient) {
     super(http, `${environment.platformProviderApiBaseUrl}/auth`, new AuthAssembler());
   }
