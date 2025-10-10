@@ -7,7 +7,6 @@ import { PersonalAdministrationPage } from './personal-administration/presentati
 import {ProvidersTable} from './providers-management/presentation/components/providers-table/providers-table';
 import {ProviderComponent} from './shared/presentation/views/provider/provider';
 import {SalesComponent} from './shared/presentation/views/sales/sales';
-import { PersonalAdministrationPage } from './personal-administration/presentation/personal-administration.page';
 
 
 export const routes: Routes = [
