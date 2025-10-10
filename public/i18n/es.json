@@ -24,7 +24,23 @@
       "title": "Inventario",
       "description": "Esta es la pantalla de inventario",
       "message": "Próximamente podrás gestionar todos tus productos aquí"
-    }
+    },
+    "header": "Inventario",
+    "products": "Productos",
+    "nameProduct": "Nombre",
+    "unitPrice": "Precio unitario",
+    "currentStock": "Stock actual",
+    "minimumStock": "Stock mínimo",
+    "informationProduct": "Información",
+    "filter": "Filtros",
+    "search": "Buscar",
+    "loadingKits": "Cargando kits...",
+    "loadingProducts": "Cargando products...",
+    "retry": "Reintentar",
+    "newProduct": "Producto",
+    "newReplacement": "Ingresar reposición",
+    "noKits": "No hay kits disponibles",
+    "startKits": "Comienza creando tu primer kit haciendo clic en el botón"
   },
   "providers-table": {
     "name": "Nombre",

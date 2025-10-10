@@ -24,7 +24,23 @@
       "title": "Inventory",
       "description": "This is the inventory screen",
       "message": "Soon you will be able to manage all your products here"
-    }
+    },
+    "header": "Inventory",
+    "products": "Products",
+    "nameProduct": "Name",
+    "unitPrice": "Unit price",
+    "currentStock": "Current stock",
+    "minimumStock": "Minimum stock",
+    "informationProduct": "Information",
+    "filter": "Filter",
+    "search": "Search",
+    "loadingKits": "Loading kits...",
+    "loadingProducts": "Loading products...",
+    "retry": "Retry",
+    "newProduct": "Product",
+    "newReplacement": "Enter replacement",
+    "noKits": "There are no kits",
+    "startKits": "Start by creating your first kit by clicking the button"
   },
   "providers-table": {
     "name": "Name",

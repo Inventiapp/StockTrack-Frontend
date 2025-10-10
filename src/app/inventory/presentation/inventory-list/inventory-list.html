@@ -1,30 +1,30 @@
 <div class="inventory-container">
   <!-- Título principal -->
-  <h2 class="header">Inventario</h2>
+  <h2 class="header">{{ 'inventory.header' | translate }}</h2>
 
   <!-- Barra de acciones -->
   <div class="action-bar">
     <div class="search-filter-group">
       <div class="search-box">
         <i class="material-icons">search</i>
-        <input type="text" placeholder="Buscar" />
+        <input type="text" placeholder="{{ 'inventory.search' | translate }}" />
       </div>
       <button class="btn-filter">
         <i class="material-icons">tune</i>
-        <span>Filtro</span>
+        <span>{{ 'inventory.filter' | translate }}</span>
       </button>
     </div>
 
     <div class="toolbar-buttons">
       <button class="btn-purple" (click)="openNewKitDialog()">＋ Kit</button>
-      <button class="btn-green" (click)="openNewProductDialog()">＋ Producto</button>
-      <button class="btn-orange" (click)="openRestockingDialog()">＋ Ingresar reposición</button>
+      <button class="btn-green" (click)="openNewProductDialog()">＋ {{ 'inventory.newProduct' | translate}}</button>
+      <button class="btn-orange" (click)="openRestockingDialog()">＋ {{ 'inventory.newReplacement' | translate }}</button>
     </div>
   </div>
 
   <!-- Sección de Productos -->
   <div class="section-title">
-    <h2>Products</h2>
+    <h2>{{ 'inventory.products' | translate }}</h2>
   </div>
 
   <!-- Lista de Productos -->
@@ -33,17 +33,17 @@
       <table class="products-table">
         <thead>
         <tr>
-          <th>Nombre</th>
-          <th>Precio unitario</th>
-          <th>Stock actual</th>
-          <th>Stock mínimo</th>
-          <th>Información</th>
+          <th>{{ 'inventory.nameProduct' | translate }}</th>
+          <th>{{ 'inventory.unitPrice' | translate }}</th>
+          <th>{{ 'inventory.currentStock' | translate }}</th>
+          <th>{{ 'inventory.minimumStock' | translate }}</th>
+          <th>{{ 'inventory.informationProduct' | translate }}</th>
         </tr>
         </thead>
         <tbody>
         <tr *ngFor="let p of productsRow; trackBy: trackByProductId">
           <td>{{ p.name }}</td>
-          <td>s/. {{ p.unitPrice | number:'1.2-2' }}</td>
+          <td>S/. {{ p.unitPrice | number:'1.2-2' }}</td>
           <td>{{ p.currentStock }}</td>
           <td>{{ p.minStock }}</td>
           <td>
@@ -66,7 +66,7 @@
   <div class="content" *ngIf="loading">
     <div class="loading-state">
       <i class="material-icons rotating">refresh</i>
-      <p>Cargando kits...</p>
+      <p>{{ 'inventory.loadingKits' | translate }}</p>
     </div>
   </div>
 
@@ -75,7 +75,7 @@
     <div class="error-state">
       <i class="material-icons">error_outline</i>
       <p>{{ error }}</p>
-      <button class="btn-retry" (click)="loadKits()">Reintentar</button>
+      <button class="btn-retry" (click)="loadKits()">{{ 'inventory.retry' | translate }}</button>
     </div>
   </div>
 
@@ -102,8 +102,8 @@
   <div class="content" *ngIf="!loading && !error && kits.length === 0">
     <div class="empty-state">
       <i class="material-icons">inventory_2</i>
-      <h2>No hay kits disponibles</h2>
-      <p>Comienza creando tu primer kit haciendo clic en el botón "+ Kit"</p>
+      <h2>{{ 'inventory.noKits' | translate }}</h2>
+      <p>{{ 'inventory.startKits' | translate }} + Kit"</p>
     </div>
   </div>
 </div>
