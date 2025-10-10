@@ -152,22 +152,11 @@ export class DashboardComponent {
   }
 
   /**
-   * Gets the translated message for an expiring product notification.
-   * @param product - The product name.
-   * @param date - The expiration date.
+   * Gets the translated message for a notification.
+   * @param notification - The notification entity.
    * @returns The translated message with interpolated values.
    */
-  protected getExpiringProductMessage(product: string, date: string): string {
-    return this.translate.instant('dashboard.notificationMessages.expiringProduct', { product, date });
-  }
-
-  /**
-   * Gets the translated message for a low stock notification.
-   * @param product - The product name.
-   * @param quantity - The remaining quantity.
-   * @returns The translated message with interpolated values.
-   */
-  protected getLowStockMessage(product: string, quantity: number): string {
-    return this.translate.instant('dashboard.notificationMessages.lowStock', { product, quantity });
+  protected getNotificationMessage(notification: any): string {
+    return this.translate.instant(`dashboard.notificationMessages.${notification.title}`, notification.data);
   }
 }

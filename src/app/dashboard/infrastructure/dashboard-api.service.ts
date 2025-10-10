@@ -4,6 +4,7 @@ import { delay, map } from 'rxjs/operators';
 import { DashboardStats } from '../domain/model/dashboard-stats.entity';
 import { MonthlyIncome } from '../domain/model/monthly-income.entity';
 import { ProductSales } from '../domain/model/product-sales.entity';
+import { Notification } from '../domain/model/notification.entity';
 import { DashboardResponse } from './dashboard-response';
 
 /**
@@ -103,6 +104,34 @@ export class DashboardApiService {
     return of(mockData).pipe(
       delay(500),
       map(data => data.map(item => new ProductSales(item)))
+    );
+  }
+
+  /**
+   * Gets notifications for the dashboard.
+   * @returns An Observable of Notification array.
+   */
+  getNotifications(): Observable<Notification[]> {
+    const mockData = [
+      {
+        id: '1',
+        type: 'warning' as const,
+        title: 'expiringProduct',
+        message: '',
+        data: { product: 'Leche evaporada', date: '29/04/25' }
+      },
+      {
+        id: '2',
+        type: 'alert' as const,
+        title: 'lowStock',
+        message: '',
+        data: { product: 'Papel toalla', quantity: 5 }
+      }
+    ];
+
+    return of(mockData).pipe(
+      delay(500),
+      map(data => data.map(item => new Notification(item)))
     );
   }
 }

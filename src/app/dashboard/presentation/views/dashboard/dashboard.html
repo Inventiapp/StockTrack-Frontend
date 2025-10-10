@@ -11,7 +11,7 @@
           [matMenuTriggerFor]="notificationsMenu" 
           class="notifications-button"
           [attr.aria-label]="t('dashboard.notifications.button')">
-          <mat-icon [matBadge]="2" matBadgeColor="warn" matBadgeSize="small">notifications</mat-icon>
+          <mat-icon [matBadge]="store.notifications().length" matBadgeColor="warn" matBadgeSize="small">notifications</mat-icon>
         </button>
       </div>
     </div>
@@ -22,40 +22,27 @@
           <h3 class="notifications-title">{{ t('dashboard.notifications.title') }}</h3>
         </div>
         <div class="notifications-list">
-          <div 
-            class="notification-item notification-warning" 
-            [class.expanded]="expandedNotification === 0" 
-            (click)="toggleNotification(0)"
-            role="menuitem"
-            [attr.aria-label]="t('dashboard.notificationItems.expiringProduct.title')"
-            tabindex="0"
-            (keydown.enter)="toggleNotification(0)"
-            (keydown.space)="toggleNotification(0)">
-            <mat-icon class="notification-icon" [attr.aria-label]="t('dashboard.notifications.types.warning')">warning</mat-icon>
-            <div class="notification-content">
-              <div class="notification-text-title">{{ t('dashboard.notificationTitles.expiringProduct') }}</div>
-              <div class="notification-text" [class.expanded]="expandedNotification === 0">
-                {{ getExpiringProductMessage('Leche evaporada', '29/04/25') }}
+          @for (notification of store.notifications(); track notification.id; let i = $index) {
+            <div 
+              [class]="'notification-item notification-' + notification.type" 
+              [class.expanded]="expandedNotification === i" 
+              (click)="toggleNotification(i)"
+              role="menuitem"
+              [attr.aria-label]="t('dashboard.notificationTitles.' + notification.title)"
+              tabindex="0"
+              (keydown.enter)="toggleNotification(i)"
+              (keydown.space)="toggleNotification(i)">
+              <mat-icon class="notification-icon" [attr.aria-label]="t('dashboard.notifications.types.' + notification.type)">
+                {{ notification.type === 'warning' ? 'warning' : 'error' }}
+              </mat-icon>
+              <div class="notification-content">
+                <div class="notification-text-title">{{ t('dashboard.notificationTitles.' + notification.title) }}</div>
+                <div class="notification-text" [class.expanded]="expandedNotification === i">
+                  {{ getNotificationMessage(notification) }}
+                </div>
               </div>
             </div>
-          </div>
-          <div 
-            class="notification-item notification-alert" 
-            [class.expanded]="expandedNotification === 1" 
-            (click)="toggleNotification(1)"
-            role="menuitem"
-            [attr.aria-label]="t('dashboard.notificationTitles.lowStock')"
-            tabindex="0"
-            (keydown.enter)="toggleNotification(1)"
-            (keydown.space)="toggleNotification(1)">
-            <mat-icon class="notification-icon" [attr.aria-label]="t('dashboard.notifications.types.alert')">error</mat-icon>
-            <div class="notification-content">
-              <div class="notification-text-title">{{ t('dashboard.notificationTitles.lowStock') }}</div>
-              <div class="notification-text" [class.expanded]="expandedNotification === 1">
-                {{ getLowStockMessage('Papel toalla', 5) }}
-              </div>
-            </div>
-          </div>
+          }
         </div>
       </div>
     </mat-menu>
@@ -138,45 +125,32 @@
   <div class="dashboard-sidebar" role="complementary" [attr.aria-label]="t('dashboard.notifications.title')">
     <div class="notifications-header">
       <button mat-icon-button [attr.aria-label]="t('dashboard.notifications.title')">
-        <mat-icon [matBadge]="2" matBadgeColor="warn" matBadgeSize="small">notifications</mat-icon>
+        <mat-icon [matBadge]="store.notifications().length" matBadgeColor="warn" matBadgeSize="small">notifications</mat-icon>
       </button>
       <span class="notifications-label">{{ t('dashboard.notifications.title') }}</span>
     </div>
     <div class="notifications-panel" role="list">
-      <div 
-        class="notification-item notification-warning" 
-        [class.expanded]="expandedSidebarNotification === 0" 
-        (click)="toggleSidebarNotification(0)"
-        role="listitem"
-        [attr.aria-label]="t('dashboard.notificationItems.expiringProduct.title')"
-        tabindex="0"
-        (keydown.enter)="toggleSidebarNotification(0)"
-        (keydown.space)="toggleSidebarNotification(0)">
-        <mat-icon class="notification-icon" [attr.aria-label]="t('dashboard.notifications.types.warning')">warning</mat-icon>
-        <div class="notification-content">
-          <div class="notification-text-title">{{ t('dashboard.notificationTitles.expiringProduct') }}</div>
-          <div class="notification-text" [class.expanded]="expandedSidebarNotification === 0">
-            {{ getExpiringProductMessage('Leche evaporada', '29/04/25') }}
+      @for (notification of store.notifications(); track notification.id; let i = $index) {
+        <div 
+          [class]="'notification-item notification-' + notification.type" 
+          [class.expanded]="expandedSidebarNotification === i" 
+          (click)="toggleSidebarNotification(i)"
+          role="listitem"
+          [attr.aria-label]="t('dashboard.notificationTitles.' + notification.title)"
+          tabindex="0"
+          (keydown.enter)="toggleSidebarNotification(i)"
+          (keydown.space)="toggleSidebarNotification(i)">
+          <mat-icon class="notification-icon" [attr.aria-label]="t('dashboard.notifications.types.' + notification.type)">
+            {{ notification.type === 'warning' ? 'warning' : 'error' }}
+          </mat-icon>
+          <div class="notification-content">
+            <div class="notification-text-title">{{ t('dashboard.notificationTitles.' + notification.title) }}</div>
+            <div class="notification-text" [class.expanded]="expandedSidebarNotification === i">
+              {{ getNotificationMessage(notification) }}
+            </div>
           </div>
         </div>
-      </div>
-      <div 
-        class="notification-item notification-alert" 
-        [class.expanded]="expandedSidebarNotification === 1" 
-        (click)="toggleSidebarNotification(1)"
-        role="listitem"
-        [attr.aria-label]="t('dashboard.notificationTitles.lowStock')"
-        tabindex="0"
-        (keydown.enter)="toggleSidebarNotification(1)"
-        (keydown.space)="toggleSidebarNotification(1)">
-        <mat-icon class="notification-icon" [attr.aria-label]="t('dashboard.notifications.types.alert')">error</mat-icon>
-        <div class="notification-content">
-          <div class="notification-text-title">{{ t('dashboard.notificationTitles.lowStock') }}</div>
-          <div class="notification-text" [class.expanded]="expandedSidebarNotification === 1">
-            {{ getLowStockMessage('Papel toalla', 5) }}
-          </div>
-        </div>
-      </div>
+      }
     </div>
   </div>
 </div>
