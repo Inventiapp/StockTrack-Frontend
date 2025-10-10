@@ -59,6 +59,38 @@
       "passwordRequired": "es requerida",
       "confirmRequired": "Confirmación es requerida"
     }
+  },
+  "dashboard": {
+    "greeting": "Buenos días",
+    "user": "Usuario",
+    "notifications": {
+      "title": "Notificaciones",
+      "button": "Abrir notificaciones",
+      "empty": "No hay notificaciones",
+      "types": {
+        "warning": "Advertencia",
+        "alert": "Alerta",
+        "info": "Información"
+      }
+    },
+    "stats": {
+      "productsInInventory": "Productos en inventario",
+      "monthlyIncome": "Ingresos del mes",
+      "salesThisMonth": "Ventas realizadas este mes",
+      "productsWithAlerts": "Productos con alertas"
+    },
+    "charts": {
+      "topProducts": "Productos más vendidos",
+      "monthlyIncome": "Ingresos mensuales"
+    },
+    "notificationMessages": {
+      "expiringProduct": "El producto \"{{product}}\" está por vencerse el {{date}}",
+      "lowStock": "El producto \"{{product}}\" solo tiene {{quantity}} unidades en stock"
+    },
+    "notificationTitles": {
+      "expiringProduct": "Producto pronto a caducar",
+      "lowStock": "Producto a agotarse"
+    }
   }
 }
 
