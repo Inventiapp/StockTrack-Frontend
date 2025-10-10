@@ -1,39 +1,34 @@
 import { Injectable, signal, computed } from '@angular/core';
-import { Router } from '@angular/router';
 import { User } from '../domain/model/user.entity';
 import { LoginCredentials } from '../domain/model/login-credentials';
 import { RegisterData } from '../domain/model/register-data';
-import { AuthApiService } from '../infrastructure/auth-api.service';
+import { AuthApi } from '../infrastructure/auth-api';
 
 /**
  * Store for managing authentication state and operations.
  * @remarks
- * This service orchestrates authentication use cases and manages user state.
+ * This service orchestrates authentication use cases and manages auth state.
  */
 @Injectable({
   providedIn: 'root'
 })
 export class AuthStore {
-  private readonly currentUserSignal = signal<User | null>(null);
+  private readonly userSignal = signal<User | null>(null);
   private readonly loadingSignal = signal<boolean>(false);
   private readonly errorSignal = signal<string | null>(null);
 
-  readonly currentUser = this.currentUserSignal.asReadonly();
+  readonly user = this.userSignal.asReadonly();
   readonly loading = this.loadingSignal.asReadonly();
   readonly error = this.errorSignal.asReadonly();
 
-  readonly isAuthenticated = computed(() => this.currentUser() !== null);
-  readonly userRole = computed(() => this.currentUser()?.role);
+  readonly isAuthenticated = computed(() => this.user() !== null);
+  readonly currentUser = computed(() => this.user());
 
-  constructor(
-    private authApi: AuthApiService,
-    private router: Router
-  ) {
-    this.loadUserFromStorage();
-  }
+  constructor(private authApi: AuthApi) {}
 
   /**
-   * Authenticates a user with credentials.
+   * Authenticates a user with the provided credentials.
+   * @param credentials - The login credentials.
    */
   login(credentials: LoginCredentials): void {
     this.loadingSignal.set(true);
@@ -41,40 +36,31 @@ export class AuthStore {
 
     this.authApi.login(credentials).subscribe({
       next: (user) => {
-        this.currentUserSignal.set(user);
-        this.saveUserToStorage(user);
+        this.userSignal.set(user);
         this.loadingSignal.set(false);
-        this.router.navigate(['/inventory']);
       },
       error: (err) => {
-        this.errorSignal.set('auth.errors.loginFailed');
+        this.errorSignal.set('Error during login');
         this.loadingSignal.set(false);
       }
     });
   }
 
   /**
-   * Registers a new user.
+   * Registers a new user with the provided data.
+   * @param data - The registration data.
    */
   register(data: RegisterData): void {
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
 
-    if (data.password !== data.confirmPassword) {
-      this.errorSignal.set('auth.errors.passwordMismatch');
-      this.loadingSignal.set(false);
-      return;
-    }
-
     this.authApi.register(data).subscribe({
       next: (user) => {
-        this.currentUserSignal.set(user);
-        this.saveUserToStorage(user);
+        this.userSignal.set(user);
         this.loadingSignal.set(false);
-        this.router.navigate(['/inventory']);
       },
       error: (err) => {
-        this.errorSignal.set('auth.errors.registerFailed');
+        this.errorSignal.set('Error during registration');
         this.loadingSignal.set(false);
       }
     });
@@ -84,34 +70,25 @@ export class AuthStore {
    * Logs out the current user.
    */
   logout(): void {
+    this.loadingSignal.set(true);
+    this.errorSignal.set(null);
+
     this.authApi.logout().subscribe({
       next: () => {
-        this.currentUserSignal.set(null);
-        this.clearUserFromStorage();
-        this.router.navigate(['/auth/login']);
+        this.userSignal.set(null);
+        this.loadingSignal.set(false);
+      },
+      error: (err) => {
+        this.errorSignal.set('Error during logout');
+        this.loadingSignal.set(false);
       }
     });
   }
 
-  private saveUserToStorage(user: User): void {
-    localStorage.setItem('currentUser', JSON.stringify({
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      role: user.role,
-      token: user.token
-    }));
-  }
-
-  private loadUserFromStorage(): void {
-    const userData = localStorage.getItem('currentUser');
-    if (userData) {
-      const parsed = JSON.parse(userData);
-      this.currentUserSignal.set(new User(parsed));
-    }
-  }
-
-  private clearUserFromStorage(): void {
-    localStorage.removeItem('currentUser');
+  /**
+   * Clears the current error.
+   */
+  clearError(): void {
+    this.errorSignal.set(null);
   }
 }
