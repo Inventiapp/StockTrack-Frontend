@@ -3,7 +3,7 @@ import { DashboardStats } from '../domain/model/dashboard-stats.entity';
 import { MonthlyIncome } from '../domain/model/monthly-income.entity';
 import { ProductSales } from '../domain/model/product-sales.entity';
 import { Notification } from '../domain/model/notification.entity';
-import { DashboardApiService } from '../infrastructure/dashboard-api.service';
+import { DashboardApi } from '../infrastructure/dashboard-api';
 
 /**
  * Store for managing dashboard state and operations.
@@ -30,7 +30,7 @@ export class DashboardStore {
 
   readonly hasData = computed(() => this.stats() !== null);
 
-  constructor(private dashboardApi: DashboardApiService) {
+  constructor(private dashboardApi: DashboardApi) {
     this.loadDashboardData();
   }
 
@@ -42,40 +42,40 @@ export class DashboardStore {
     this.errorSignal.set(null);
 
     this.dashboardApi.getDashboardStats().subscribe({
-      next: (stats) => {
+      next: (stats: DashboardStats) => {
         this.statsSignal.set(stats);
       },
-      error: (err) => {
+      error: (err: Error) => {
         this.errorSignal.set('Error loading dashboard stats');
         this.loadingSignal.set(false);
       }
     });
 
     this.dashboardApi.getMonthlyIncome().subscribe({
-      next: (data) => {
+      next: (data: MonthlyIncome[]) => {
         this.monthlyIncomeSignal.set(data);
       },
-      error: (err) => {
+      error: (err: Error) => {
         this.errorSignal.set('Error loading monthly income');
       }
     });
 
     this.dashboardApi.getProductSales().subscribe({
-      next: (data) => {
+      next: (data: ProductSales[]) => {
         this.productSalesSignal.set(data);
       },
-      error: (err) => {
+      error: (err: Error) => {
         this.errorSignal.set('Error loading product sales');
       }
     });
 
     // Load notifications
     this.dashboardApi.getNotifications().subscribe({
-      next: (data) => {
+      next: (data: Notification[]) => {
         this.notificationsSignal.set(data);
         this.loadingSignal.set(false);
       },
-      error: (err) => {
+      error: (err: Error) => {
         this.errorSignal.set('Error loading notifications');
         this.loadingSignal.set(false);
       }

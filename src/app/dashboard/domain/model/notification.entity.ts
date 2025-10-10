@@ -1,3 +1,5 @@
+import { NotificationData } from './notification-data.types';
+
 /**
  * Represents a notification in the dashboard.
  * @remarks
@@ -14,13 +16,13 @@ export class Notification {
     type: 'warning' | 'alert' | 'info';
     title: string;
     message: string;
-    data?: Record<string, any>;
+    data?: NotificationData;
   }) {
     this._id = data.id;
     this._type = data.type;
     this._title = data.title;
     this._message = data.message;
-    this._data = data.data || {};
+    this._data = data.data || { message: '' } as NotificationData;
   }
 
   private _id: string;
@@ -43,8 +45,8 @@ export class Notification {
     return this._message;
   }
 
-  private _data: Record<string, any>;
-  get data(): Record<string, any> {
+  private _data: NotificationData;
+  get data(): NotificationData {
     return this._data;
   }
 }

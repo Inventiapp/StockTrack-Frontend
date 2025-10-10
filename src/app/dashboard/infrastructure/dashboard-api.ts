@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { DashboardApiEndpoint } from './dashboard-api-endpoint';
+import { Dashboard } from '../domain/model/dashboard.entity';
 import { DashboardStats } from '../domain/model/dashboard-stats.entity';
 import { MonthlyIncome } from '../domain/model/monthly-income.entity';
 import { ProductSales } from '../domain/model/product-sales.entity';
 import { Notification } from '../domain/model/notification.entity';
-import { DashboardResponse } from './dashboard-response';
-import { environment } from '../../../environments/environment';
 
 /**
  * Service for handling dashboard API calls.
@@ -17,24 +16,27 @@ import { environment } from '../../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
-export class DashboardApiService {
-  private readonly apiUrl = environment.platformProviderApiBaseUrl;
+export class DashboardApi {
+  private readonly endpoint: DashboardApiEndpoint;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    this.endpoint = new DashboardApiEndpoint(this.http);
+  }
+
+  /**
+   * Gets the complete dashboard data.
+   * @returns An Observable of Dashboard.
+   */
+  getDashboard(): Observable<Dashboard> {
+    return this.endpoint.getDashboard();
+  }
 
   /**
    * Gets dashboard statistics.
    * @returns An Observable of DashboardStats.
    */
   getDashboardStats(): Observable<DashboardStats> {
-    return this.http.get<DashboardResponse>(`${this.apiUrl}/dashboard`).pipe(
-      map(response => new DashboardStats({
-        productsInInventory: response.stats.productsInInventory,
-        monthlyIncome: response.stats.monthlyIncome,
-        salesThisMonth: response.stats.salesThisMonth,
-        productsWithAlerts: response.stats.productsWithAlerts
-      }))
-    );
+    return this.endpoint.getDashboardStats();
   }
 
   /**
@@ -42,9 +44,7 @@ export class DashboardApiService {
    * @returns An Observable of MonthlyIncome array.
    */
   getMonthlyIncome(): Observable<MonthlyIncome[]> {
-    return this.http.get<{monthlyIncome: any[]}>(`${this.apiUrl}/dashboard`).pipe(
-      map(response => response.monthlyIncome.map(item => new MonthlyIncome(item)))
-    );
+    return this.endpoint.getMonthlyIncome();
   }
 
   /**
@@ -52,9 +52,7 @@ export class DashboardApiService {
    * @returns An Observable of ProductSales array.
    */
   getProductSales(): Observable<ProductSales[]> {
-    return this.http.get<{productSales: any[]}>(`${this.apiUrl}/dashboard`).pipe(
-      map(response => response.productSales.map(item => new ProductSales(item)))
-    );
+    return this.endpoint.getProductSales();
   }
 
   /**
@@ -62,9 +60,6 @@ export class DashboardApiService {
    * @returns An Observable of Notification array.
    */
   getNotifications(): Observable<Notification[]> {
-    return this.http.get<{notifications: any[]}>(`${this.apiUrl}/dashboard`).pipe(
-      map(response => response.notifications.map(item => new Notification(item)))
-    );
+    return this.endpoint.getNotifications();
   }
 }
-

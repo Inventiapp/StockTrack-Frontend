@@ -160,7 +160,7 @@ export class DashboardComponent {
    * @param notification - The notification entity.
    * @returns The translated message with interpolated values.
    */
-  protected getNotificationMessage(notification: any): string {
+  protected getNotificationMessage(notification: Notification): string {
     return this.translate.instant(`dashboard.notificationMessages.${notification.title}`, notification.data);
   }
 
