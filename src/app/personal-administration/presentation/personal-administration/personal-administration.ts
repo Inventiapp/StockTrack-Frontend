@@ -45,12 +45,8 @@ export class PersonalAdministrationComponent {
     }
   });
 
-  roles = [
-    { name: 'Vendedor', permissions: { productos: true, compras: true, estadisticas: false, usuarios: false } },
-    { name: 'Administrador', permissions: { productos: true, compras: true, estadisticas: true, usuarios: true } }
-  ];
-
   users = this.userStore.users;
+  roles = this.userStore.availableRoles;
   loading = this.userStore.loading;
   error = this.userStore.error;
   hasUsers = this.userStore.hasUsers;
@@ -172,10 +168,13 @@ export class PersonalAdministrationComponent {
     if (roleData.name.trim() === '') return;
 
     const exists = this.roles.some(r => r.name.toLowerCase() === roleData.name.toLowerCase());
-    if (!exists) {
-      this.roles.push({ ...roleData });
+    if (exists) {
+      alert('El rol ya existe');
+      return;
     }
 
+    // TODO: Implement role creation in backend
+    console.log('Role to create:', roleData);
     this.closeRoleModal();
   }
 
