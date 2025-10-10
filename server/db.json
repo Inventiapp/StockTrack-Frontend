@@ -146,8 +146,8 @@
     {
       "id": "stock-001",
       "productId": "prod-001",
-      "currentStock": 35,
-      "lastUpdated": "2025-01-08"
+      "currentStock": 36,
+      "lastUpdated": "2025-10-10"
     },
     {
       "id": "stock-002",
@@ -164,20 +164,20 @@
     {
       "id": "stock-004",
       "productId": "prod-004",
-      "currentStock": 22,
-      "lastUpdated": "2025-01-08"
+      "currentStock": 24,
+      "lastUpdated": "2025-10-10"
     },
     {
       "id": "stock-005",
       "productId": "prod-005",
-      "currentStock": 45,
-      "lastUpdated": "2025-01-08"
+      "currentStock": 46,
+      "lastUpdated": "2025-10-10"
     },
     {
       "id": "stock-006",
       "productId": "prod-006",
-      "currentStock": 18,
-      "lastUpdated": "2025-01-08"
+      "currentStock": 19,
+      "lastUpdated": "2025-10-10"
     },
     {
       "id": "stock-007",
@@ -224,6 +224,46 @@
         {
           "productId": "prod-005",
           "quantityToAdd": 25
+        }
+      ]
+    },
+    {
+      "id": "zxvkvcqz8",
+      "lot": "",
+      "receptionDate": "",
+      "expirationDate": "",
+      "items": [
+        {
+          "productId": "prod-004",
+          "quantityToAdd": 2
+        }
+      ]
+    },
+    {
+      "id": "kw2q512sx",
+      "lot": "",
+      "receptionDate": "",
+      "expirationDate": "",
+      "items": [
+        {
+          "productId": "prod-005",
+          "quantityToAdd": 1
+        },
+        {
+          "productId": "prod-006",
+          "quantityToAdd": 1
+        }
+      ]
+    },
+    {
+      "id": "t4rc077ai",
+      "lot": "",
+      "receptionDate": "",
+      "expirationDate": "",
+      "items": [
+        {
+          "productId": "prod-001",
+          "quantityToAdd": 1
         }
       ]
     }
