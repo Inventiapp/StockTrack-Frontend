@@ -1,50 +1,53 @@
 <section class="personal-admin-container">
-  <h2 class="header">Administración del personal</h2>
+  <h2 class="header">{{ t('personalAdministration.title') }}</h2>
 
   <div class="toolbar">
     <div class="search-filter">
-      <input type="text" placeholder="Buscar..." [(ngModel)]="searchTerm" />
-      
+      <input
+        type="text"
+        [placeholder]="t('personalAdministration.search')"
+        [(ngModel)]="searchTerm"
+      />
+
       <div class="filter-container">
-        <button class="filter-btn" (click)="toggleFilterDropdown()">🔍 Filtro</button>
+        <button class="filter-btn" (click)="toggleFilterDropdown()">🔍 {{ t('personalAdministration.filter') }}</button>
 
         <div *ngIf="showFilterDropdown" class="filter-dropdown">
-          <label>Estado:</label>
+          <label>{{ t('personalAdministration.status') }}:</label>
           <select [(ngModel)]="filterStatus">
-            <option value="todos">Todos</option>
-            <option value="Activo">Activo</option>
-            <option value="Inactivo">Inactivo</option>
+            <option value="todos">{{ t('personalAdministration.all') }}</option>
+            <option value="Activo">{{ t('personalAdministration.active') }}</option>
+            <option value="Inactivo">{{ t('personalAdministration.inactive') }}</option>
           </select>
 
-          <label>Rol:</label>
+          <label>{{ t('personalAdministration.role') }}:</label>
           <select [(ngModel)]="filterRole">
-            <option value="todos">Todos</option>
+            <option value="todos">{{ t('personalAdministration.all') }}</option>
             <option *ngFor="let role of roles" [value]="role.name">{{ role.name }}</option>
           </select>
 
           <div class="filter-actions">
-            <button (click)="closeFilterDropdown()">Aplicar</button>
-            <button class="clear" (click)="clearFilters()">Limpiar</button>
+            <button (click)="closeFilterDropdown()">{{ t('personalAdministration.apply') }}</button>
+            <button class="clear" (click)="clearFilters()">{{ t('personalAdministration.clear') }}</button>
           </div>
         </div>
       </div>
     </div>
 
     <div class="toolbar-buttons">
-      <button class="btn-role" (click)="openRoleModal()">＋ Nuevo Rol</button>
-      <button class="btn-user" (click)="openUserModal()">＋ Nuevo Usuario</button>
+      <button class="btn-role" (click)="openRoleModal()">＋ {{ t('personalAdministration.newRole') }}</button>
+      <button class="btn-user" (click)="openUserModal()">＋ {{ t('personalAdministration.newUser') }}</button>
     </div>
   </div>
-
 
   <table class="user-table">
     <thead>
       <tr>
-        <th>Nombre</th>
-        <th>Rol</th>
-        <th>Cuenta</th>
-        <th>Estado</th>
-        <th>Acciones</th>
+        <th>{{ t('personalAdministration.name') }}</th>
+        <th>{{ t('personalAdministration.role') }}</th>
+        <th>{{ t('personalAdministration.account') }}</th>
+        <th>{{ t('personalAdministration.status') }}</th>
+        <th>{{ t('personalAdministration.actions') }}</th>
       </tr>
     </thead>
     <tbody>
@@ -64,28 +67,28 @@
 
 <div class="modal-overlay" *ngIf="showUserModal">
   <div class="modal">
-    <h3>Nuevo Personal</h3>
+    <h3>{{ t('personalAdministration.newUserTitle') }}</h3>
     <form (ngSubmit)="saveUser()">
-      <label>Nombre(s)</label>
+      <label>{{ t('personalAdministration.nameLabel') }}</label>
       <input type="text" [(ngModel)]="newUser.name" name="name" required />
 
-      <label>Apellidos</label>
+      <label>{{ t('personalAdministration.lastnameLabel') }}</label>
       <input type="text" [(ngModel)]="newUser.lastname" name="lastname" required />
 
-      <label>Número telefónico</label>
+      <label>{{ t('personalAdministration.phoneLabel') }}</label>
       <input type="text" [(ngModel)]="newUser.phone" name="phone" required />
 
-      <label>Correo</label>
+      <label>{{ t('personalAdministration.emailLabel') }}</label>
       <input type="email" [(ngModel)]="newUser.email" name="email" required />
 
-      <label>Rol</label>
+      <label>{{ t('personalAdministration.roleLabel') }}</label>
       <select [(ngModel)]="newUser.role" name="role" required>
         <option *ngFor="let role of roles" [value]="role.name">{{ role.name }}</option>
       </select>
 
       <div class="modal-actions">
-        <button type="button" class="cancel" (click)="closeUserModal()">Cancelar</button>
-        <button type="submit" class="save">Guardar</button>
+        <button type="button" class="cancel" (click)="closeUserModal()">{{ t('common.cancel') }}</button>
+        <button type="submit" class="save">{{ t('common.save') }}</button>
       </div>
     </form>
   </div>
@@ -93,28 +96,28 @@
 
 <div class="modal-overlay" *ngIf="showEditModal">
   <div class="modal">
-    <h3>Editar Usuario</h3>
+    <h3>{{ t('personalAdministration.editUserTitle') }}</h3>
     <form (ngSubmit)="saveEditedUser()">
-      <label>Nombre completo</label>
+      <label>{{ t('personalAdministration.fullNameLabel') }}</label>
       <input type="text" [(ngModel)]="selectedUser.name" name="editName" />
 
-      <label>Rol</label>
+      <label>{{ t('personalAdministration.roleLabel') }}</label>
       <select [(ngModel)]="selectedUser.role" name="editRole">
         <option *ngFor="let role of roles" [value]="role.name">{{ role.name }}</option>
       </select>
 
-      <label>Cuenta (correo)</label>
+      <label>{{ t('personalAdministration.accountLabel') }}</label>
       <input type="email" [(ngModel)]="selectedUser.account" name="editAccount" />
 
-      <label>Estado</label>
+      <label>{{ t('personalAdministration.statusLabel') }}</label>
       <select [(ngModel)]="selectedUser.status" name="editStatus">
-        <option value="Activo">Activo</option>
-        <option value="Inactivo">Inactivo</option>
+        <option value="Activo">{{ t('personalAdministration.active') }}</option>
+        <option value="Inactivo">{{ t('personalAdministration.inactive') }}</option>
       </select>
 
       <div class="modal-actions">
-        <button type="button" class="cancel" (click)="closeEditModal()">Cancelar</button>
-        <button type="submit" class="save">Guardar Cambios</button>
+        <button type="button" class="cancel" (click)="closeEditModal()">{{ t('common.cancel') }}</button>
+        <button type="submit" class="save">{{ t('common.saveChanges') }}</button>
       </div>
     </form>
   </div>
@@ -122,45 +125,51 @@
 
 <div class="modal-overlay" *ngIf="showDeleteModal">
   <div class="modal small">
-    <h3>Confirmar eliminación</h3>
-    <p>¿Seguro que deseas eliminar a <strong>{{ selectedUser?.name }}</strong>?</p>
+    <h3>{{ t('personalAdministration.confirmDeleteTitle') }}</h3>
+    <p>{{ t('personalAdministration.confirmDeleteMessage', { name: selectedUser?.name }) }}</p>
     <div class="modal-actions">
-      <button type="button" class="cancel" (click)="closeDeleteModal()">Cancelar</button>
-      <button type="button" class="save delete" (click)="confirmDeleteUser()">Eliminar</button>
+      <button type="button" class="cancel" (click)="closeDeleteModal()">{{ t('common.cancel') }}</button>
+      <button type="button" class="save delete" (click)="confirmDeleteUser()">{{ t('common.delete') }}</button>
     </div>
   </div>
 </div>
 
 <div class="modal-overlay" *ngIf="showRoleModal">
   <div class="modal">
-    <h3>Nuevo Rol</h3>
+    <h3>{{ t('personalAdministration.newRoleTitle') }}</h3>
     <form (ngSubmit)="saveRole()">
-      <label>Nombre del rol</label>
-      <input type="text" [(ngModel)]="newRole.name" name="roleName" placeholder="Ej: Supervisor" required />
+      <label>{{ t('personalAdministration.roleNameLabel') }}</label>
+      <input
+        type="text"
+        [(ngModel)]="newRole.name"
+        name="roleName"
+        [placeholder]="t('personalAdministration.rolePlaceholder')"
+        required
+      />
 
-      <label class="perm-title">Permisos</label>
+      <label class="perm-title">{{ t('personalAdministration.permissionsTitle') }}</label>
       <div class="permissions">
         <label class="perm-item">
           <input type="checkbox" [(ngModel)]="newRole.permissions.productos" name="permProducts" />
-          Gestión de productos
+          {{ t('personalAdministration.permissionProducts') }}
         </label>
         <label class="perm-item">
           <input type="checkbox" [(ngModel)]="newRole.permissions.compras" name="permPurchases" />
-          Proceso de compra
+          {{ t('personalAdministration.permissionPurchases') }}
         </label>
         <label class="perm-item">
           <input type="checkbox" [(ngModel)]="newRole.permissions.estadisticas" name="permStats" />
-          Estadísticas
+          {{ t('personalAdministration.permissionStats') }}
         </label>
         <label class="perm-item">
           <input type="checkbox" [(ngModel)]="newRole.permissions.usuarios" name="permUsers" />
-          Gestión de usuarios
+          {{ t('personalAdministration.permissionUsers') }}
         </label>
       </div>
 
       <div class="modal-actions">
-        <button type="button" class="cancel" (click)="closeRoleModal()">Cancelar</button>
-        <button type="submit" class="save">Guardar</button>
+        <button type="button" class="cancel" (click)="closeRoleModal()">{{ t('common.cancel') }}</button>
+        <button type="submit" class="save">{{ t('common.save') }}</button>
       </div>
     </form>
   </div>

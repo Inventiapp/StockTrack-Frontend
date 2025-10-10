@@ -124,6 +124,7 @@
       "confirmRequired": "Confirmation is required"
     }
   },
+
   "dashboard": {
     "greeting": "Good morning",
     "notifications": {
@@ -154,6 +155,52 @@
       "expiringProduct": "Product about to expire",
       "lowStock": "Product running out"
     }
+  },
+    
+  "personalAdministration": {
+    "title": "Staff Administration",
+    "search": "Search...",
+    "filter": "Filter",
+    "status": "Status",
+    "role": "Role",
+    "all": "All",
+    "active": "Active",
+    "inactive": "Inactive",
+    "apply": "Apply",
+    "clear": "Clear",
+    "newRole": "New Role",
+    "newUser": "New User",
+    "name": "Name",
+    "account": "Account",
+    "actions": "Actions",
+    "newUserTitle": "New Staff",
+    "nameLabel": "First Name",
+    "lastnameLabel": "Last Name",
+    "phoneLabel": "Phone Number",
+    "emailLabel": "Email",
+    "roleLabel": "Role",
+    "editUserTitle": "Edit User",
+    "fullNameLabel": "Full Name",
+    "accountLabel": "Account (email)",
+    "statusLabel": "Status",
+    "confirmDeleteTitle": "Confirm Deletion",
+    "confirmDeleteMessage": "Are you sure you want to delete {{name}}?",
+    "newRoleTitle": "New Role",
+    "roleNameLabel": "Role Name",
+    "rolePlaceholder": "Ex: Supervisor",
+    "permissionsTitle": "Permissions",
+    "permissionProducts": "Product Management",
+    "permissionPurchases": "Purchase Process",
+    "permissionStats": "Statistics",
+    "permissionUsers": "User Management"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "saveChanges": "Save Changes",
+    "delete": "Delete"
+
   }
+
 }
 

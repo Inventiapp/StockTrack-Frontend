@@ -1,15 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-personal-administration',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './personal-administration.page.html',
   styleUrls: ['./personal-administration.page.css']
 })
 export class PersonalAdministrationPage {
+  private translate = inject(TranslateService);
+
+  protected t(key: string, params?: any): string {
+    return this.translate.instant(key, params);
+  }
+
   searchTerm: string = '';
   filterStatus: string = 'todos';
   filterRole: string = 'todos';
@@ -18,16 +25,19 @@ export class PersonalAdministrationPage {
   showRoleModal = false;
   showEditModal = false;
   showDeleteModal = false;
+
   roles = [
     { name: 'Vendedor', permissions: { productos: true, compras: true, estadisticas: false, usuarios: false } },
     { name: 'Administrador', permissions: { productos: true, compras: true, estadisticas: true, usuarios: true } }
   ];
+
   users = [
     { id: 1, name: 'Juan Pérez Díaz', role: 'Vendedor', account: 'perez.j@company.com', status: 'Activo' },
     { id: 2, name: 'María López Gonzales', role: 'Vendedor', account: 'lopez.m@company.com', status: 'Inactivo' },
     { id: 3, name: 'Luis Ramírez Hurtado', role: 'Vendedor', account: 'ramirez.l@company.com', status: 'Activo' },
     { id: 4, name: 'Juan Pérez Aguirre', role: 'Administrador', account: 'admin@company.com', status: 'Activo' }
   ];
+
   newUser = { name: '', lastname: '', phone: '', email: '', role: '' };
   selectedUser: any = null;
 
@@ -51,6 +61,7 @@ export class PersonalAdministrationPage {
     this.selectedUser = { ...user };
     this.showEditModal = true;
   }
+
   closeEditModal() {
     this.showEditModal = false;
     this.selectedUser = null;
@@ -60,6 +71,7 @@ export class PersonalAdministrationPage {
     this.selectedUser = { ...user };
     this.showDeleteModal = true;
   }
+
   closeDeleteModal() {
     this.showDeleteModal = false;
     this.selectedUser = null;
@@ -110,7 +122,6 @@ export class PersonalAdministrationPage {
     this.closeUserModal();
     this.newUser = { name: '', lastname: '', phone: '', email: '', role: '' };
   }
-
 
   saveEditedUser() {
     const index = this.users.findIndex(u => u.id === this.selectedUser.id);

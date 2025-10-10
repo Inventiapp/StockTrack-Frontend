@@ -123,6 +123,7 @@
       "confirmRequired": "Confirmación es requerida"
     }
   },
+
   "dashboard": {
     "greeting": "Buenos días",
     "notifications": {
@@ -153,6 +154,51 @@
       "expiringProduct": "Producto pronto a caducar",
       "lowStock": "Producto a agotarse"
     }
+  },
+
+  "personalAdministration": {
+    "title": "Administración de Personal",
+    "search": "Buscar...",
+    "filter": "Filtro",
+    "status": "Estado",
+    "role": "Rol",
+    "all": "Todos",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "apply": "Aplicar",
+    "clear": "Limpiar",
+    "newRole": "Nuevo Rol",
+    "newUser": "Nuevo Usuario",
+    "name": "Nombre",
+    "account": "Cuenta",
+    "actions": "Acciones",
+    "newUserTitle": "Nuevo Personal",
+    "nameLabel": "Nombre(s)",
+    "lastnameLabel": "Apellidos",
+    "phoneLabel": "Número telefónico",
+    "emailLabel": "Correo",
+    "roleLabel": "Rol",
+    "editUserTitle": "Editar Usuario",
+    "fullNameLabel": "Nombre completo",
+    "accountLabel": "Cuenta (correo)",
+    "statusLabel": "Estado",
+    "confirmDeleteTitle": "Confirmar eliminación",
+    "confirmDeleteMessage": "¿Seguro que deseas eliminar a {{name}}?",
+    "newRoleTitle": "Nuevo Rol",
+    "roleNameLabel": "Nombre del rol",
+    "rolePlaceholder": "Ej: Supervisor",
+    "permissionsTitle": "Permisos",
+    "permissionProducts": "Gestión de productos",
+    "permissionPurchases": "Proceso de compra",
+    "permissionStats": "Estadísticas",
+    "permissionUsers": "Gestión de usuarios"
+  },
+  "common": {
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "saveChanges": "Guardar Cambios",
+    "delete": "Eliminar"
   }
+
 }
 
