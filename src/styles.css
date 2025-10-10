@@ -36,3 +36,11 @@ html, body {
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.product-info-dialog .mat-mdc-dialog-surface,
+.product-info-dialog .mdc-dialog__surface{
+  background:#fff !important;
+  border-radius:16px !important;
+  padding:20px 28px !important;
+  color:#000 !important;
+}

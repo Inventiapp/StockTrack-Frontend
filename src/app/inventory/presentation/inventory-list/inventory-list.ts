@@ -10,6 +10,7 @@ import { Product } from '../../domain/model/product.entity';
 import { forkJoin } from 'rxjs';
 import { ProductsApi } from '../../infrastructure/products-api';
 import { StockApi } from '../../infrastructure/stock-api';
+import { ProductInfoDialogComponent, ProductInfoData } from '../product-info-dialog/product-info-dialog';
 
 type ProductRow = {
   id: string,
@@ -17,6 +18,11 @@ type ProductRow = {
   unitPrice: number,
   minStock: number,
   currentStock: number,
+  categoryName?: string;
+  providerName?: string;
+  lastReception?: string;  // ISO 'YYYY-MM-DD'
+  lot?: string;
+  expirationDate?: string;
 };
 
 @Component({
@@ -136,7 +142,24 @@ export class InventoryListComponent implements OnInit {
   trackByProductId(_: number, p: ProductRow) { return p.id; }
 
   openProductInfo(p: ProductRow) {
+    const data: ProductInfoData = {
+      title: p.name,
+      category: p.categoryName,
+      currentStock: p.currentStock,
+      minStock: p.minStock,
+      unitPrice: p.unitPrice,
+      lastReception: p.lastReception,
+      lot: p.lot,
+      provider: p.providerName,
+      expirationDate: p.expirationDate
+    };
 
+    this.dialog.open(ProductInfoDialogComponent, {
+      width: '520px',
+      maxWidth: '90vw',
+      panelClass: 'product-info-dialog',
+      data
+    });
   }
 
 

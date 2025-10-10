@@ -1,0 +1,31 @@
+<h3 class="dlg-title">{{ data.title }}</h3>
+
+<div class="info-grid">
+  <div class="label">Categoría:</div>
+  <div class="value">{{ data.category || '-' }}</div>
+
+  <div class="label">Stock Actual:</div>
+  <div class="value">{{ data.currentStock }}</div>
+
+  <div class="label">Stock Mínimo:</div>
+  <div class="value">{{ data.minStock }}</div>
+
+  <div class="label">Precio unitario</div>
+  <div class="value">s/ {{ data.unitPrice | number:'1.2-2' }}</div>
+
+  <div class="label">Última recepción:</div>
+  <div class="value">{{ data.lastReception | date:'dd/MM/yyyy' }}</div>
+
+  <div class="label">Lote:</div>
+  <div class="value">{{ data.lot || '-' }}</div>
+
+  <div class="label">Proveedor:</div>
+  <div class="value">{{ data.provider || '-' }}</div>
+
+  <div class="label">Fecha de vencimiento:</div>
+  <div class="value">{{ data.expirationDate | date:'dd/MM/yy' }}</div>
+</div>
+
+<div class="actions">
+  <button mat-dialog-close class="btn-ghost">Salir</button>
+</div>
