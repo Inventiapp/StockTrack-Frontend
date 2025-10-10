@@ -1,9 +1,13 @@
 <div class="auth-container">
+  <div class="language-switcher-wrapper">
+    <app-language-switcher></app-language-switcher>
+  </div>
+
   <!-- Left side - Branding -->
   <div class="auth-branding">
     <div class="branding-content">
       <div class="logo-section">
-        <img src="logo.png" alt="StockTrack Logo" class="logo" />
+        <img src="assets/logo.png" alt="StockTrack Logo" class="logo" />
         <h1 class="brand-name">StockTrack</h1>
       </div>
       <p class="tagline">{{ t('auth.tagline') }}</p>
@@ -11,7 +15,6 @@
     <div class="decorative-circles decorative-circles-left"></div>
   </div>
 
-  <!-- Right side - Register Form -->
   <div class="auth-form-wrapper">
     <div class="decorative-circles decorative-circles-right"></div>
     <mat-card class="auth-card">
@@ -31,10 +34,10 @@
               autocomplete="name"
             />
             @if (registerForm.get('name')?.hasError('required') && registerForm.get('name')?.touched) {
-              <mat-error>{{ t('auth.register.name') }} es requerido</mat-error>
+              <mat-error>{{ t('auth.register.name') }} {{ t('auth.validation.required') }}</mat-error>
             }
             @if (registerForm.get('name')?.hasError('minlength') && registerForm.get('name')?.touched) {
-              <mat-error>Mínimo 3 caracteres</mat-error>
+              <mat-error>{{ t('auth.validation.minLength').replace('{{min}}', '3') }}</mat-error>
             }
           </mat-form-field>
 
@@ -50,10 +53,10 @@
               autocomplete="email"
             />
             @if (registerForm.get('email')?.hasError('required') && registerForm.get('email')?.touched) {
-              <mat-error>{{ t('auth.register.email') }} es requerido</mat-error>
+              <mat-error>{{ t('auth.register.email') }} {{ t('auth.validation.required') }}</mat-error>
             }
             @if (registerForm.get('email')?.hasError('email') && registerForm.get('email')?.touched) {
-              <mat-error>Email inválido</mat-error>
+              <mat-error>{{ t('auth.validation.emailInvalid') }}</mat-error>
             }
           </mat-form-field>
 
@@ -69,10 +72,10 @@
               autocomplete="new-password"
             />
             @if (registerForm.get('password')?.hasError('required') && registerForm.get('password')?.touched) {
-              <mat-error>{{ t('auth.register.password') }} es requerida</mat-error>
+              <mat-error>{{ t('auth.register.password') }} {{ t('auth.validation.passwordRequired') }}</mat-error>
             }
             @if (registerForm.get('password')?.hasError('minlength') && registerForm.get('password')?.touched) {
-              <mat-error>Mínimo 6 caracteres</mat-error>
+              <mat-error>{{ t('auth.validation.minLength').replace('{{min}}', '6') }}</mat-error>
             }
           </mat-form-field>
 
@@ -88,7 +91,7 @@
               autocomplete="new-password"
             />
             @if (registerForm.get('confirmPassword')?.hasError('required') && registerForm.get('confirmPassword')?.touched) {
-              <mat-error>Confirmación es requerida</mat-error>
+              <mat-error>{{ t('auth.validation.confirmRequired') }}</mat-error>
             }
           </mat-form-field>
 

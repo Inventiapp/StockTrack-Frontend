@@ -10,6 +10,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthStore } from '../../../application/auth.store';
 import { LoginCredentials } from '../../../domain/model/login-credentials';
+import { LanguageSwitcher } from '../../../../shared/presentation/components/language-switcher/language-switcher';
 
 /**
  * Login component for user authentication.
@@ -28,7 +29,8 @@ import { LoginCredentials } from '../../../domain/model/login-credentials';
     MatButtonModule,
     MatCardModule,
     MatProgressSpinnerModule,
-    TranslateModule
+    TranslateModule,
+    LanguageSwitcher
   ],
   templateUrl: './login.html',
   styleUrl: './login.css'

@@ -51,6 +51,13 @@
       "loginFailed": "Login failed. Please check your credentials.",
       "registerFailed": "Registration failed. Please try again.",
       "passwordMismatch": "Passwords do not match"
+    },
+    "validation": {
+      "required": "is required",
+      "emailInvalid": "Invalid email",
+      "minLength": "Minimum {{min}} characters",
+      "passwordRequired": "is required",
+      "confirmRequired": "Confirmation is required"
     }
   }
 }

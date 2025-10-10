@@ -10,6 +10,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthStore } from '../../../application/auth.store';
 import { RegisterData } from '../../../domain/model/register-data';
+import { LanguageSwitcher } from '../../../../shared/presentation/components/language-switcher/language-switcher';
 
 /**
  * Register component for user registration.
@@ -28,7 +29,8 @@ import { RegisterData } from '../../../domain/model/register-data';
     MatButtonModule,
     MatCardModule,
     MatProgressSpinnerModule,
-    TranslateModule
+    TranslateModule,
+    LanguageSwitcher
   ],
   templateUrl: './register.html',
   styleUrl: './register.css'

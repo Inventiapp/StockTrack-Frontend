@@ -51,6 +51,13 @@
       "loginFailed": "Error al iniciar sesión. Verifica tus credenciales.",
       "registerFailed": "Error al registrarse. Intenta nuevamente.",
       "passwordMismatch": "Las contraseñas no coinciden"
+    },
+    "validation": {
+      "required": "es requerido",
+      "emailInvalid": "Email inválido",
+      "minLength": "Mínimo {{min}} caracteres",
+      "passwordRequired": "es requerida",
+      "confirmRequired": "Confirmación es requerida"
     }
   }
 }

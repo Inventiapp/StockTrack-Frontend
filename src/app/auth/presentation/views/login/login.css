@@ -2,6 +2,38 @@
   display: flex;
   min-height: 100vh;
   background-color: #ffffff;
+  position: relative;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Language Switcher */
+.language-switcher-wrapper {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 10;
+}
+
+/* Override language switcher styles for auth pages */
+.language-switcher-wrapper ::ng-deep .language-switcher {
+  background: rgba(228, 127, 4, 0.1) !important;
+  border: 1px solid rgba(228, 127, 4, 0.2) !important;
+}
+
+.language-switcher-wrapper ::ng-deep .lang-btn {
+  color: #1f2937 !important;
+}
+
+.language-switcher-wrapper ::ng-deep .lang-btn.active {
+  background: #E47F04 !important;
+  color: white !important;
+}
+
+.language-switcher-wrapper ::ng-deep .lang-btn:hover::before {
+  background: #E47F04 !important;
+  opacity: 0.2 !important;
 }
 
 /* Left side - Branding */
@@ -10,13 +42,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 3rem;
+  padding: 2rem 3rem;
   position: relative;
   overflow: hidden;
 }
 
 .branding-content {
-  max-width: 500px;
+  max-width: 450px;
+  width: 100%;
   z-index: 1;
 }
 
@@ -35,7 +68,7 @@
 .brand-name {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #f97316;
+  color: #E47F04;
   margin: 0;
 }
 
@@ -58,12 +91,12 @@
   left: 5%;
   width: 200px;
   height: 200px;
-  background: radial-gradient(circle, #fcd34d 0%, #fcd34d 50%, transparent 50%),
-              radial-gradient(circle, #fde68a 0%, #fde68a 60%, transparent 60%);
-  background-size: 60% 60%, 100% 100%;
-  background-position: 30% 70%, 0 0;
+  background: radial-gradient(circle, rgba(252, 190, 115, 0.54) 0%, rgba(252, 190, 115, 0.54) 50%, transparent 50%),
+              radial-gradient(circle, rgba(255, 198, 77, 0.79) 0%, rgba(255, 198, 77, 0.79) 60%, transparent 60%);
+  background-size: 50% 50%, 100% 100%;
+  background-position: 15% 75%, 0 0;
+  opacity: 0.5;
   background-repeat: no-repeat;
-  opacity: 0.6;
 }
 
 .decorative-circles-right {
@@ -71,21 +104,20 @@
   right: 5%;
   width: 200px;
   height: 200px;
-  background: radial-gradient(circle, #fcd34d 0%, #fcd34d 50%, transparent 50%),
-              radial-gradient(circle, #fde68a 0%, #fde68a 60%, transparent 60%);
-  background-size: 60% 60%, 100% 100%;
-  background-position: 70% 30%, 0 0;
+  background: radial-gradient(circle, rgba(252, 190, 115, 0.54) 0%, rgba(252, 190, 115, 0.54) 50%, transparent 50%),
+              radial-gradient(circle, rgba(255, 198, 77, 0.79) 0%, rgba(255, 198, 77, 0.79) 60%, transparent 60%);
+  background-size: 50% 50%, 100% 100%;
+  background-position: 85% 25%, 0 0;
+  opacity: 0.5;
   background-repeat: no-repeat;
-  opacity: 0.6;
 }
 
-/* Right side - Form */
 .auth-form-wrapper {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 3rem;
+  padding: 2rem 3rem;
   position: relative;
   overflow: hidden;
 }
@@ -94,6 +126,7 @@
   width: 100%;
   max-width: 450px;
   padding: 2rem;
+  background-color: rgba(255, 173, 42, 0.05) !important;
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
   border-radius: 12px !important;
   z-index: 1;
@@ -102,7 +135,7 @@
 .auth-title {
   font-size: 2rem;
   font-weight: 700;
-  color: #f97316;
+  color: #E47F04;
   margin: 0 0 2rem 0;
   text-align: left;
 }
@@ -130,7 +163,7 @@
 }
 
 .link-text:hover {
-  color: #f97316;
+  color: #E47F04;
 }
 
 .error-message {
