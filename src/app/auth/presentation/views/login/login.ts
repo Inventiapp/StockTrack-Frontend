@@ -33,7 +33,7 @@ import { LoginCredentials } from '../../../domain/model/login-credentials';
   templateUrl: './login.html',
   styleUrl: './login.css'
 })
-export class Login {
+export class LoginComponent {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   protected translate = inject(TranslateService);

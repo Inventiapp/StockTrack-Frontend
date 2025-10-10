@@ -33,7 +33,7 @@ import { RegisterData } from '../../../domain/model/register-data';
   templateUrl: './register.html',
   styleUrl: './register.css'
 })
-export class Register {
+export class RegisterComponent {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   protected translate = inject(TranslateService);

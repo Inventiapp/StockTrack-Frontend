@@ -4,13 +4,13 @@ import { Routes } from '@angular/router';
  * Lazy-loaded login component.
  */
 const loginComponent = () =>
-  import('./login/login').then(m => m.Login);
+  import('./login/login').then(m => m.LoginComponent);
 
 /**
  * Lazy-loaded register component.
  */
 const registerComponent = () =>
-  import('./register/register').then(m => m.Register);
+  import('./register/register').then(m => m.RegisterComponent);
 
 /**
  * Authentication routes configuration.
