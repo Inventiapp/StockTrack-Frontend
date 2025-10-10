@@ -5,7 +5,13 @@ import { PersonalAdministrationPage } from './personal-administration/presentati
 
 
 export const routes: Routes = [
+  {
+    path: 'auth',
+    loadChildren: () =>
+      import('./auth/presentation/views/auth.routes').then(m => m.authRoutes)
+  },
   { path: '', component: HomeComponent },
+  { path: 'inventory', component: InventoryListComponent },
   { path: 'inventario', component: InventoryListComponent },
   { path: 'proveedores', component: HomeComponent },
   { path: 'venta', component: HomeComponent },
