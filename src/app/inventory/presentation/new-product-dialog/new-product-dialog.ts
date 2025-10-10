@@ -7,11 +7,12 @@ import { ProductsApi } from '../../infrastructure/products-api';
 import { StockApi } from '../../infrastructure/stock-api';
 import { CategoryApi } from '../../infrastructure/category-api';
 import { ProvidersApi } from '../../../providers-management/infrastructure/providers-api';
+import {TranslatePipe} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-new-product-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatDialogModule],
+  imports: [CommonModule, FormsModule, MatDialogModule, TranslatePipe],
   templateUrl: './new-product-dialog.html',
   styleUrls: ['./new-product-dialog.css'],
 })

@@ -41,13 +41,17 @@
     "loadingKits": "Cargando kits...",
     "loadingProducts": "Cargando products...",
     "retry": "Reintentar",
-    "newProduct": "Producto",
+    "product": "Producto",
     "newReplacement": "Ingresar reposición",
     "noKits": "No hay kits disponibles",
     "startKits": "Comienza creando tu primer kit haciendo clic en el botón",
     "newKit": "Nuevo kit",
     "priceKit": "Precio kit",
-    "quantity": "Cantidad a seleccionar"
+    "quantity": "Cantidad a seleccionar",
+    "category": "Categoría",
+    "provider": "Proveedor",
+    "select": "Seleccionar",
+    "newProduct": "Nuevo producto"
   },
   "providers-table": {
     "name": "Nombre",
