@@ -13,7 +13,6 @@ export interface BaseResource {
  * All API response DTOs should extend this interface.
  */
 export interface BaseResponse {
-  // Common response fields can be added here
   // e.g., status, message, timestamp, etc.
 }
 
