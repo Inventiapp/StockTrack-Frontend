@@ -1,0 +1,33 @@
+<h2 mat-dialog-title>{{ data?.id ? 'Editar Proveedor' : 'Nuevo Proveedor' }}</h2>
+
+<mat-dialog-content [formGroup]="form" class="form-grid">
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>Nombre(s)</mat-label>
+    <input matInput formControlName="firstName" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>Apellidos</mat-label>
+    <input matInput formControlName="lastName" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>Número telefónico</mat-label>
+    <input matInput formControlName="phoneNumber" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>Correo</mat-label>
+    <input matInput type="email" formControlName="email" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>RUC</mat-label>
+    <input matInput formControlName="ruc" />
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="actions-row">
+  <button mat-stroked-button class="btn-cancel" (click)="cancel()" [disabled]="saving">Cancelar</button>
+  <button mat-raised-button class="btn-save" (click)="save()" [disabled]="saving">Guardar</button>
+</mat-dialog-actions>
