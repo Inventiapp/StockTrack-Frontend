@@ -62,7 +62,7 @@ export class InventoryStore {
         this.productsSignal.set(products);
       },
       error: (err: any) => {
-        this.errorSignal.set('Error loading products');
+        this.errorSignal.set(this.formatError(err, 'Error loading products'));
       }
     });
 
@@ -75,7 +75,7 @@ export class InventoryStore {
         this.categoriesSignal.set(categoryEntities);
       },
       error: (err: any) => {
-        this.errorSignal.set('Error loading categories');
+        this.errorSignal.set(this.formatError(err, 'Error loading categories'));
       }
     });
 
@@ -84,7 +84,7 @@ export class InventoryStore {
         this.providersSignal.set(providers);
       },
       error: (err: any) => {
-        this.errorSignal.set('Error loading providers');
+        this.errorSignal.set(this.formatError(err, 'Error loading providers'));
       }
     });
 
@@ -93,7 +93,7 @@ export class InventoryStore {
         this.kitsSignal.set(kits);
       },
       error: (err: any) => {
-        this.errorSignal.set('Error loading kits');
+        this.errorSignal.set(this.formatError(err, 'Error loading kits'));
       }
     });
 
@@ -103,7 +103,7 @@ export class InventoryStore {
         this.loadingSignal.set(false);
       },
       error: (err: any) => {
-        this.errorSignal.set('Error loading restockings');
+        this.errorSignal.set(this.formatError(err, 'Error loading restockings'));
         this.loadingSignal.set(false);
       }
     });
@@ -242,5 +242,18 @@ export class InventoryStore {
    */
   refresh(): void {
     this.loadInventoryData();
+  }
+
+  /**
+   * Formats error messages for better user experience.
+   * @param error - The error object.
+   * @param fallback - The fallback message if error is not an Error instance.
+   * @returns A formatted error message.
+   */
+  private formatError(error: any, fallback: string): string {
+    if (error instanceof Error) {
+      return error.message.includes('Resource not found') ? `${fallback}: Not found` : error.message;
+    }
+    return fallback;
   }
 }

@@ -35,12 +35,12 @@ export class AuthStore {
     this.errorSignal.set(null);
 
     this.authApi.login(credentials).subscribe({
-      next: (user) => {
+      next: (user: User) => {
         this.userSignal.set(user);
         this.loadingSignal.set(false);
       },
-      error: (err) => {
-        this.errorSignal.set('Error during login');
+      error: (err: Error) => {
+        this.errorSignal.set(this.formatError(err, 'Error during login'));
         this.loadingSignal.set(false);
       }
     });
@@ -55,12 +55,12 @@ export class AuthStore {
     this.errorSignal.set(null);
 
     this.authApi.register(data).subscribe({
-      next: (user) => {
+      next: (user: User) => {
         this.userSignal.set(user);
         this.loadingSignal.set(false);
       },
-      error: (err) => {
-        this.errorSignal.set('Error during registration');
+      error: (err: Error) => {
+        this.errorSignal.set(this.formatError(err, 'Error during registration'));
         this.loadingSignal.set(false);
       }
     });
@@ -78,8 +78,8 @@ export class AuthStore {
         this.userSignal.set(null);
         this.loadingSignal.set(false);
       },
-      error: (err) => {
-        this.errorSignal.set('Error during logout');
+      error: (err: Error) => {
+        this.errorSignal.set(this.formatError(err, 'Error during logout'));
         this.loadingSignal.set(false);
       }
     });
@@ -90,5 +90,18 @@ export class AuthStore {
    */
   clearError(): void {
     this.errorSignal.set(null);
+  }
+
+  /**
+   * Formats error messages for better user experience.
+   * @param error - The error object.
+   * @param fallback - The fallback message if error is not an Error instance.
+   * @returns A formatted error message.
+   */
+  private formatError(error: any, fallback: string): string {
+    if (error instanceof Error) {
+      return error.message.includes('Resource not found') ? `${fallback}: Not found` : error.message;
+    }
+    return fallback;
   }
 }

@@ -46,7 +46,7 @@ export class DashboardStore {
         this.statsSignal.set(stats);
       },
       error: (err: Error) => {
-        this.errorSignal.set('Error loading dashboard stats');
+        this.errorSignal.set(this.formatError(err, 'Error loading dashboard stats'));
         this.loadingSignal.set(false);
       }
     });
@@ -56,7 +56,7 @@ export class DashboardStore {
         this.monthlyIncomeSignal.set(data);
       },
       error: (err: Error) => {
-        this.errorSignal.set('Error loading monthly income');
+        this.errorSignal.set(this.formatError(err, 'Error loading monthly income'));
       }
     });
 
@@ -65,7 +65,7 @@ export class DashboardStore {
         this.productSalesSignal.set(data);
       },
       error: (err: Error) => {
-        this.errorSignal.set('Error loading product sales');
+        this.errorSignal.set(this.formatError(err, 'Error loading product sales'));
       }
     });
 
@@ -76,7 +76,7 @@ export class DashboardStore {
         this.loadingSignal.set(false);
       },
       error: (err: Error) => {
-        this.errorSignal.set('Error loading notifications');
+        this.errorSignal.set(this.formatError(err, 'Error loading notifications'));
         this.loadingSignal.set(false);
       }
     });
@@ -87,5 +87,18 @@ export class DashboardStore {
    */
   refresh(): void {
     this.loadDashboardData();
+  }
+
+  /**
+   * Formats error messages for better user experience.
+   * @param error - The error object.
+   * @param fallback - The fallback message if error is not an Error instance.
+   * @returns A formatted error message.
+   */
+  private formatError(error: any, fallback: string): string {
+    if (error instanceof Error) {
+      return error.message.includes('Resource not found') ? `${fallback}: Not found` : error.message;
+    }
+    return fallback;
   }
 }

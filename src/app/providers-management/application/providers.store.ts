@@ -32,12 +32,12 @@ export class ProvidersStore {
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
     this.providersApi.getProviders().subscribe({
-      next: (data) => {
+      next: (data: Provider[]) => {
         this.providersSignal.set(data);
         this.loadingSignal.set(false);
       },
-      error: (err) => {
-        this.errorSignal.set('Error loading providers');
+      error: (err: Error) => {
+        this.errorSignal.set(this.formatError(err, 'Error loading providers'));
         this.loadingSignal.set(false);
       }
     });
@@ -76,5 +76,18 @@ export class ProvidersStore {
    */
   refresh(): void {
     this.loadProviders();
+  }
+
+  /**
+   * Formats error messages for better user experience.
+   * @param error - The error object.
+   * @param fallback - The fallback message if error is not an Error instance.
+   * @returns A formatted error message.
+   */
+  private formatError(error: any, fallback: string): string {
+    if (error instanceof Error) {
+      return error.message.includes('Resource not found') ? `${fallback}: Not found` : error.message;
+    }
+    return fallback;
   }
 }
