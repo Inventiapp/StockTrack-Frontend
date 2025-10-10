@@ -1,7 +1,8 @@
 {
   "global": {
     "cancel": "Cancel",
-    "save": "Save"
+    "save": "Save",
+    "exit": "Exit"
   },
   "sidebar": {
     "title": "StockTrack",
@@ -56,7 +57,7 @@
     "receiptDate": "Receipt date",
     "expirationDate": "Expiration date",
     "amountEntering": "Amount entering",
-    "total": "Total"
+    "lastReception": "Last reception"
   },
   "providers-table": {
     "name": "Name",

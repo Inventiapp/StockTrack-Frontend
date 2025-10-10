@@ -1,7 +1,8 @@
 {
   "global": {
     "cancel": "Cancelar",
-    "save": "Guardar"
+    "save": "Guardar",
+    "exit": "Salir"
   },
   "sidebar": {
     "title": "StockTrack",
@@ -55,7 +56,8 @@
     "lot": "Lote",
     "receiptDate": "Fecha de recepción",
     "expirationDate": "Fecha de vencimiento",
-    "amountEntering": "Cantidad ingresando"
+    "amountEntering": "Cantidad ingresando",
+    "lastReception": "Última recepción"
   },
   "providers-table": {
     "name": "Nombre",

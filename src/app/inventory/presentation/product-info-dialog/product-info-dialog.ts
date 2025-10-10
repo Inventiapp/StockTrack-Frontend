@@ -1,6 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {TranslatePipe} from '@ngx-translate/core';
 
 export interface ProductInfoData {
   title: string;
@@ -17,7 +18,7 @@ export interface ProductInfoData {
 @Component({
   selector: 'app-product-info-dialog',
   standalone: true,
-  imports: [CommonModule, MatDialogModule],
+  imports: [CommonModule, MatDialogModule, TranslatePipe],
   templateUrl: './product-info-dialog.html',
   styleUrls: ['./product-info-dialog.css'],
 })
