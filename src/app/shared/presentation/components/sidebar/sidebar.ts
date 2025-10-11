@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { LanguageSwitcher } from '../language-switcher/language-switcher';
+import { AuthStore } from '../../../../auth/application/auth.store';
 
 interface MenuItem {
   titleKey: string;
@@ -19,6 +20,7 @@ interface MenuItem {
 })
 export class SidebarComponent {
   private translate = inject(TranslateService);
+  protected authStore = inject(AuthStore);
   isExpanded = true;
 
   menuItems: MenuItem[] = [
@@ -63,5 +65,9 @@ export class SidebarComponent {
 
   protected t(key: string): string {
     return this.translate.instant(key);
+  }
+
+  logout(): void {
+    this.authStore.logout();
   }
 }

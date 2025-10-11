@@ -191,6 +191,17 @@
   background: rgba(255, 255, 255, 0.25);
 }
 
+.sidebar .sidebar-footer a.logout-btn {
+  cursor: pointer;
+  background: rgba(255, 107, 53, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.sidebar .sidebar-footer a.logout-btn:hover {
+  background: rgba(255, 107, 53, 0.5);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
 /* Ajustes para cuando está colapsado */
 .sidebar:not(.expanded) .menu ul li a,
 .sidebar:not(.expanded) .sidebar-footer a {

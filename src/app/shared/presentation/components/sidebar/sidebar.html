@@ -33,5 +33,9 @@
       <i class="material-icons">person</i>
       <span *ngIf="isExpanded">{{ t('sidebar.footer.profile') }}</span>
     </a>
+    <a (click)="logout()" class="logout-btn">
+      <i class="material-icons">logout</i>
+      <span *ngIf="isExpanded">{{ t('sidebar.footer.logout') }}</span>
+    </a>
   </div>
 </div>
