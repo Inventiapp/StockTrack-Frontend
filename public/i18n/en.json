@@ -15,7 +15,8 @@
     },
     "footer": {
       "settings": "Settings",
-      "profile": "Profile"
+      "profile": "Profile",
+      "logout": "Logout"
     }
   },
   "home": {
@@ -189,6 +190,7 @@
     "lastnameLabel": "Last Name",
     "phoneLabel": "Phone Number",
     "emailLabel": "Email",
+    "passwordLabel": "Password",
     "roleLabel": "Role",
     "editUserTitle": "Edit User",
     "fullNameLabel": "Full Name",
@@ -210,7 +212,13 @@
     "save": "Save",
     "saveChanges": "Save Changes",
     "delete": "Delete"
-
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "message": "Oops! The page you're looking for doesn't exist.",
+    "description": "The URL might be misspelled or the page may have been moved. Please check the address or return to the main page.",
+    "goHome": "Go Home",
+    "goBack": "Go Back"
   }
 
 }

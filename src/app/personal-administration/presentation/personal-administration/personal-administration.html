@@ -71,19 +71,22 @@
     <h3>{{ t('personalAdministration.newUserTitle') }}</h3>
     <form (ngSubmit)="saveUser()">
       <label>{{ t('personalAdministration.nameLabel') }}</label>
-      <input type="text" [ngModel]="newUser().name" (ngModelChange)="newUser.update(u => ({...u, name: $event}))" name="name" required />
+      <input type="text" [ngModel]="newUser().name" (ngModelChange)="updateNewUserField('name', $event)" name="name" required />
 
       <label>{{ t('personalAdministration.lastnameLabel') }}</label>
-      <input type="text" [ngModel]="newUser().lastname" (ngModelChange)="newUser.update(u => ({...u, lastname: $event}))" name="lastname" required />
+      <input type="text" [ngModel]="newUser().lastname" (ngModelChange)="updateNewUserField('lastname', $event)" name="lastname" required />
 
       <label>{{ t('personalAdministration.phoneLabel') }}</label>
-      <input type="text" [ngModel]="newUser().phone" (ngModelChange)="newUser.update(u => ({...u, phone: $event}))" name="phone" required />
+      <input type="text" [ngModel]="newUser().phone" (ngModelChange)="updateNewUserField('phone', $event)" name="phone" required />
 
       <label>{{ t('personalAdministration.emailLabel') }}</label>
-      <input type="email" [ngModel]="newUser().email" (ngModelChange)="newUser.update(u => ({...u, email: $event}))" name="email" required />
+      <input type="email" [ngModel]="newUser().email" (ngModelChange)="updateNewUserField('email', $event)" name="email" required />
+
+      <label>{{ t('personalAdministration.passwordLabel') }}</label>
+      <input type="password" [ngModel]="newUser().password" (ngModelChange)="updateNewUserField('password', $event)" name="password" required />
 
       <label>{{ t('personalAdministration.roleLabel') }}</label>
-      <select [ngModel]="newUser().role" (ngModelChange)="newUser.update(u => ({...u, role: $event}))" name="role" required>
+      <select [ngModel]="newUser().role" (ngModelChange)="updateNewUserField('role', $event)" name="role" required>
         <option *ngFor="let role of roles" [value]="role.name">{{ role.name }}</option>
       </select>
 
@@ -100,18 +103,18 @@
     <h3>{{ t('personalAdministration.editUserTitle') }}</h3>
     <form (ngSubmit)="saveEditedUser()">
       <label>{{ t('personalAdministration.fullNameLabel') }}</label>
-      <input type="text" [ngModel]="selectedUser()?.name" (ngModelChange)="selectedUser.update(u => u ? {...u, name: $event} : null)" name="editName" />
+      <input type="text" [ngModel]="selectedUser()?.name" (ngModelChange)="updateSelectedUserField('name', $event)" name="editName" />
 
       <label>{{ t('personalAdministration.roleLabel') }}</label>
-      <select [ngModel]="selectedUser()?.role" (ngModelChange)="selectedUser.update(u => u ? {...u, role: $event === 'Administrador' ? 'ADMIN' : 'VENDOR'} : null)" name="editRole">
+      <select [ngModel]="selectedUser()?.role" (ngModelChange)="updateSelectedUserField('role', $event)" name="editRole">
         <option *ngFor="let role of roles" [value]="role.name">{{ role.name }}</option>
       </select>
 
       <label>{{ t('personalAdministration.accountLabel') }}</label>
-      <input type="email" [ngModel]="selectedUser()?.email" (ngModelChange)="selectedUser.update(u => u ? {...u, email: $event} : null)" name="editAccount" />
+      <input type="email" [ngModel]="selectedUser()?.email" (ngModelChange)="updateSelectedUserField('email', $event)" name="editAccount" />
 
       <label>{{ t('personalAdministration.statusLabel') }}</label>
-      <select [ngModel]="selectedUser()?.status" (ngModelChange)="selectedUser.update(u => u ? {...u, status: $event === 'Activo' ? 'ACTIVE' : 'INACTIVE'} : null)" name="editStatus">
+      <select [ngModel]="selectedUser()?.status" (ngModelChange)="updateSelectedUserField('status', $event)" name="editStatus">
         <option value="Activo">{{ t('personalAdministration.active') }}</option>
         <option value="Inactivo">{{ t('personalAdministration.inactive') }}</option>
       </select>
@@ -143,7 +146,7 @@
       <input
         type="text"
         [ngModel]="newRole().name"
-        (ngModelChange)="newRole.update(r => ({...r, name: $event}))"
+        (ngModelChange)="updateNewRoleField('name', $event)"
         name="roleName"
         [placeholder]="t('personalAdministration.rolePlaceholder')"
         required
@@ -152,19 +155,19 @@
       <label class="perm-title">{{ t('personalAdministration.permissionsTitle') }}</label>
       <div class="permissions">
         <label class="perm-item">
-          <input type="checkbox" [ngModel]="newRole().permissions.productos" (ngModelChange)="newRole.update(r => ({...r, permissions: {...r.permissions, productos: $event}}))" name="permProducts" />
+          <input type="checkbox" [ngModel]="newRole().permissions.productos" (ngModelChange)="updateNewRoleField('permissions.productos', $event)" name="permProducts" />
           {{ t('personalAdministration.permissionProducts') }}
         </label>
         <label class="perm-item">
-          <input type="checkbox" [ngModel]="newRole().permissions.compras" (ngModelChange)="newRole.update(r => ({...r, permissions: {...r.permissions, compras: $event}}))" name="permPurchases" />
+          <input type="checkbox" [ngModel]="newRole().permissions.compras" (ngModelChange)="updateNewRoleField('permissions.compras', $event)" name="permPurchases" />
           {{ t('personalAdministration.permissionPurchases') }}
         </label>
         <label class="perm-item">
-          <input type="checkbox" [ngModel]="newRole().permissions.estadisticas" (ngModelChange)="newRole.update(r => ({...r, permissions: {...r.permissions, estadisticas: $event}}))" name="permStats" />
+          <input type="checkbox" [ngModel]="newRole().permissions.estadisticas" (ngModelChange)="updateNewRoleField('permissions.estadisticas', $event)" name="permStats" />
           {{ t('personalAdministration.permissionStats') }}
         </label>
         <label class="perm-item">
-          <input type="checkbox" [ngModel]="newRole().permissions.usuarios" (ngModelChange)="newRole.update(r => ({...r, permissions: {...r.permissions, usuarios: $event}}))" name="permUsers" />
+          <input type="checkbox" [ngModel]="newRole().permissions.usuarios" (ngModelChange)="updateNewRoleField('permissions.usuarios', $event)" name="permUsers" />
           {{ t('personalAdministration.permissionUsers') }}
         </label>
       </div>

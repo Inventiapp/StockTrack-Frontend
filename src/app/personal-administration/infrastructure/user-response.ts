@@ -13,6 +13,7 @@ export interface UserResource extends BaseResource {
   name: string;
   role: string;
   email: string;
+  password?: string;
   status: string;
 }
 

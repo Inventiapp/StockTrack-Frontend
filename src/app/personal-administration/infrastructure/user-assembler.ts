@@ -23,6 +23,7 @@ export class UserAssembler implements BaseAssembler<User, UserResource, UserResp
       name: resource.name,
       role: this.mapStringToUserRole(resource.role),
       email: resource.email,
+      password: resource.password || '',
       status: this.mapStringToUserStatus(resource.status)
     });
   }
@@ -33,13 +34,22 @@ export class UserAssembler implements BaseAssembler<User, UserResource, UserResp
    * @returns A UserResource.
    */
   toResourceFromEntity(entity: User): UserResource {
-    return {
-      id: entity.id,
+    const resource: UserResource = {
       name: entity.name,
       role: entity.role,
       email: entity.email,
       status: entity.status
     };
+
+    if (entity.id && entity.id.trim() !== '') {
+      resource.id = entity.id;
+    }
+
+    if (entity.password && entity.password.trim() !== '') {
+      resource.password = entity.password;
+    }
+
+    return resource;
   }
 
   /**

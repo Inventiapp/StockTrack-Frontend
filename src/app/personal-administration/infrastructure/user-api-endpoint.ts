@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { User } from '../domain/user.model';
 import { UserResource, UserResponse, UserListResponse } from './user-response';
 import { UserAssembler } from './user-assembler';
+import { environment } from '../../../environments/environment';
 
 /**
  * API endpoint definitions for user operations.
@@ -15,7 +16,7 @@ import { UserAssembler } from './user-assembler';
   providedIn: 'root'
 })
 export class UserApiEndpoint {
-  private readonly baseUrl = '/api/users';
+  private readonly baseUrl = `${environment.apiBaseUrl}/users`;
 
   constructor(private http: HttpClient, private assembler: UserAssembler) {}
 

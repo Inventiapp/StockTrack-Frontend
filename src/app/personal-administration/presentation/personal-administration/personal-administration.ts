@@ -30,6 +30,7 @@ export class PersonalAdministrationComponent {
     lastname: '',
     phone: '',
     email: '',
+    password: '',
     role: ''
   });
 
@@ -57,6 +58,30 @@ export class PersonalAdministrationComponent {
     return this.translate.instant(key, params);
   }
 
+  updateNewUserField(field: 'name' | 'lastname' | 'phone' | 'email' | 'password' | 'role', value: string): void {
+    const current = this.newUser();
+    this.newUser.set({ ...current, [field]: value });
+  }
+
+  updateSelectedUserField(field: string, value: string): void {
+    const current = this.selectedUser();
+    if (!current) return;
+    this.selectedUser.set({ ...current, [field]: value } as User);
+  }
+
+  updateNewRoleField(field: string, value: any): void {
+    const current = this.newRole();
+    if (field.startsWith('permissions.')) {
+      const permKey = field.split('.')[1] as keyof typeof current.permissions;
+      this.newRole.set({
+        ...current,
+        permissions: { ...current.permissions, [permKey]: value }
+      });
+    } else {
+      this.newRole.set({ ...current, [field]: value });
+    }
+  }
+
   get filteredUsers() {
     const search = this.searchTerm().toLowerCase();
     return this.users().filter(user => {
@@ -78,7 +103,7 @@ export class PersonalAdministrationComponent {
   openUserModal() { this.showUserModal.set(true); }
   closeUserModal() { 
     this.showUserModal.set(false);
-    this.newUser.set({ name: '', lastname: '', phone: '', email: '', role: '' });
+    this.newUser.set({ name: '', lastname: '', phone: '', email: '', password: '', role: '' });
   }
 
   openRoleModal() { this.showRoleModal.set(true); }
@@ -127,7 +152,7 @@ export class PersonalAdministrationComponent {
 
   saveUser() {
     const userData = this.newUser();
-    if (!userData.name || !userData.email || !userData.role) return;
+    if (!userData.name || !userData.email || !userData.password || !userData.role) return;
 
     const role = userData.role === 'Administrador' ? UserRole.ADMIN : UserRole.VENDOR;
     
@@ -135,6 +160,7 @@ export class PersonalAdministrationComponent {
       name: `${userData.name} ${userData.lastname}`.trim(),
       role: role,
       email: userData.email,
+      password: userData.password,
       status: UserStatus.ACTIVE
     });
 

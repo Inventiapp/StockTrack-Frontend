@@ -15,7 +15,8 @@
     },
     "footer": {
       "settings": "Configuración",
-      "profile": "Perfil"
+      "profile": "Perfil",
+      "logout": "Cerrar Sesión"
     }
   },
   "home": {
@@ -188,6 +189,7 @@
     "lastnameLabel": "Apellidos",
     "phoneLabel": "Número telefónico",
     "emailLabel": "Correo",
+    "passwordLabel": "Contraseña",
     "roleLabel": "Rol",
     "editUserTitle": "Editar Usuario",
     "fullNameLabel": "Nombre completo",
@@ -209,6 +211,13 @@
     "save": "Guardar",
     "saveChanges": "Guardar Cambios",
     "delete": "Eliminar"
+  },
+  "notFound": {
+    "title": "Página No Encontrada",
+    "message": "¡Ups! La página que buscas no existe.",
+    "description": "Es posible que la URL esté mal escrita o que la página se haya movido. Por favor, verifica la dirección o regresa a la página principal.",
+    "goHome": "Ir al Inicio",
+    "goBack": "Volver Atrás"
   }
 
 }

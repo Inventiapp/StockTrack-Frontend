@@ -17,12 +17,14 @@ export class User implements BaseEntity {
     name: string;
     role: UserRole;
     email: string;
+    password?: string;
     status: UserStatus;
   }) {
     this._id = user.id;
     this._name = user.name;
     this._role = user.role;
     this._email = user.email;
+    this._password = user.password || '';
     this._status = user.status;
   }
 
@@ -62,6 +64,14 @@ export class User implements BaseEntity {
       throw new Error('Invalid email format');
     }
     this._email = value.toLowerCase().trim();
+  }
+
+  private _password: string;
+  get password(): string {
+    return this._password;
+  }
+  set password(value: string) {
+    this._password = value;
   }
 
   private _status: UserStatus;

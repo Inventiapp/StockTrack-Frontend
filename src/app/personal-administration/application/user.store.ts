@@ -60,6 +60,7 @@ export class UserStore {
     name: string;
     role: UserRole;
     email: string;
+    password: string;
     status: UserStatus;
   }): void {
     this.loadingSignal.set(true);
@@ -70,6 +71,7 @@ export class UserStore {
       name: userData.name,
       role: userData.role,
       email: userData.email,
+      password: userData.password,
       status: userData.status
     });
 
