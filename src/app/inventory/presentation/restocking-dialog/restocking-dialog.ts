@@ -58,6 +58,9 @@ export class RestockingDialogComponent implements OnInit {
   }
 
   loadProductsWithStock(): void {
+    this.loading = true;
+    this.error = '';
+    
     this.stockApi.getStock().subscribe({
       next: (stock) => {
         const stockMap = new Map(stock.map(s => [s.productId, s.currentStock]));
@@ -73,9 +76,12 @@ export class RestockingDialogComponent implements OnInit {
               total: currentStock
             };
           });
+        this.loading = false;
       },
       error: (error: any) => {
         console.error('Error al cargar stock:', error);
+        this.error = 'Error al cargar los productos y stock';
+        this.loading = false;
       }
     });
   }
