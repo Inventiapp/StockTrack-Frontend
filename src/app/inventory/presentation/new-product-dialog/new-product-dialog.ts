@@ -3,10 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 
-import { ProductsApi } from '../../infrastructure/products-api';
-import { StockApi } from '../../infrastructure/stock-api';
 import { InventoryStore } from '../../application/inventory.store';
-import {TranslatePipe} from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-new-product-dialog',
@@ -17,9 +15,7 @@ import {TranslatePipe} from '@ngx-translate/core';
 })
 export class NewProductDialogComponent {
   protected readonly store = inject(InventoryStore);
-  private dialogRef   = inject(MatDialogRef<NewProductDialogComponent>);
-  private productsApi = inject(ProductsApi);
-  private stockApi    = inject(StockApi);
+  private dialogRef = inject(MatDialogRef<NewProductDialogComponent>);
 
   form = {
     name: '',
@@ -46,8 +42,7 @@ export class NewProductDialogComponent {
   save() {
     const unitPrice = Number(String(this.form.unitPrice).replace(',', '.'));
 
-    const product = {
-      id: `prod-${Date.now()}`,
+    const productData = {
       name: this.form.name.trim(),
       description: '',
       categoryId: this.form.categoryId,
@@ -57,17 +52,7 @@ export class NewProductDialogComponent {
       isActive: true
     };
 
-    this.productsApi.createProduct(product).subscribe({
-      next: (createdProduct) => {
-        this.stockApi.createStock(product.id, 0).subscribe({
-          next: () => {
-            this.store.addProduct(createdProduct);
-            this.dialogRef.close(true);
-          },
-          error: () => this.dialogRef.close(true)
-        });
-      },
-      error: () => this.dialogRef.close(false)
-    });
+    this.store.addProduct(productData as any);
+    this.dialogRef.close(true);
   }
 }

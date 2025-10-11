@@ -5,13 +5,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
-import { ProductsApi } from '../../infrastructure/products-api';
-import { StockApi } from '../../infrastructure/stock-api';
-import { Product } from '../../domain/model/product.entity';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { forkJoin } from 'rxjs';
-import {TranslatePipe} from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { InventoryStore } from '../../application/inventory.store';
 
 interface RestockingItem {
@@ -34,56 +32,50 @@ interface RestockingItem {
     MatInputModule,
     MatFormFieldModule,
     MatIconModule,
+    MatDatepickerModule,
     FormsModule,
     MatProgressSpinnerModule,
     TranslatePipe
   ],
+  providers: [provideNativeDateAdapter()]
 })
 export class RestockingDialogComponent implements OnInit {
   protected readonly store = inject(InventoryStore);
   private dialogRef = inject(MatDialogRef<RestockingDialogComponent>);
-  private productsApi = inject(ProductsApi);
-  private stockApi = inject(StockApi);
 
   lote: string = '';
-  fechaRecepcion: string = '';
-  fechaVencimiento: string = '';
+  fechaRecepcion: Date | null = null;
+  fechaVencimiento: Date | null = null;
 
   items: RestockingItem[] = [];
-  loading: boolean = true;
-  error: string = '';
+
+  get loading(): boolean {
+    return this.store.loading();
+  }
+
+  get error(): string | null {
+    return this.store.error();
+  }
 
   ngOnInit(): void {
     this.loadProductsWithStock();
   }
 
   loadProductsWithStock(): void {
-    this.loading = true;
-    this.error = '';
+    const stockMap = new Map(this.store.stock().map(s => [s.productId, s.currentStock]));
     
-    this.stockApi.getStock().subscribe({
-      next: (stock) => {
-        const stockMap = new Map(stock.map(s => [s.productId, s.currentStock]));
-        this.items = this.store.products()
-          .filter(p => p.isActive === true)
-          .map(product => {
-            const currentStock = stockMap.get(product.id) || 0;
-            return {
-              productId: product.id,
-              name: product.name,
-              currentStock: currentStock,
-              quantity: 0,
-              total: currentStock
-            };
-          });
-        this.loading = false;
-      },
-      error: (error: any) => {
-        console.error('Error al cargar stock:', error);
-        this.error = 'Error al cargar los productos y stock';
-        this.loading = false;
-      }
-    });
+    this.items = this.store.products()
+      .filter(p => p.isActive === true)
+      .map(product => {
+        const currentStock = stockMap.get(product.id) || 0;
+        return {
+          productId: product.id,
+          name: product.name,
+          currentStock: currentStock,
+          quantity: 0,
+          total: currentStock
+        };
+      });
   }
 
   onCancel(): void {
@@ -97,8 +89,8 @@ export class RestockingDialogComponent implements OnInit {
 
     const data = {
       lote: this.lote,
-      fechaRecepcion: this.fechaRecepcion,
-      fechaVencimiento: this.fechaVencimiento,
+      fechaRecepcion: this.fechaRecepcion?.toISOString().split('T')[0] || '',
+      fechaVencimiento: this.fechaVencimiento?.toISOString().split('T')[0] || '',
       items: itemsToSave
     };
     this.dialogRef.close(data);
@@ -125,13 +117,13 @@ export class RestockingDialogComponent implements OnInit {
 
   touched = false;
 
-  isValidDate(d: string): boolean {
-    return !!d && !isNaN(Date.parse(d));
+  isValidDate(d: Date | null): boolean {
+    return d !== null && d instanceof Date && !isNaN(d.getTime());
   }
 
   isExpirationBeforeReception(): boolean {
     if (!this.isValidDate(this.fechaRecepcion) || !this.isValidDate(this.fechaVencimiento)) return false;
-    return new Date(this.fechaVencimiento) < new Date(this.fechaRecepcion);
+    return this.fechaVencimiento! < this.fechaRecepcion!;
   }
 
   get canSave(): boolean {

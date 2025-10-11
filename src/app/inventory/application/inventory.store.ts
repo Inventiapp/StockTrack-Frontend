@@ -8,6 +8,7 @@ import { ProductsApi } from '../infrastructure/products-api';
 import { CategoryApi } from '../infrastructure/category-api';
 import { ProvidersApi } from '../../providers-management/infrastructure/providers-api';
 import { StockApi } from '../infrastructure/stock-api';
+import { StockResource } from '../infrastructure/stock-response';
 import { KitApi } from '../infrastructure/kit-api';
 import { RestockingApi } from '../infrastructure/restocking-api';
 
@@ -23,6 +24,7 @@ export class InventoryStore {
   private readonly productsSignal = signal<Product[]>([]);
   private readonly categoriesSignal = signal<Category[]>([]);
   private readonly providersSignal = signal<Provider[]>([]);
+  private readonly stockSignal = signal<StockResource[]>([]);
   private readonly kitsSignal = signal<Kit[]>([]);
   private readonly restockingsSignal = signal<Restocking[]>([]);
   private readonly loadingSignal = signal<boolean>(false);
@@ -31,6 +33,7 @@ export class InventoryStore {
   readonly products = this.productsSignal.asReadonly();
   readonly categories = this.categoriesSignal.asReadonly();
   readonly providers = this.providersSignal.asReadonly();
+  readonly stock = this.stockSignal.asReadonly();
   readonly kits = this.kitsSignal.asReadonly();
   readonly restockings = this.restockingsSignal.asReadonly();
   readonly loading = this.loadingSignal.asReadonly();
@@ -39,6 +42,7 @@ export class InventoryStore {
   readonly hasProducts = computed(() => this.products().length > 0);
   readonly hasCategories = computed(() => this.categories().length > 0);
   readonly hasProviders = computed(() => this.providers().length > 0);
+  readonly hasStock = computed(() => this.stock().length > 0);
   readonly hasKits = computed(() => this.kits().length > 0);
   readonly hasRestockings = computed(() => this.restockings().length > 0);
 
@@ -85,6 +89,15 @@ export class InventoryStore {
       },
       error: (err: any) => {
         this.errorSignal.set(this.formatError(err, 'Error loading providers'));
+      }
+    });
+
+    this.stockApi.getStock().subscribe({
+      next: (stock: StockResource[]) => {
+        this.stockSignal.set(stock);
+      },
+      error: (err: any) => {
+        this.errorSignal.set(this.formatError(err, 'Error loading stock'));
       }
     });
 
@@ -210,8 +223,33 @@ export class InventoryStore {
    * @param restocking - The restocking to add.
    */
   addRestocking(restocking: Restocking): void {
-    const currentRestockings = this.restockingsSignal();
-    this.restockingsSignal.set([...currentRestockings, restocking]);
+    this.restockingApi.createRestocking(restocking).subscribe({
+      next: (createdRestocking: Restocking) => {
+        this.restockingsSignal.update(restockings => [...restockings, createdRestocking]);
+        
+        // Actualizar el stock de los productos
+        restocking.items.forEach(item => {
+          this.stockApi.getStockByProductId(item.productId).subscribe({
+            next: (stockResource) => {
+              if (stockResource) {
+                const newStock = stockResource.currentStock + item.quantityToAdd;
+                this.stockApi.updateStock(stockResource.id, newStock).subscribe({
+                  next: (updatedStock) => {
+                    // Actualizar el stock en el signal
+                    this.stockSignal.update(stocks => 
+                      stocks.map(s => s.id === updatedStock.id ? updatedStock : s)
+                    );
+                  }
+                });
+              }
+            }
+          });
+        });
+      },
+      error: (err: any) => {
+        this.errorSignal.set(this.formatError(err, 'Error adding restocking'));
+      }
+    });
   }
 
   /**

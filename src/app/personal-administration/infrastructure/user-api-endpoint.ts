@@ -25,8 +25,8 @@ export class UserApiEndpoint {
    * @returns Observable of User entities.
    */
   getAllUsers(): Observable<User[]> {
-    return this.http.get<UserListResponse>(this.baseUrl).pipe(
-      map(response => this.assembler.toEntitiesFromListResponse(response))
+    return this.http.get<UserResource[]>(this.baseUrl).pipe(
+      map(response => this.assembler.toEntitiesFromResources(response))
     );
   }
 

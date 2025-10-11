@@ -200,7 +200,6 @@ export class PersonalAdministrationComponent {
     }
 
     // TODO: Implement role creation in backend
-    console.log('Role to create:', roleData);
     this.closeRoleModal();
   }
 

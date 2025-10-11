@@ -18,10 +18,13 @@ export class AuthStore {
   private readonly userSignal = signal<User | null>(null);
   private readonly loadingSignal = signal<boolean>(false);
   private readonly errorSignal = signal<string | null>(null);
+  private readonly initializedSignal = signal<boolean>(false);
+  private initializationPromise: Promise<void> | null = null;
 
   readonly user = this.userSignal.asReadonly();
   readonly loading = this.loadingSignal.asReadonly();
   readonly error = this.errorSignal.asReadonly();
+  readonly initialized = this.initializedSignal.asReadonly();
 
   readonly isAuthenticated = computed(() => this.user() !== null);
   readonly currentUser = computed(() => this.user());
@@ -39,33 +42,56 @@ export class AuthStore {
    * Initializes authentication state from stored token.
    */
   private initializeAuth(): void {
-    if (this.tokenService.hasToken() && !this.tokenService.isTokenExpired()) {
-      const decoded = this.tokenService.decodeToken();
-      if (decoded) {
-        const userId = String(decoded.sub);
-        
-        // Obtener información completa del usuario incluyendo el rol
-        this.authApi.getUserById(userId).subscribe({
-          next: (userData: any) => {
-            this.userSignal.set(new User({
-              id: userId,
-              email: decoded.email,
-              name: userData.name || decoded.email.split('@')[0],
-              role: userData.role || 'Vendedor'
-            }));
-          },
-          error: (err: Error) => {
-            // Si falla la petición, usar datos básicos del JWT
-            this.userSignal.set(new User({
-              id: userId,
-              email: decoded.email,
-              name: decoded.email.split('@')[0],
-              role: 'Vendedor' // Rol por defecto
-            }));
-          }
-        });
+    this.initializationPromise = new Promise<void>((resolve) => {
+      if (this.tokenService.hasToken() && !this.tokenService.isTokenExpired()) {
+        const decoded = this.tokenService.decodeToken();
+        if (decoded) {
+          const userId = String(decoded.sub);
+          
+          // Obtener información completa del usuario incluyendo el rol
+          this.authApi.getUserById(userId).subscribe({
+            next: (userData: any) => {
+              this.userSignal.set(new User({
+                id: userId,
+                email: decoded.email,
+                name: userData.name || decoded.email.split('@')[0],
+                role: userData.role || 'Vendedor'
+              }));
+              this.initializedSignal.set(true);
+              resolve();
+            },
+            error: (err: Error) => {
+              // Si falla la petición, usar datos básicos del JWT
+              this.userSignal.set(new User({
+                id: userId,
+                email: decoded.email,
+                name: decoded.email.split('@')[0],
+                role: 'Vendedor' // Rol por defecto
+              }));
+              this.initializedSignal.set(true);
+              resolve();
+            }
+          });
+        } else {
+          this.initializedSignal.set(true);
+          resolve();
+        }
+      } else {
+        this.initializedSignal.set(true);
+        resolve();
       }
+    });
+  }
+
+  /**
+   * Waits for the authentication store to be fully initialized.
+   * @returns A promise that resolves when initialization is complete.
+   */
+  waitForInitialization(): Promise<void> {
+    if (this.initializationPromise) {
+      return this.initializationPromise;
     }
+    return Promise.resolve();
   }
 
   /**

@@ -16,6 +16,10 @@ export const routes: Routes = [
       import('./auth/presentation/views/auth.routes').then(m => m.authRoutes)
   },
   {
+    path: '404',
+    component: NotFound
+  },
+  {
     path: '',
     component: Layout,
     canActivate: [authGuard],
@@ -61,9 +65,9 @@ export const routes: Routes = [
       }
     ]
   },
-  {
-    path: '404',
-    component: NotFound
-  },
-  { path: '**', redirectTo: '404' }
+  { 
+    path: '**', 
+    redirectTo: '404',
+    pathMatch: 'full'
+  }
 ];

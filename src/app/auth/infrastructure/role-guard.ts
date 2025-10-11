@@ -25,7 +25,6 @@ export const roleGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
-  // Obtener el rol del AuthStore en lugar del JWT
   const currentUser = authStore.currentUser();
   const userRole = currentUser?.role;
 

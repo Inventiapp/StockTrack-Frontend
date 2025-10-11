@@ -1,4 +1,10 @@
 {
-  "/api/v1/*": "/$1",
-  "/api/v1/dashboard": "/dashboard"
+  "users": 600,
+  "providers": 644,
+  "products": 644,
+  "categories": 444,
+  "stock": 644,
+  "restockings": 644,
+  "kits": 644,
+  "dashboard": 440
 }

@@ -36,9 +36,9 @@ export class UserAssembler implements BaseAssembler<User, UserResource, UserResp
   toResourceFromEntity(entity: User): UserResource {
     const resource: UserResource = {
       name: entity.name,
-      role: entity.role,
+      role: this.mapUserRoleToString(entity.role),
       email: entity.email,
-      status: entity.status
+      status: this.mapUserStatusToString(entity.status)
     };
 
     if (entity.id && entity.id.trim() !== '') {
@@ -103,10 +103,10 @@ export class UserAssembler implements BaseAssembler<User, UserResource, UserResp
    * @returns The corresponding UserRole enum value.
    */
   private mapStringToUserRole(roleString: string): UserRole {
-    switch (roleString) {
-      case 'Administrador':
+    switch (roleString.toLowerCase()) {
+      case 'administrador':
         return UserRole.ADMIN;
-      case 'Vendedor':
+      case 'vendedor':
         return UserRole.VENDOR;
       default:
         throw new Error(`Unknown user role: ${roleString}`);
@@ -119,13 +119,45 @@ export class UserAssembler implements BaseAssembler<User, UserResource, UserResp
    * @returns The corresponding UserStatus enum value.
    */
   private mapStringToUserStatus(statusString: string): UserStatus {
-    switch (statusString) {
-      case 'Activo':
+    switch (statusString.toLowerCase()) {
+      case 'activo':
         return UserStatus.ACTIVE;
-      case 'Inactivo':
+      case 'inactivo':
         return UserStatus.INACTIVE;
       default:
         throw new Error(`Unknown user status: ${statusString}`);
+    }
+  }
+
+  /**
+   * Maps a UserRole enum to string.
+   * @param role - The UserRole enum to map.
+   * @returns The corresponding string value.
+   */
+  private mapUserRoleToString(role: UserRole): string {
+    switch (role) {
+      case UserRole.ADMIN:
+        return 'Administrador';
+      case UserRole.VENDOR:
+        return 'Vendedor';
+      default:
+        throw new Error(`Unknown user role: ${role}`);
+    }
+  }
+
+  /**
+   * Maps a UserStatus enum to string.
+   * @param status - The UserStatus enum to map.
+   * @returns The corresponding string value.
+   */
+  private mapUserStatusToString(status: UserStatus): string {
+    switch (status) {
+      case UserStatus.ACTIVE:
+        return 'Activo';
+      case UserStatus.INACTIVE:
+        return 'Inactivo';
+      default:
+        throw new Error(`Unknown user status: ${status}`);
     }
   }
 }
