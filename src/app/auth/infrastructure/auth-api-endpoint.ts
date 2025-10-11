@@ -10,29 +10,43 @@ import { map } from 'rxjs/operators';
 
 export class AuthApiEndpoint extends BaseApiEndpoint<User, UserResource, LoginResponse, AuthAssembler> {
   constructor(http: HttpClient) {
-    super(http, `${environment.platformProviderApiBaseUrl}/auth`, new AuthAssembler());
+    super(http, `${environment.apiBaseUrl}`, new AuthAssembler());
   }
 
   /**
    * Authenticates a user with the provided credentials.
    * @param credentials - The login credentials.
-   * @returns An Observable of the authenticated User.
+   * @returns An Observable of the login response with token.
+   * @remarks Uses json-server-auth /login endpoint
    */
   login(credentials: LoginCredentials) {
-    return this.http.post<LoginResponse>(`${this.endpointUrl}/login`, credentials).pipe(
-      map(response => this.assembler.toEntityFromResource(response.user))
-    );
+    return this.http.post<any>(`${this.endpointUrl}/login`, {
+      email: credentials.email,
+      password: credentials.password
+    });
   }
 
   /**
    * Registers a new user with the provided data.
    * @param data - The registration data.
-   * @returns An Observable of the created User.
+   * @returns An Observable of the register response with token.
+   * @remarks Uses json-server-auth /register endpoint
    */
   register(data: RegisterData) {
-    return this.http.post<RegisterResponse>(`${this.endpointUrl}/register`, data).pipe(
-      map(response => this.assembler.toEntityFromResource(response.user))
-    );
+    return this.http.post<any>(`${this.endpointUrl}/register`, {
+      email: data.email,
+      password: data.password,
+      name: data.name
+    });
+  }
+
+  /**
+   * Gets user information by ID.
+   * @param userId - The user ID.
+   * @returns An Observable of the user data with complete information.
+   */
+  getUserById(userId: string) {
+    return this.http.get<any>(`${this.endpointUrl}/users/${userId}`);
   }
 
   /**

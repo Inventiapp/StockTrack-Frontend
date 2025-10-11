@@ -35,6 +35,15 @@ export class AuthApi extends BaseApi {
   }
 
   /**
+   * Gets user information by ID.
+   * @param userId - The user ID.
+   * @returns An Observable of the User with complete information.
+   */
+  getUserById(userId: string): Observable<any> {
+    return this.authEndpoint.getUserById(userId);
+  }
+
+  /**
    * Logs out the current user.
    * @returns An Observable that completes when logout is successful.
    */

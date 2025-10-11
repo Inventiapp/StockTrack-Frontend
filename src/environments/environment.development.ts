@@ -1,5 +1,10 @@
 export const environment = {
   production: false,
-  platformProviderApiBaseUrl: 'http://localhost:3000/api/v1',
-  platformProviderProvidersEndpointPath: '/providers'
+  apiBaseUrl: 'https://stocktrack-fake-api-production.up.railway.app',
+  platformProviderApiBaseUrl: 'https://stocktrack-fake-api-production.up.railway.app',
+  platformProviderProvidersEndpointPath: '/providers',
+  platformProviderProductsEndpointPath: '/products',
+  platformProviderStockEndpointPath: '/stock',
+  platformProviderRestockingEndpointPath: '/restockings',
+  platformProviderKitsEndpointPath: '/kits'
 }

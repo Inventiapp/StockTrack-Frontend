@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -38,6 +38,7 @@ import { LanguageSwitcher } from '../../../../shared/presentation/components/lan
 export class LoginComponent {
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   protected translate = inject(TranslateService);
   protected authStore = inject(AuthStore);
 
@@ -67,7 +68,8 @@ export class LoginComponent {
       password: this.loginForm.value.password!
     });
 
-    this.authStore.login(credentials);
+    const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
+    this.authStore.login(credentials, returnUrl);
   }
 
   protected navigateToRegister(): void {
