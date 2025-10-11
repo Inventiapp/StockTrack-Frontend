@@ -1,4 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {
   MAT_DIALOG_DATA,
@@ -20,6 +21,7 @@ import {TranslatePipe} from '@ngx-translate/core';
 @Component({
   selector: 'app-provider-form-dialog',
   imports: [
+    CommonModule,
     MatDialogContent,
     MatFormFieldModule,
     MatFormField,
