@@ -2,7 +2,7 @@ import { BaseEntity } from '../../../shared/infrastructure/base-entity';
 import { DashboardStats } from './dashboard-stats.entity';
 import { MonthlyIncome } from './monthly-income.entity';
 import { ProductSales } from './product-sales.entity';
-import { Notification } from './notification.entity';
+import { DashboardNotification } from './notification.entity';
 
 /**
  * Represents a Dashboard entity in the domain.
@@ -20,7 +20,7 @@ export class Dashboard implements BaseEntity {
     stats: DashboardStats;
     monthlyIncome: MonthlyIncome[];
     productSales: ProductSales[];
-    notifications: Notification[];
+    notifications: DashboardNotification[];
   }) {
     this._id = dashboard.id;
     this._stats = dashboard.stats;
@@ -61,11 +61,11 @@ export class Dashboard implements BaseEntity {
     this._productSales = value;
   }
 
-  private _notifications: Notification[];
-  get notifications(): Notification[] {
+  private _notifications: DashboardNotification[];
+  get notifications(): DashboardNotification[] {
     return this._notifications;
   }
-  set notifications(value: Notification[]) {
+  set notifications(value: DashboardNotification[]) {
     this._notifications = value;
   }
 }

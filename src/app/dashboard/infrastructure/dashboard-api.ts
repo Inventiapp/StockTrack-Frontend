@@ -6,7 +6,7 @@ import { Dashboard } from '../domain/model/dashboard.entity';
 import { DashboardStats } from '../domain/model/dashboard-stats.entity';
 import { MonthlyIncome } from '../domain/model/monthly-income.entity';
 import { ProductSales } from '../domain/model/product-sales.entity';
-import { Notification } from '../domain/model/notification.entity';
+import { DashboardNotification } from '../domain/model/notification.entity';
 
 /**
  * Service for handling dashboard API calls.
@@ -57,9 +57,9 @@ export class DashboardApi {
 
   /**
    * Gets notifications for the dashboard.
-   * @returns An Observable of Notification array.
+   * @returns An Observable of DashboardNotification array.
    */
-  getNotifications(): Observable<Notification[]> {
+  getNotifications(): Observable<DashboardNotification[]> {
     return this.endpoint.getNotifications();
   }
 }

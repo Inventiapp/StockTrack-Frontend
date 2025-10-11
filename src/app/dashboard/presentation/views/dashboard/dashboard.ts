@@ -8,7 +8,9 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { DashboardStore } from '../../../application/dashboard.store';
+import { AuthStore } from '../../../../auth/application/auth.store';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { DashboardNotification } from '../../../domain/model/notification.entity';
 
 /**
  * Dashboard component displaying statistics and charts.
@@ -33,6 +35,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 })
 export class DashboardComponent {
   protected readonly store = inject(DashboardStore);
+  protected readonly authStore = inject(AuthStore);
   private readonly translate = inject(TranslateService);
 
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
@@ -40,10 +43,7 @@ export class DashboardComponent {
   protected expandedNotification: number | null = null;
   protected expandedSidebarNotification: number | null = null;
 
-  protected currentUserName = computed(() => {
-    // TODO: Get from auth store when implemented
-    return 'Juan Perez';
-  });
+  protected currentUserName = this.authStore.currentUserName;
 
   public barChartType: ChartType = 'bar';
   public barChartData = computed<ChartData<'bar'>>(() => {
@@ -159,7 +159,7 @@ export class DashboardComponent {
    * @param notification - The notification entity.
    * @returns The translated message with interpolated values.
    */
-  protected getNotificationMessage(notification: Notification): string {
+  protected getNotificationMessage(notification: DashboardNotification): string {
     return this.translate.instant(`dashboard.notificationMessages.${notification.title}`, notification.data);
   }
 

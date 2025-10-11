@@ -3,7 +3,7 @@ import { Dashboard } from '../domain/model/dashboard.entity';
 import { DashboardStats } from '../domain/model/dashboard-stats.entity';
 import { MonthlyIncome } from '../domain/model/monthly-income.entity';
 import { ProductSales } from '../domain/model/product-sales.entity';
-import { Notification } from '../domain/model/notification.entity';
+import { DashboardNotification } from '../domain/model/notification.entity';
 import { DashboardResource, DashboardResponse, MonthlyIncomeResource, ProductSalesResource, NotificationResource } from './dashboard-response';
 
 /**
@@ -60,21 +60,20 @@ export class DashboardAssembler implements BaseAssembler<Dashboard, DashboardRes
   }
 
   /**
-   * Converts NotificationResource DTOs to Notification entities.
+   * Converts NotificationResource DTOs to DashboardNotification entities.
    * @param resources - Array of notification resources from the API.
-   * @returns Array of Notification entity instances.
+   * @returns Array of DashboardNotification entity instances.
    */
-  toNotificationsFromResources(resources: NotificationResource[]): Notification[] {
-    return resources.map(resource => new Notification({
+  toNotificationsFromResources(resources: NotificationResource[]): DashboardNotification[] {
+    return resources.map(resource => new DashboardNotification({
       id: resource.id,
-      type: resource.type === 'success' ? 'info' : resource.type, // Map 'success' to 'info'
+      type: resource.type === 'success' ? 'info' : resource.type, 
       title: resource.title,
       message: resource.message,
       data: resource.data
     }));
   }
 
-  // Required by BaseAssembler interface
   toEntityFromResource(resource: DashboardResource): Dashboard {
     return this.toDashboardFromResource(resource);
   }
@@ -97,7 +96,7 @@ export class DashboardAssembler implements BaseAssembler<Dashboard, DashboardRes
       })),
       notifications: entity.notifications.map(item => ({
         id: item.id,
-        type: item.type === 'info' ? 'success' : item.type, // Map 'info' back to 'success' for API
+        type: item.type === 'info' ? 'success' : item.type,
         title: item.title,
         message: item.message,
         data: item.data

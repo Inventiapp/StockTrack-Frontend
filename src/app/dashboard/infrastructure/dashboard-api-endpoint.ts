@@ -3,7 +3,7 @@ import { Dashboard } from '../domain/model/dashboard.entity';
 import { DashboardStats } from '../domain/model/dashboard-stats.entity';
 import { MonthlyIncome } from '../domain/model/monthly-income.entity';
 import { ProductSales } from '../domain/model/product-sales.entity';
-import { Notification } from '../domain/model/notification.entity';
+import { DashboardNotification } from '../domain/model/notification.entity';
 import { DashboardResource, DashboardResponse } from './dashboard-response';
 import { DashboardAssembler } from './dashboard-assembler';
 import { HttpClient } from '@angular/common/http';
@@ -13,7 +13,7 @@ import { map } from 'rxjs/operators';
 
 export class DashboardApiEndpoint extends BaseApiEndpoint<Dashboard, DashboardResource, DashboardResponse, DashboardAssembler> {
   constructor(http: HttpClient) {
-    super(http, `${environment.platformProviderApiBaseUrl}/dashboard`, new DashboardAssembler());
+    super(http, `${environment.apiBaseUrl}/dashboard`, new DashboardAssembler());
   }
 
   /**
@@ -58,9 +58,9 @@ export class DashboardApiEndpoint extends BaseApiEndpoint<Dashboard, DashboardRe
 
   /**
    * Gets notifications for the dashboard.
-   * @returns An Observable of Notification array.
+   * @returns An Observable of DashboardNotification array.
    */
-  getNotifications(): Observable<Notification[]> {
+  getNotifications(): Observable<DashboardNotification[]> {
     return this.http.get<DashboardResponse>(this.endpointUrl).pipe(
       map(response => this.assembler.toNotificationsFromResources(response.notifications))
     );

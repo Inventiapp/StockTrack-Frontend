@@ -2,7 +2,7 @@ import { Injectable, signal, computed } from '@angular/core';
 import { DashboardStats } from '../domain/model/dashboard-stats.entity';
 import { MonthlyIncome } from '../domain/model/monthly-income.entity';
 import { ProductSales } from '../domain/model/product-sales.entity';
-import { Notification } from '../domain/model/notification.entity';
+import { DashboardNotification } from '../domain/model/notification.entity';
 import { DashboardApi } from '../infrastructure/dashboard-api';
 
 /**
@@ -17,7 +17,7 @@ export class DashboardStore {
   private readonly statsSignal = signal<DashboardStats | null>(null);
   private readonly monthlyIncomeSignal = signal<MonthlyIncome[]>([]);
   private readonly productSalesSignal = signal<ProductSales[]>([]);
-  private readonly notificationsSignal = signal<Notification[]>([]);
+  private readonly notificationsSignal = signal<DashboardNotification[]>([]);
   private readonly loadingSignal = signal<boolean>(false);
   private readonly errorSignal = signal<string | null>(null);
 
@@ -70,7 +70,7 @@ export class DashboardStore {
     });
 
     this.dashboardApi.getNotifications().subscribe({
-      next: (data: Notification[]) => {
+      next: (data: DashboardNotification[]) => {
         this.notificationsSignal.set(data);
         this.loadingSignal.set(false);
       },

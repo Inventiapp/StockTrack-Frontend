@@ -5,11 +5,11 @@ import { NotificationData } from './notification-data';
  * @remarks
  * This class encapsulates notification information for the dashboard.
  */
-export class Notification {
+export class DashboardNotification {
   /**
-   * Creates a new Notification instance.
+   * Creates a new DashboardNotification instance.
    * @param data - An object containing notification data.
-   * @returns A new instance of Notification.
+   * @returns A new instance of DashboardNotification.
    */
   constructor(data: {
     id: string;
