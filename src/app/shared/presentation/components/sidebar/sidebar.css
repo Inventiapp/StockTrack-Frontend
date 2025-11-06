@@ -1,6 +1,6 @@
 .sidebar {
   width: 70px;
-  background: #ffa22a;
+  background: var(--color-primary);
   transition: all 0.3s ease;
   overflow: visible;
   height: calc(100vh - 32px);
@@ -8,7 +8,7 @@
   flex-direction: column;
   position: relative;
   border-radius: 16px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-lg);
   flex-shrink: 0;
 }
 
@@ -20,9 +20,9 @@
   position: absolute;
   right: -16px;
   top: 24px;
-  background: #ffa22a;
+  background: var(--color-primary);
   border: none;
-  color: white;
+  color: var(--color-white);
   cursor: pointer;
   width: 32px;
   height: 32px;
@@ -30,12 +30,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-sm);
   z-index: 10;
 }
 
 .sidebar .toggle-btn:hover {
-  background: #ffb755;
+  background: var(--color-primary-hover);
 }
 
 .sidebar .toggle-btn mat-icon {
@@ -43,7 +43,7 @@
   width: 20px;
   height: 20px;
   line-height: 20px;
-  color: white;
+  color: var(--color-white);
 }
 
 .sidebar .header-container {
@@ -59,7 +59,7 @@
 }
 
 .sidebar .logo-container .logo-icon {
-  color: white;
+  color: var(--color-white);
   font-size: 32px;
   width: 32px;
   height: 32px;
@@ -69,7 +69,7 @@
 }
 
 .sidebar .logo-container .sidebar-title {
-  color: white;
+  color: var(--color-white);
   font-size: 1.4rem;
   font-weight: 600;
   letter-spacing: 0.5px;
@@ -83,7 +83,7 @@
 }
 
 .sidebar .menu a[mat-list-item] {
-  color: white;
+  color: var(--color-white);
   border-radius: 12px;
   margin: 4px 0;
   padding: 12px;
@@ -93,12 +93,12 @@
 }
 
 .sidebar .menu a[mat-list-item]:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--color-primary-medium);
 }
 
 .sidebar .menu a[mat-list-item].active {
-  background: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 2px 8px rgba(255, 162, 42, 0.4);
+  background: var(--color-primary-dark);
+  box-shadow: var(--shadow-primary);
 }
 
 .sidebar .menu a[mat-list-item]::before,
@@ -114,7 +114,7 @@
 
 
 .sidebar .menu mat-icon[matListItemIcon] {
-  color: white;
+  color: var(--color-white);
   margin-right: 16px;
   font-size: 28px;
   width: 28px;
@@ -124,7 +124,7 @@
 .sidebar .menu span[matListItemTitle] {
   font-size: 0.95rem;
   font-weight: 500;
-  color: white;
+  color: var(--color-white);
 }
 
 .sidebar .language-section {
@@ -143,7 +143,7 @@
 }
 
 .sidebar .sidebar-footer a[mat-list-item] {
-  color: white;
+  color: var(--color-white);
   border-radius: 12px;
   margin: 4px 0;
   padding: 12px;
@@ -153,8 +153,8 @@
 }
 
 .sidebar .sidebar-footer a[mat-list-item].active {
-  background: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 2px 8px rgba(255, 162, 42, 0.4);
+  background: var(--color-primary-dark);
+  box-shadow: var(--shadow-primary);
 }
 
 .sidebar .sidebar-footer a[mat-list-item].logout-btn {
@@ -186,7 +186,7 @@
 }
 
 .sidebar .sidebar-footer mat-icon[matListItemIcon] {
-  color: white;
+  color: var(--color-white);
   margin-right: 16px;
   font-size: 28px;
   width: 28px;
@@ -196,12 +196,12 @@
 .sidebar .sidebar-footer span[matListItemTitle] {
   font-size: 0.95rem;
   font-weight: 500;
-  color: white;
+  color: var(--color-white);
 }
 
 .sidebar-divider {
   margin: 8px 16px;
-  border-color: rgba(255, 255, 255, 0.2);
+  border-color: var(--color-primary-medium);
 }
 
 .sidebar:not(.expanded) .menu a[mat-list-item],

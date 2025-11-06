@@ -113,7 +113,6 @@
   text-align: center;
 }
 
-/* Estilos para el círculo de selección */
 .name-with-selection {
   display: flex;
   align-items: center;
@@ -204,7 +203,6 @@
   min-width: 120px;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .form-row {
     grid-template-columns: 1fr;

@@ -8,13 +8,11 @@
 }
 
 
-/* Centrado de texto */
 .table-providers-container th,
 .table-providers-container td {
   text-align: center;
 }
 
-/* HEADER oscuro, pegajoso y con bordes redondeados */
 .table-providers-container .mat-mdc-header-row,
 .table-providers-container tr.mat-header-row {
   position: sticky;
@@ -42,7 +40,6 @@
   border-top-right-radius: 10px;
 }
 
-/* Filas limpias, sin borde inferior fuerte y con más aire */
 .table-providers-container .mat-mdc-cell,
 .table-providers-container td.mat-cell {
   border-bottom: none;
@@ -50,13 +47,11 @@
   background: transparent !important;
 }
 
-/* Hover sutil sobre la fila */
 .table-providers-container .mat-mdc-row:hover,
 .table-providers-container tr.mat-row:hover {
   background: #f7f7f7;
 }
 
-/* Link de correo subrayado como en la imagen */
 .mail-link {
   color: inherit;
   text-decoration: underline;

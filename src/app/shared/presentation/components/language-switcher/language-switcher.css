@@ -27,7 +27,7 @@
 
 .lang-btn.active {
   background: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 2px 8px rgba(255, 162, 42, 0.4);
+  box-shadow: var(--shadow-primary);
   font-weight: 700;
 }
 
