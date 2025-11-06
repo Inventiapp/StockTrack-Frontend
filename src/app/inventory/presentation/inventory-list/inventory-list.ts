@@ -2,6 +2,10 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
 import { RestockingDialogComponent } from '../restocking-dialog/restocking-dialog';
 import { NewKitDialogComponent } from '../new-kit-dialog/new-kit-dialog';
 import { Kit } from '../../domain/model/kit.entity';
@@ -29,7 +33,14 @@ type ProductRow = {
   templateUrl: './inventory-list.html',
   styleUrls: ['./inventory-list.css'],
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [
+    CommonModule, 
+    TranslateModule,
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+    MatDividerModule
+  ],
 })
 export class InventoryListComponent {
   protected readonly store = inject(InventoryStore);
@@ -168,6 +179,18 @@ export class InventoryListComponent {
     dialogRef.afterClosed().subscribe(ok => { 
       if (ok) console.log('Producto creado exitosamente');
     });
+  }
+
+  editProduct(product: ProductRow): void {
+    // TODO: Implementar edición de producto
+    console.log('Editar producto:', product);
+  }
+
+  deleteProduct(product: ProductRow): void {
+    // TODO: Implementar eliminación de producto con confirmación
+    if (confirm(this.t('inventory.confirmDelete').replace('{name}', product.name))) {
+      console.log('Eliminar producto:', product);
+    }
   }
 }
 

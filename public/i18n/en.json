@@ -54,6 +54,11 @@
     "currentStock": "Current stock",
     "minimumStock": "Minimum stock",
     "informationProduct": "Information",
+    "actions": "Actions",
+    "viewDetail": "View detail",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirmDelete": "Are you sure you want to delete the product {name}?",
     "filter": "Filter",
     "search": "Search",
     "loadingKits": "Loading kits...",
@@ -74,7 +79,11 @@
     "receiptDate": "Receipt date",
     "expirationDate": "Expiration date",
     "amountEntering": "Amount entering",
-    "lastReception": "Last reception"
+    "lastReception": "Last reception",
+    "lowStock": "Low stock",
+    "status": "Status",
+    "outOfStock": "Out of Stock",
+    "normalStock": "Normal"
   },
   "providers-view": {
     "providers": "Providers",

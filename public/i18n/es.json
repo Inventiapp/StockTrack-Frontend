@@ -54,6 +54,11 @@
     "currentStock": "Stock actual",
     "minimumStock": "Stock mínimo",
     "informationProduct": "Información",
+    "actions": "Acciones",
+    "viewDetail": "Ver detalle",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "confirmDelete": "¿Estás seguro de eliminar el producto {name}?",
     "filter": "Filtros",
     "search": "Buscar",
     "loadingKits": "Cargando kits...",
@@ -74,7 +79,11 @@
     "receiptDate": "Fecha de recepción",
     "expirationDate": "Fecha de vencimiento",
     "amountEntering": "Cantidad ingresando",
-    "lastReception": "Última recepción"
+    "lastReception": "Última recepción",
+    "lowStock": "Stock bajo",
+    "status": "Estado",
+    "outOfStock": "Sin Stock",
+    "normalStock": "Normal"
   },
   "providers-view": {
     "providers": "Proveedores",

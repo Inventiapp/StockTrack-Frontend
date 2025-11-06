@@ -1,98 +1,143 @@
 <div class="inventory-container">
-  <div class="action-bar">
-    <div class="search-filter-group">
-      <div class="search-box">
-        <i class="material-icons">search</i>
-        <input type="text" placeholder="{{ 'inventory.search' | translate }}" />
+  <div class="inventory-grid">
+    <div class="products-column">
+      <div class="section-title">
+        <h2>{{ 'inventory.products' | translate }}</h2>
       </div>
-      <button class="btn-filter">
-        <i class="material-icons">tune</i>
-        <span>{{ 'inventory.filter' | translate }}</span>
-      </button>
-    </div>
-
-    <div class="toolbar-buttons">
-      <button class="btn-purple" (click)="openNewKitDialog()">＋ Kit</button>
-      <button class="btn-green" (click)="openNewProductDialog()">＋ {{ 'inventory.product' | translate}}</button>
-      <button class="btn-orange" (click)="openRestockingDialog()">＋ {{ 'inventory.newReplacement' | translate }}</button>
-    </div>
-  </div>
-
-  <div class="section-title">
-    <h2>{{ 'inventory.products' | translate }}</h2>
-  </div>
-
-  <div class="products-list" *ngIf="!store.loading() && !store.error() && productsRow.length > 0">
-    <div class="table-wrapper">
-      <table class="products-table">
-        <thead>
-        <tr>
-          <th>{{ 'inventory.name' | translate }}</th>
-          <th>{{ 'inventory.unitPrice' | translate }}</th>
-          <th>{{ 'inventory.currentStock' | translate }}</th>
-          <th>{{ 'inventory.minimumStock' | translate }}</th>
-          <th>{{ 'inventory.informationProduct' | translate }}</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let p of productsRow; trackBy: trackByProductId">
-          <td>{{ p.name }}</td>
-          <td>S/. {{ p.unitPrice | number:'1.2-2' }}</td>
-          <td>{{ p.currentStock }}</td>
-          <td>{{ p.minStock }}</td>
-          <td>
-            <button class="icon-btn" (click)="openProductInfo(p)">
-              <i class="material-icons">info_outline</i>
+      <div class="products-card">
+        <div class="action-bar">
+          <div class="search-filter-group">
+            <div class="search-box">
+              <i class="material-icons">search</i>
+              <input type="text" placeholder="{{ 'inventory.search' | translate }}" />
+            </div>
+            <button class="btn-filter">
+              <i class="material-icons">tune</i>
+              <span>{{ 'inventory.filter' | translate }}</span>
             </button>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+          </div>
 
-  <div class="section-title">
-    <h2>Kits</h2>
-  </div>
+          <div class="toolbar-buttons">
+            <button class="btn-purple" (click)="openNewKitDialog()">＋ Kit</button>
+            <button class="btn-green" (click)="openNewProductDialog()">＋ {{ 'inventory.product' | translate}}</button>
+            <button class="btn-orange" (click)="openRestockingDialog()">＋ {{ 'inventory.newReplacement' | translate }}</button>
+          </div>
+        </div>
 
-  <div class="content" *ngIf="store.loading()">
-    <div class="loading-state">
-      <i class="material-icons rotating">refresh</i>
-      <p>{{ 'inventory.loadingKits' | translate }}</p>
-    </div>
-  </div>
-
-  <div class="content" *ngIf="store.error() && !store.loading()">
-    <div class="error-state">
-      <i class="material-icons">error_outline</i>
-      <p>{{ store.error() }}</p>
-      <button class="btn-retry" (click)="store.refresh()">{{ 'inventory.retry' | translate }}</button>
-    </div>
-  </div>
-
-  <div class="kits-grid" *ngIf="!store.loading() && !store.error() && store.kits().length > 0">
-    <div class="kit-card" *ngFor="let kit of store.kits()">
-      <div class="kit-header">
-        <h3>{{ kit.name }}</h3>
-      </div>
-      <div class="kit-body">
-        <div class="kit-product" *ngFor="let product of kit.products">
-          <span class="product-quantity">{{ product.quantity }}</span>
-          <span class="product-name">{{ product.name }}</span>
+        <div class="products-list" *ngIf="!store.loading() && !store.error() && productsRow.length > 0">
+        <div class="table-wrapper">
+          <table class="products-table">
+            <thead>
+            <tr>
+              <th>{{ 'inventory.name' | translate }}</th>
+              <th>{{ 'inventory.unitPrice' | translate }}</th>
+              <th>{{ 'inventory.currentStock' | translate }}</th>
+              <th>{{ 'inventory.minimumStock' | translate }}</th>
+              <th class="status-column">{{ 'inventory.status' | translate }}</th>
+              <th>{{ 'inventory.actions' | translate }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            @for (p of productsRow; track p.id) {
+              <tr [class.low-stock]="p.currentStock > 0 && p.currentStock <= p.minStock"
+                  [class.out-of-stock]="p.currentStock === 0">
+                <td>
+                  <div class="product-name-cell">
+                    <span>{{ p.name }}</span>
+                  </div>
+                </td>
+                <td>S/. {{ p.unitPrice | number:'1.2-2' }}</td>
+                <td>
+                  <span class="stock-quantity">
+                    {{ p.currentStock }}
+                  </span>
+                </td>
+                <td>{{ p.minStock }}</td>
+                <td>
+                  @if (p.currentStock === 0) {
+                    <span class="stock-status-badge out-of-stock-badge">{{ 'inventory.outOfStock' | translate }}</span>
+                  } @else if (p.currentStock <= p.minStock) {
+                    <span class="stock-status-badge low-stock-badge">{{ 'inventory.lowStock' | translate }}</span>
+                  } @else {
+                    <span class="stock-status-badge normal-stock-badge">{{ 'inventory.normalStock' | translate }}</span>
+                  }
+                </td>
+                <td>
+                  <button mat-icon-button [matMenuTriggerFor]="menu" class="actions-btn">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                  <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="openProductInfo(p)">
+                      <mat-icon>visibility</mat-icon>
+                      <span>{{ 'inventory.viewDetail' | translate }}</span>
+                    </button>
+                    <button mat-menu-item (click)="editProduct(p)">
+                      <mat-icon>edit</mat-icon>
+                      <span>{{ 'inventory.edit' | translate }}</span>
+                    </button>
+                    <mat-divider></mat-divider>
+                    <button mat-menu-item (click)="deleteProduct(p)" class="delete-action">
+                      <mat-icon>delete</mat-icon>
+                      <span>{{ 'inventory.delete' | translate }}</span>
+                    </button>
+                  </mat-menu>
+                </td>
+              </tr>
+            }
+            </tbody>
+          </table>
         </div>
       </div>
-      <div class="kit-footer">
-        <span class="kit-total-label">Total:</span>
-        <span class="kit-price">s/ {{ kit.price | number: '1.2-2' }}</span>
       </div>
     </div>
-  </div>
 
-  <div class="content" *ngIf="!store.loading() && !store.error() && store.kits().length === 0">
-    <div class="empty-state">
-      <i class="material-icons">inventory_2</i>
-      <h2>{{ 'inventory.noKits' | translate }}</h2>
-      <p>{{ 'inventory.startKits' | translate }} + Kit"</p>
+    <div class="kits-column">
+      <div class="section-title">
+        <h2>Kits</h2>
+      </div>
+
+      <div class="kits-content">
+          <div class="content" *ngIf="store.loading()">
+          <div class="loading-state">
+            <i class="material-icons rotating">refresh</i>
+            <p>{{ 'inventory.loadingKits' | translate }}</p>
+          </div>
+        </div>
+
+        <div class="content" *ngIf="store.error() && !store.loading()">
+          <div class="error-state">
+            <i class="material-icons">error_outline</i>
+            <p>{{ store.error() }}</p>
+            <button class="btn-retry" (click)="store.refresh()">{{ 'inventory.retry' | translate }}</button>
+          </div>
+        </div>
+
+        <div class="kits-list" *ngIf="!store.loading() && !store.error() && store.kits().length > 0">
+          <div class="kit-card" *ngFor="let kit of store.kits()">
+            <div class="kit-header">
+              <h3>{{ kit.name }}</h3>
+            </div>
+            <div class="kit-body">
+              <div class="kit-product" *ngFor="let product of kit.products">
+                <span class="product-quantity">{{ product.quantity }}</span>
+                <span class="product-name">{{ product.name }}</span>
+              </div>
+            </div>
+            <div class="kit-footer">
+              <span class="kit-total-label">Total:</span>
+              <span class="kit-price">s/ {{ kit.price | number: '1.2-2' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="content" *ngIf="!store.loading() && !store.error() && store.kits().length === 0">
+          <div class="empty-state">
+            <i class="material-icons">inventory_2</i>
+            <h2>{{ 'inventory.noKits' | translate }}</h2>
+            <p>{{ 'inventory.startKits' | translate }} + Kit"</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
