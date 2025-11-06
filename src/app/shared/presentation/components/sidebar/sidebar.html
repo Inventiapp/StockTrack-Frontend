@@ -5,7 +5,9 @@
 
   <div class="header-container">
     <div class="logo-container">
-      <span class="sidebar-title" *ngIf="isExpanded">{{ t('sidebar.title') }}</span>
+      @if (isExpanded) {
+        <span class="sidebar-title">{{ t('sidebar.title') }}</span>
+      }
     </div>
   </div>
 
@@ -14,7 +16,7 @@
        *ngFor="let item of menuItems"
        [routerLink]="item.route" 
        routerLinkActive="active"
-       [routerLinkActiveOptions]="{exact: item.route === '/'}">
+       [disableRipple]="true">
       <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
       <span matListItemTitle *ngIf="isExpanded">{{ t(item.titleKey) }}</span>
     </a>
@@ -22,22 +24,24 @@
 
   <mat-divider class="sidebar-divider" *ngIf="isExpanded"></mat-divider>
 
-  <div class="language-section" *ngIf="isExpanded">
-    <app-language-switcher></app-language-switcher>
-  </div>
+  @if (isExpanded) {
+    <div class="language-section">
+      <app-language-switcher></app-language-switcher>
+    </div>
+  }
 
   <mat-divider class="sidebar-divider"></mat-divider>
 
   <mat-nav-list class="sidebar-footer">
-    <a mat-list-item routerLink="/configuracion" routerLinkActive="active">
+    <a mat-list-item routerLink="/configuracion" routerLinkActive="active" [disableRipple]="true">
       <mat-icon matListItemIcon>settings</mat-icon>
       <span matListItemTitle *ngIf="isExpanded">{{ t('sidebar.footer.settings') }}</span>
     </a>
-    <a mat-list-item routerLink="/perfil" routerLinkActive="active">
+    <a mat-list-item routerLink="/perfil" routerLinkActive="active" [disableRipple]="true">
       <mat-icon matListItemIcon>person</mat-icon>
       <span matListItemTitle *ngIf="isExpanded">{{ t('sidebar.footer.profile') }}</span>
     </a>
-    <a mat-list-item (click)="logout()" class="logout-btn">
+    <a mat-list-item (click)="logout()" class="logout-btn" [disableRipple]="true">
       <mat-icon matListItemIcon>logout</mat-icon>
       <span matListItemTitle *ngIf="isExpanded">{{ t('sidebar.footer.logout') }}</span>
     </a>

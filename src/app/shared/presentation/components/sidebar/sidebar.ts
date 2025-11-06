@@ -40,7 +40,7 @@ export class SidebarComponent {
     {
       titleKey: 'sidebar.menu.home',
       icon: 'home',
-      route: '/',
+      route: '/dashboard',
     },
     {
       titleKey: 'sidebar.menu.inventory',
