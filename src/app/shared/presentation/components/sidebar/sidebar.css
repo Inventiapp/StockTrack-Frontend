@@ -93,11 +93,11 @@
 }
 
 .sidebar .menu a[mat-list-item]:hover {
-  background: var(--color-primary-medium);
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .sidebar .menu a[mat-list-item].active {
-  background: var(--color-primary-dark);
+  background: rgba(255, 255, 255, 0.3);
   box-shadow: var(--shadow-primary);
 }
 
@@ -152,8 +152,12 @@
   transition: background-color 0.15s ease !important;
 }
 
+.sidebar .sidebar-footer a[mat-list-item]:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
 .sidebar .sidebar-footer a[mat-list-item].active {
-  background: var(--color-primary-dark);
+  background: rgba(255, 255, 255, 0.3);
   box-shadow: var(--shadow-primary);
 }
 
