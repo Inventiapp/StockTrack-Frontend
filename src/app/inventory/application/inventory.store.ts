@@ -127,8 +127,20 @@ export class InventoryStore {
    * @param product - The product to add.
    */
   addProduct(product: Product): void {
-    const currentProducts = this.productsSignal();
-    this.productsSignal.set([...currentProducts, product]);
+    this.loadingSignal.set(true);
+    this.errorSignal.set(null);
+
+    this.productsApi.createProduct(product).subscribe({
+      next: (newProduct: Product) => {
+        const currentProducts = this.productsSignal();
+        this.productsSignal.set([...currentProducts, newProduct]);
+        this.loadingSignal.set(false);
+      },
+      error: (err: any) => {
+        this.errorSignal.set(this.formatError(err, 'Error creating product'));
+        this.loadingSignal.set(false);
+      }
+    });
   }
 
   /**
@@ -136,13 +148,25 @@ export class InventoryStore {
    * @param product - The updated product.
    */
   updateProduct(product: Product): void {
-    const currentProducts = this.productsSignal();
-    const index = currentProducts.findIndex(p => p.id === product.id);
-    if (index > -1) {
-      const updatedProducts = [...currentProducts];
-      updatedProducts[index] = product;
-      this.productsSignal.set(updatedProducts);
-    }
+    this.loadingSignal.set(true);
+    this.errorSignal.set(null);
+
+    this.productsApi.updateProduct(product, Number(product.id)).subscribe({
+      next: (updatedProduct: Product) => {
+        const currentProducts = this.productsSignal();
+        const index = currentProducts.findIndex(p => p.id === updatedProduct.id);
+        if (index > -1) {
+          const updatedProducts = [...currentProducts];
+          updatedProducts[index] = updatedProduct;
+          this.productsSignal.set(updatedProducts);
+        }
+        this.loadingSignal.set(false);
+      },
+      error: (err: any) => {
+        this.errorSignal.set(this.formatError(err, 'Error updating product'));
+        this.loadingSignal.set(false);
+      }
+    });
   }
 
   /**
@@ -150,8 +174,20 @@ export class InventoryStore {
    * @param productId - The ID of the product to remove.
    */
   removeProduct(productId: string): void {
-    const currentProducts = this.productsSignal();
-    this.productsSignal.set(currentProducts.filter(p => p.id !== productId));
+    this.loadingSignal.set(true);
+    this.errorSignal.set(null);
+
+    this.productsApi.deleteProduct(Number(productId)).subscribe({
+      next: () => {
+        const currentProducts = this.productsSignal();
+        this.productsSignal.set(currentProducts.filter(p => p.id !== productId));
+        this.loadingSignal.set(false);
+      },
+      error: (err: any) => {
+        this.errorSignal.set(this.formatError(err, 'Error deleting product'));
+        this.loadingSignal.set(false);
+      }
+    });
   }
 
   /**
@@ -212,13 +248,25 @@ export class InventoryStore {
    * @param kit - The updated kit.
    */
   updateKit(kit: Kit): void {
-    const currentKits = this.kitsSignal();
-    const index = currentKits.findIndex(k => k.id === kit.id);
-    if (index > -1) {
-      const updatedKits = [...currentKits];
-      updatedKits[index] = kit;
-      this.kitsSignal.set(updatedKits);
-    }
+    this.loadingSignal.set(true);
+    this.errorSignal.set(null);
+
+    this.kitApi.updateKit(kit, Number(kit.id)).subscribe({
+      next: (updatedKit: Kit) => {
+        const currentKits = this.kitsSignal();
+        const index = currentKits.findIndex(k => k.id === updatedKit.id);
+        if (index > -1) {
+          const updatedKits = [...currentKits];
+          updatedKits[index] = updatedKit;
+          this.kitsSignal.set(updatedKits);
+        }
+        this.loadingSignal.set(false);
+      },
+      error: (err: Error) => {
+        this.errorSignal.set(this.formatError(err, 'Error updating kit'));
+        this.loadingSignal.set(false);
+      }
+    });
   }
 
   /**
@@ -226,8 +274,20 @@ export class InventoryStore {
    * @param kitId - The ID of the kit to remove.
    */
   removeKit(kitId: string): void {
-    const currentKits = this.kitsSignal();
-    this.kitsSignal.set(currentKits.filter(k => k.id !== kitId));
+    this.loadingSignal.set(true);
+    this.errorSignal.set(null);
+
+    this.kitApi.deleteKit(Number(kitId)).subscribe({
+      next: () => {
+        const currentKits = this.kitsSignal();
+        this.kitsSignal.set(currentKits.filter(k => k.id !== kitId));
+        this.loadingSignal.set(false);
+      },
+      error: (err: Error) => {
+        this.errorSignal.set(this.formatError(err, 'Error deleting kit'));
+        this.loadingSignal.set(false);
+      }
+    });
   }
 
   /**

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 
 import { InventoryStore } from '../../application/inventory.store';
+import { Product } from '../../domain/model/product.entity';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
@@ -42,7 +43,8 @@ export class NewProductDialogComponent {
   save() {
     const unitPrice = Number(String(this.form.unitPrice).replace(',', '.'));
 
-    const productData = {
+    const product = new Product({
+      id: '', // El backend asignará el ID
       name: this.form.name.trim(),
       description: '',
       categoryId: this.form.categoryId,
@@ -50,9 +52,9 @@ export class NewProductDialogComponent {
       minStock: Number(this.form.minStock),
       unitPrice,
       isActive: true
-    };
+    });
 
-    this.store.addProduct(productData as any);
+    this.store.addProduct(product);
     this.dialogRef.close(true);
   }
 }
