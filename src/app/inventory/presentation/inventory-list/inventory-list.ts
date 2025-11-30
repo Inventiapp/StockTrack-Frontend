@@ -1,7 +1,19 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatCardModule } from '@angular/material/card';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { RestockingDialogComponent } from '../restocking-dialog/restocking-dialog';
 import { NewKitDialogComponent } from '../new-kit-dialog/new-kit-dialog';
 import { Kit } from '../../domain/model/kit.entity';
@@ -18,7 +30,9 @@ type ProductRow = {
   minStock: number,
   currentStock: number,
   categoryName?: string;
+  categoryId?: string;
   providerName?: string;
+  providerId?: string;
   lastReception?: string;  // ISO 'YYYY-MM-DD'
   lot?: string;
   expirationDate?: string;
@@ -29,12 +43,75 @@ type ProductRow = {
   templateUrl: './inventory-list.html',
   styleUrls: ['./inventory-list.css'],
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [
+    CommonModule, 
+    FormsModule,
+    TranslateModule,
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+    MatDividerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatChipsModule,
+    MatBadgeModule,
+    MatCardModule,
+    MatPaginatorModule
+  ],
 })
 export class InventoryListComponent {
   protected readonly store = inject(InventoryStore);
   private translate = inject(TranslateService);
   private dialog = inject(MatDialog);
+
+  searchTerm = signal<string>('');
+  selectedCategory = signal<string>('');
+  selectedProvider = signal<string>('');
+  selectedStatus = signal<string>('');
+  
+  pageIndex = signal<number>(0);
+  pageSize = signal<number>(10);
+
+  get activeFilters(): Array<{type: string, value: string, label: string}> {
+    const filters: Array<{type: string, value: string, label: string}> = [];
+    
+    if (this.selectedCategory()) {
+      const category = this.categories.find(c => c.id === this.selectedCategory());
+      if (category) {
+        filters.push({ type: 'category', value: this.selectedCategory(), label: category.name });
+      }
+    }
+    
+    if (this.selectedProvider()) {
+      filters.push({ type: 'provider', value: this.selectedProvider(), label: this.getProviderName(this.selectedProvider()) });
+    }
+    
+    if (this.selectedStatus()) {
+      const statusKey = this.selectedStatus() === 'normal' ? 'normalStock' : this.selectedStatus();
+      const statusLabel = this.t(`inventory.${statusKey}`);
+      filters.push({ type: 'status', value: this.selectedStatus(), label: statusLabel });
+    }
+    
+    return filters;
+  }
+
+  get activeFiltersCount(): number {
+    return this.activeFilters.length;
+  }
+
+  get categories() {
+    return this.store.categories();
+  }
+
+  get providers() {
+    return this.store.providers();
+  }
+
+  getProviderName(providerId: string): string {
+    const provider = this.store.providers().find(p => p.id === providerId);
+    return provider ? `${provider.firstName} ${provider.lastName}` : '-';
+  }
 
   get productsRow(): ProductRow[] {
     const stock = this.store.stock();
@@ -60,17 +137,115 @@ export class InventoryListComponent {
       }
     }
     
-    return products.map(p => ({
+    const allProducts = products.map(p => ({
       id: p.id,
       name: p.name,
       unitPrice: p.unitPrice,
       minStock: p.minStock,
       currentStock: stockByProduct.get(p.id) ?? 0,
       categoryName: categoryMap.get(p.categoryId) ?? '-',
+      categoryId: p.categoryId,
+      providerId: p.providerId,
+      providerName: this.getProviderName(p.providerId),
       lot: latestByProduct.get(p.id)?.lot ?? '-',
       lastReception: latestByProduct.get(p.id)?.receptionDate ?? undefined,
       expirationDate: latestByProduct.get(p.id)?.expirationDate ?? undefined
     }));
+
+    let filtered = allProducts;
+
+    const search = this.searchTerm().toLowerCase().trim();
+    if (search) {
+      filtered = filtered.filter(p => 
+        p.name.toLowerCase().includes(search)
+      );
+    }
+
+    const category = this.selectedCategory();
+    if (category) {
+      filtered = filtered.filter(p => p.categoryId === category);
+    }
+
+    const provider = this.selectedProvider();
+    if (provider) {
+      filtered = filtered.filter(p => p.providerId === provider);
+    }
+
+    const status = this.selectedStatus();
+    if (status) {
+      if (status === 'outOfStock') {
+        filtered = filtered.filter(p => p.currentStock === 0);
+      } else if (status === 'lowStock') {
+        filtered = filtered.filter(p => p.currentStock > 0 && p.currentStock <= p.minStock);
+      } else if (status === 'normal') {
+        filtered = filtered.filter(p => p.currentStock > p.minStock);
+      }
+    }
+
+    return filtered;
+  }
+
+  get paginatedProducts(): ProductRow[] {
+    const start = this.pageIndex() * this.pageSize();
+    const end = start + this.pageSize();
+    return this.productsRow.slice(start, end);
+  }
+
+  get totalProducts(): number {
+    return this.productsRow.length;
+  }
+
+  onPageChange(event: PageEvent): void {
+    this.pageIndex.set(event.pageIndex);
+    this.pageSize.set(event.pageSize);
+  }
+
+  onSearchChange(value: string): void {
+    this.pageIndex.set(0);
+    this.searchTerm.set(value);
+  }
+
+  onCategoryChange(value: string): void {
+    this.selectedCategory.set(value);
+  }
+
+  onProviderChange(value: string): void {
+    this.selectedProvider.set(value);
+  }
+
+  onStatusChange(value: string): void {
+    this.selectedStatus.set(value);
+  }
+
+  removeFilter(type: string): void {
+    if (type === 'category') {
+      this.selectedCategory.set('');
+    } else if (type === 'provider') {
+      this.selectedProvider.set('');
+    } else if (type === 'status') {
+      this.selectedStatus.set('');
+    }
+  }
+
+  clearFilters(): void {
+    this.selectedCategory.set('');
+    this.selectedProvider.set('');
+    this.selectedStatus.set('');
+  }
+
+  onCategorySelected(value: string): void {
+    this.selectedCategory.set(value);
+    this.pageIndex.set(0);
+  }
+
+  onProviderSelected(value: string): void {
+    this.selectedProvider.set(value);
+    this.pageIndex.set(0);
+  }
+
+  onStatusSelected(value: string): void {
+    this.selectedStatus.set(value);
+    this.pageIndex.set(0);
   }
 
   get kits(): Kit[] {
@@ -168,6 +343,18 @@ export class InventoryListComponent {
     dialogRef.afterClosed().subscribe(ok => { 
       if (ok) console.log('Producto creado exitosamente');
     });
+  }
+
+  editProduct(product: ProductRow): void {
+    // TODO: Implementar edición de producto
+    console.log('Editar producto:', product);
+  }
+
+  deleteProduct(product: ProductRow): void {
+    // TODO: Implementar eliminación de producto con confirmación
+    if (confirm(this.t('inventory.confirmDelete').replace('{name}', product.name))) {
+      console.log('Eliminar producto:', product);
+    }
   }
 }
 

@@ -11,12 +11,28 @@
       "inventory": "Inventory",
       "providers": "Providers",
       "sales": "Sales",
-      "reports": "Reports"
+      "reports": "Reports",
+      "more": "More",
+      "aria": {
+        "home": "Go to home",
+        "inventory": "Go to inventory",
+        "providers": "Go to providers",
+        "sales": "Go to sales",
+        "reports": "Go to reports",
+        "more": "Open more options menu",
+        "language": "Language selector",
+        "navigation": "Main navigation"
+      }
     },
     "footer": {
       "settings": "Settings",
       "profile": "Profile",
-      "logout": "Logout"
+      "logout": "Logout",
+      "aria": {
+        "settings": "Go to settings",
+        "profile": "Go to profile",
+        "logout": "Logout"
+      }
     }
   },
   "home": {
@@ -38,8 +54,22 @@
     "currentStock": "Current stock",
     "minimumStock": "Minimum stock",
     "informationProduct": "Information",
+    "actions": "Actions",
+    "viewDetail": "View detail",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirmDelete": "Are you sure you want to delete the product {name}?",
+    "noProductsFound": "No products found",
+    "tryDifferentSearch": "Try different search criteria or filters",
     "filter": "Filter",
     "search": "Search",
+    "allCategories": "All categories",
+    "allProviders": "All providers",
+    "allLots": "All lots",
+    "allStatuses": "All statuses",
+    "date": "Date",
+    "clearFilters": "Clear filters",
+    "removeFilter": "Remove filter",
     "loadingKits": "Loading kits...",
     "loadingProducts": "Loading products...",
     "retry": "Retry",
@@ -58,7 +88,11 @@
     "receiptDate": "Receipt date",
     "expirationDate": "Expiration date",
     "amountEntering": "Amount entering",
-    "lastReception": "Last reception"
+    "lastReception": "Last reception",
+    "lowStock": "Low stock",
+    "status": "Status",
+    "outOfStock": "Out of Stock",
+    "normalStock": "Normal"
   },
   "providers-view": {
     "providers": "Providers",

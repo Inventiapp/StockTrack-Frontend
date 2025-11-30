@@ -1,31 +1,26 @@
-/* Contenedor del formulario */
 .form-grid {
   display: grid;
   gap: 12px;
   padding: 8px 4px;
 }
 
-/* Inputs más “pill” y limpios (MDC) */
 .mat-mdc-form-field {
   width: 100%;
 }
 
-/* Redondeo del contorno */
 .mat-mdc-form-field .mdc-notched-outline__leading,
 .mat-mdc-form-field .mdc-notched-outline__notch,
 .mat-mdc-form-field .mdc-notched-outline__trailing {
   border-radius: 20px;
 }
 
-/* Altura y padding más suaves */
 .mat-mdc-text-field-wrapper {
-  height: 40px;                /* similar a la imagen */
+  height: 40px;
 }
 .mdc-text-field--outlined .mdc-notched-outline__notch {
   padding-right: 8px;
 }
 
-/* Botonera inferior como en la captura: dos “pills” ocupando el ancho */
 .actions-row {
   display: flex;
   gap: 16px;

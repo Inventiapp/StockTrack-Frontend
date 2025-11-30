@@ -6,13 +6,13 @@ export class ProviderAssembler implements BaseAssembler<Provider, ProviderResour
 
   toEntityFromResource(resource: ProviderResource): Provider {
     return new Provider({
-      id: resource.id.toString(),
+      id: resource.id?.toString() ?? '',
       firstName: resource.firstName,
       lastName: resource.lastName,
-      phoneNumber: resource.phoneNumber,
+      phoneNumber: resource.phone,
       email: resource.email,
       ruc: resource.ruc
-    });
+    } as any);
   }
 
   toEntitiesFromResponse(response: ProviderResponse): Provider[] {
@@ -21,7 +21,7 @@ export class ProviderAssembler implements BaseAssembler<Provider, ProviderResour
 
   toResourceFromEntity(entity: Provider): ProviderResource {
     return {
-      id: entity.id ? entity.id : '',
+      id: entity.id ?? '',
       firstName: entity.firstName,
       lastName: entity.lastName,
       phoneNumber: entity.phoneNumber,

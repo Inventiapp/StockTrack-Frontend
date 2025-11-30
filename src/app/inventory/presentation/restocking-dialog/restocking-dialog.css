@@ -163,7 +163,6 @@
   min-width: 120px;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .form-row {
     grid-template-columns: 1fr;

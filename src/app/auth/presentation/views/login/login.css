@@ -8,7 +8,6 @@
   width: 100%;
 }
 
-/* Language Switcher */
 .language-switcher-wrapper {
   position: absolute;
   top: 1.5rem;
@@ -16,7 +15,6 @@
   z-index: 10;
 }
 
-/* Override language switcher styles for auth pages */
 .language-switcher-wrapper ::ng-deep .language-switcher {
   background: rgba(228, 127, 4, 0.1) !important;
   border: 1px solid rgba(228, 127, 4, 0.2) !important;
@@ -36,7 +34,6 @@
   opacity: 0.2 !important;
 }
 
-/* Left side - Branding */
 .auth-branding {
   flex: 1;
   display: flex;
@@ -80,7 +77,6 @@
   margin: 0;
 }
 
-/* Decorative circles */
 .decorative-circles {
   position: absolute;
   z-index: 0;
@@ -207,7 +203,6 @@
   margin-right: 0.25rem;
 }
 
-/* Material overrides */
 ::ng-deep .mat-mdc-form-field-subscript-wrapper {
   height: auto !important;
 }
@@ -220,7 +215,6 @@
   background-color: transparent !important;
 }
 
-/* Responsive */
 @media (max-width: 1024px) {
   .auth-container {
     flex-direction: column;

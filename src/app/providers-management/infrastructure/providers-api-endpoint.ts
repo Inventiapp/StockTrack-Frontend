@@ -4,10 +4,10 @@ import {ProviderResource, ProviderResponse} from './provider-response';
 import {ProviderAssembler} from './provider-assembler';
 import {HttpClient} from '@angular/common/http';
 
-import {environment} from '../../../environments/environment';
+import {environment} from '../../../environments/environment.development';
 
 export class ProvidersApiEndpoint extends BaseApiEndpoint<Provider, ProviderResource, ProviderResponse, ProviderAssembler> {
   constructor(http: HttpClient) {
-    super(http, `${environment.platformProviderApiBaseUrl}${environment.platformProviderProvidersEndpointPath}`, new ProviderAssembler());
+    super(http, `${environment.platformBackendApiBaseUrl}${environment.platformProviderProvidersEndpointPath}`, new ProviderAssembler());
   }
 }

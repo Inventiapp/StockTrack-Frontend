@@ -11,12 +11,28 @@
       "inventory": "Inventario",
       "providers": "Proveedores",
       "sales": "Venta",
-      "reports": "Reportes"
+      "reports": "Reportes",
+      "more": "Más",
+      "aria": {
+        "home": "Ir a inicio",
+        "inventory": "Ir a inventario",
+        "providers": "Ir a proveedores",
+        "sales": "Ir a ventas",
+        "reports": "Ir a reportes",
+        "more": "Abrir menú de más opciones",
+        "language": "Selector de idioma",
+        "navigation": "Navegación principal"
+      }
     },
     "footer": {
       "settings": "Configuración",
       "profile": "Perfil",
-      "logout": "Cerrar Sesión"
+      "logout": "Cerrar Sesión",
+      "aria": {
+        "settings": "Ir a configuración",
+        "profile": "Ir a perfil",
+        "logout": "Cerrar sesión"
+      }
     }
   },
   "home": {
@@ -38,8 +54,22 @@
     "currentStock": "Stock actual",
     "minimumStock": "Stock mínimo",
     "informationProduct": "Información",
+    "actions": "Acciones",
+    "viewDetail": "Ver detalle",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "confirmDelete": "¿Estás seguro de eliminar el producto {name}?",
+    "noProductsFound": "No se encontraron productos",
+    "tryDifferentSearch": "Intenta con otros criterios de búsqueda o filtros",
     "filter": "Filtros",
     "search": "Buscar",
+    "allCategories": "Todas las categorías",
+    "allProviders": "Todos los proveedores",
+    "allLots": "Todos los lotes",
+    "allStatuses": "Todos los estados",
+    "date": "Fecha",
+    "clearFilters": "Limpiar filtros",
+    "removeFilter": "Eliminar filtro",
     "loadingKits": "Cargando kits...",
     "loadingProducts": "Cargando products...",
     "retry": "Reintentar",
@@ -58,7 +88,11 @@
     "receiptDate": "Fecha de recepción",
     "expirationDate": "Fecha de vencimiento",
     "amountEntering": "Cantidad ingresando",
-    "lastReception": "Última recepción"
+    "lastReception": "Última recepción",
+    "lowStock": "Stock bajo",
+    "status": "Estado",
+    "outOfStock": "Sin Stock",
+    "normalStock": "Normal"
   },
   "providers-view": {
     "providers": "Proveedores",

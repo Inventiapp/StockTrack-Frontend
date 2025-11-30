@@ -44,7 +44,7 @@ export class ProvidersTable {
   private readonly providersApi = inject(ProvidersApi);
   private readonly dialog = inject(MatDialog);
 
-  displayedColumns: string[] = ['firstName', 'phone', 'email', 'ruc', 'actions'];
+  displayedColumns: string[] = ['firstName', 'phoneNumber', 'email', 'ruc', 'actions'];
 
   onEdit(p: Provider) {
     const ref = this.dialog.open(ProviderFormDialog, {
@@ -54,7 +54,7 @@ export class ProvidersTable {
     });
 
     ref.afterClosed().subscribe((updated?: Provider) => {
-      if (!updated) return; 
+      if (!updated) return;
       this.store.updateProvider(updated);
     });
   }

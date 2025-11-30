@@ -1,6 +1,5 @@
 :host{ display:block; }
 
-/* Título */
 .dlg-title{
   text-align:center;
   margin:6px 0 16px;
@@ -26,7 +25,6 @@
 .label{ font-weight:600; }
 .value{ font-weight:500; }
 
-/* Botón Salir */
 .actions{
   display:flex;
   justify-content:center;

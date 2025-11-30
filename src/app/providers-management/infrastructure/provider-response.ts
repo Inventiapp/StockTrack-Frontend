@@ -5,12 +5,11 @@ export interface ProviderResource extends BaseResource {
   id: string;
   firstName: string;
   lastName: string;
-  phoneNumber: string;
+  phone?: string;
   email: string;
   ruc: string;
 }
 
-
-export interface ProviderResponse extends BaseResponse {
+export interface ProviderResponse extends BaseResponse{
   providers: ProviderResource[];
 }
