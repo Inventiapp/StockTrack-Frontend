@@ -101,7 +101,11 @@
     "lowStock": "Low stock",
     "status": "Status",
     "outOfStock": "Out of Stock",
-    "normalStock": "Normal"
+    "normalStock": "Normal",
+    "kits": "Kits",
+    "price": "Price",
+    "kitProductUnitPrice": "Unit price",
+    "kitProductTotal": "Total"
   },
   "providers-view": {
     "providers": "Providers",
@@ -264,6 +268,107 @@
     "description": "The URL might be misspelled or the page may have been moved. Please check the address or return to the main page.",
     "goHome": "Go Home",
     "goBack": "Go Back"
+  },
+  "reports": {
+    "title": "Reports",
+    "subtitle": "View and analyze important information from your inventory",
+    "refresh": "Refresh",
+    "export": "Export to Excel",
+    "loading": "Loading reports...",
+    "retry": "Retry",
+    "expired": "Expired",
+    "expiresToday": "Expires today",
+    "expiresTomorrow": "Expires tomorrow",
+    "daysLeft": "{days} days left",
+    "dayLeft": "{days} day left",
+    "monthLeft": "{months} month left",
+    "monthsLeft": "{months} months left",
+    "tabs": {
+      "providers": "Providers",
+      "stock": "Current Stock",
+      "expiring": "Expiring",
+      "lowStock": "Low Stock"
+    },
+    "providers": {
+      "title": "Providers List",
+      "subtitle": "Complete information of all your providers",
+      "empty": "No registered providers",
+      "filterByCategory": "Filter by category",
+      "allCategories": "All categories",
+      "clearFilter": "Clear filter",
+      "columns": {
+        "name": "Name",
+        "ruc": "RUC",
+        "email": "Email",
+        "phone": "Phone",
+        "productCount": "Products",
+        "products": "Products"
+      }
+    },
+    "stock": {
+      "title": "Current Stock Report",
+      "subtitle": "Current inventory status of all products",
+      "empty": "No products in inventory",
+      "columns": {
+        "productName": "Product",
+        "category": "Category",
+        "currentStock": "Current Stock",
+        "minStock": "Minimum Stock",
+        "unitPrice": "Unit Price",
+        "totalValue": "Total Value",
+        "status": "Status"
+      },
+      "status": {
+        "normal": "Normal",
+        "low": "Low",
+        "critical": "Critical"
+      }
+    },
+    "expiring": {
+      "title": "Expiring Products",
+      "subtitle": "View products by expiration month",
+      "empty": "No products with expiration date",
+      "emptyFiltered": "No products expiring in the selected month",
+      "emptyNext30Days": "No products expiring in the next 30 days",
+      "filterByMonth": "Filter by month",
+      "next30Days": "Next 30 days",
+      "showAll": "Show all",
+      "clearFilter": "Clear filter",
+      "columns": {
+        "productName": "Product",
+        "category": "Category",
+        "expirationDate": "Expiration Date",
+        "daysLeft": "Days Left",
+        "currentStock": "Current Stock",
+        "lot": "Lot",
+        "status": "Status"
+      },
+      "status": {
+        "expired": "Expired",
+        "critical": "Critical",
+        "warning": "Warning",
+        "normal": "Normal"
+      }
+    },
+    "lowStock": {
+      "title": "Low Stock Products",
+      "subtitle": "Products that are below minimum stock",
+      "empty": "No products with low stock",
+      "columns": {
+        "productName": "Product",
+        "category": "Category",
+        "currentStock": "Current Stock",
+        "minStock": "Minimum Stock",
+        "difference": "Difference",
+        "unitPrice": "Unit Price",
+        "status": "Status"
+      },
+      "status": {
+        "critical": "Critical",
+        "low": "Low",
+        "normal": "Normal"
+      }
+    }
   }
 }
 

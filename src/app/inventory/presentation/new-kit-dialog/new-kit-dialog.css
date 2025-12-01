@@ -29,7 +29,7 @@
 
 .form-row {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   gap: 16px;
   margin-bottom: 24px;
 }
@@ -162,6 +162,29 @@
   align-items: center;
   gap: 8px;
   justify-content: center;
+}
+
+.price-cell {
+  padding: 8px 16px;
+}
+
+.price-field {
+  width: 120px;
+  margin: 0;
+}
+
+::ng-deep .price-field .mat-mdc-form-field-subscript-wrapper {
+  display: none;
+}
+
+::ng-deep .price-field .mat-mdc-form-field-infix {
+  padding: 8px 0 !important;
+  min-height: 40px;
+}
+
+::ng-deep .price-field input {
+  font-size: 0.9rem;
+  text-align: center;
 }
 
 .quantity-input {

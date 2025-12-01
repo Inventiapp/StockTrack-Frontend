@@ -15,6 +15,7 @@ interface NewKitItem {
   name: string;
   currentStock: number;
   quantity: number;
+  price: number;
   selected: boolean;
 }
 
@@ -41,7 +42,6 @@ export class NewKitDialogComponent implements OnInit {
   private dialogRef = inject(MatDialogRef<NewKitDialogComponent>);
 
   nombre: string = '';
-  precio: number = 0;
   items: NewKitItem[] = [];
   saving: boolean = false;
 
@@ -65,6 +65,7 @@ export class NewKitDialogComponent implements OnInit {
           name: product.name,
           currentStock: currentStock,
           quantity: 0,
+          price: 0,
           selected: false
         };
       });
@@ -79,11 +80,11 @@ export class NewKitDialogComponent implements OnInit {
   }
 
   onSave(): void {
-    if (!this.nombre.trim() || this.precio <= 0) {
+    if (!this.nombre.trim()) {
       return;
     }
-    
-    const itemsToSave = this.items.filter(item => item.selected && item.quantity > 0);
+
+    const itemsToSave = this.items.filter(item => item.selected && item.quantity > 0 && item.price > 0);
     if (itemsToSave.length === 0) {
       return;
     }
@@ -91,13 +92,14 @@ export class NewKitDialogComponent implements OnInit {
     const kitProducts: KitProduct[] = itemsToSave.map(item => ({
       productId: item.productId,
       name: item.name,
-      quantity: item.quantity
+      quantity: item.quantity,
+      price: item.price
     }));
 
     const newKit = new Kit({
       id: '',
       name: this.nombre,
-      price: this.precio,
+      price: 0, // El precio ya no es global, se calcula por item
       isEnabled: true,
       products: kitProducts
     });
@@ -111,6 +113,7 @@ export class NewKitDialogComponent implements OnInit {
     item.selected = !item.selected;
     if (!item.selected) {
       item.quantity = 0;
+      item.price = 0;
     }
   }
 

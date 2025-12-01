@@ -257,6 +257,21 @@ export class InventoryListComponent {
     return this.store.kits().filter(k => k.isEnabled);
   }
 
+  getProductName(productId: string): string {
+    const product = this.store.products().find(p => p.id === productId);
+    return product?.name || 'Producto no encontrado';
+  }
+
+  getKitTotalPrice(kit: Kit): number {
+    return kit.products.reduce((total, product) => {
+      return total + (product.price * product.quantity);
+    }, 0);
+  }
+
+  getProductSubtotal(product: any): number {
+    return product.price * product.quantity;
+  }
+
   protected t(key: string): string {
     return this.translate.instant(key);
   }

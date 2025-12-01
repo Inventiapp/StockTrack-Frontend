@@ -108,7 +108,11 @@
     "lowStock": "Stock bajo",
     "status": "Estado",
     "outOfStock": "Sin Stock",
-    "normalStock": "Normal"
+    "normalStock": "Normal",
+    "kits": "Kits",
+    "price": "Precio",
+    "kitProductUnitPrice": "Precio unitario",
+    "kitProductTotal": "Total"
   },
   "providers-view": {
     "providers": "Proveedores",
