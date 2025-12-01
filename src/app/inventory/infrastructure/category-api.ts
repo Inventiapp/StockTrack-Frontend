@@ -2,12 +2,41 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
-export interface CategoryResource { id: string; name: string; }
+export interface CategoryResource {
+  id: number; // API returns number
+  name: string;
+  description?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
 
 @Injectable({ providedIn: 'root' })
 export class CategoryApi {
-  private readonly baseUrl = `${environment.platformProviderApiBaseUrl}/categories`;
-  constructor(private http: HttpClient) {}
-  getAll(): Observable<CategoryResource[]> { return this.http.get<CategoryResource[]>(this.baseUrl); }
+  // Use backend API URL if available, otherwise fallback to platform provider API
+  private readonly baseUrl: string;
+
+  constructor(private http: HttpClient) {
+    const backendUrl = (environment as any).platformBackendApiBaseUrl;
+    this.baseUrl = backendUrl
+      ? `${backendUrl}/categories`
+      : `${environment.platformProviderApiBaseUrl}/categories`;
+  }
+
+  getAll(): Observable<CategoryResource[]> {
+    return this.http.get<CategoryResource[]>(this.baseUrl).pipe(
+      map(categories => categories.map(cat => ({
+        ...cat,
+        id: cat.id // Keep as number, will be converted to string in store
+      })))
+    );
+  }
+
+  createCategory(name: string, description: string = ''): Observable<CategoryResource> {
+    return this.http.post<CategoryResource>(this.baseUrl, {
+      name,
+      description
+    });
+  }
 }

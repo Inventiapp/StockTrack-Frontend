@@ -14,6 +14,8 @@ export class ProviderReport implements BaseEntity {
     email: string;
     ruc: string;
     productCount?: number;
+    productNames?: string[];
+    categoryNames?: string[];
   }) {
     this._id = provider.id;
     this._firstName = provider.firstName;
@@ -22,6 +24,8 @@ export class ProviderReport implements BaseEntity {
     this._email = provider.email;
     this._ruc = provider.ruc;
     this._productCount = provider.productCount ?? 0;
+    this._productNames = provider.productNames ?? [];
+    this._categoryNames = provider.categoryNames ?? [];
   }
 
   private _id: string;
@@ -52,8 +56,23 @@ export class ProviderReport implements BaseEntity {
   get productCount(): number { return this._productCount; }
   set productCount(value: number) { this._productCount = value; }
 
+  private _productNames: string[];
+  get productNames(): string[] { return this._productNames; }
+  set productNames(value: string[]) { this._productNames = value; }
+
+  private _categoryNames: string[];
+  get categoryNames(): string[] { return this._categoryNames; }
+  set categoryNames(value: string[]) { this._categoryNames = value; }
+
   get fullName(): string {
     return `${this._firstName} ${this._lastName}`;
+  }
+
+  get productsDisplay(): string {
+    if (this._productNames.length === 0) {
+      return '-';
+    }
+    return this._productNames.join(', ');
   }
 }
 

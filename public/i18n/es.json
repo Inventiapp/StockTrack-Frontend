@@ -26,11 +26,11 @@
     },
     "footer": {
       "settings": "Configuración",
-      "profile": "Perfil",
+      "personal": "Administración de personal",
       "logout": "Cerrar Sesión",
       "aria": {
         "settings": "Ir a configuración",
-        "profile": "Ir a perfil",
+        "personal": "Ir a administración de personal",
         "logout": "Cerrar sesión"
       }
     }
@@ -93,6 +93,13 @@
     "provider": "Proveedor",
     "select": "Seleccionar",
     "newProduct": "Nuevo producto",
+    "newCategory": "Nueva categoría",
+    "description": "Descripción",
+    "categoryNamePlaceholder": "Ej: Lácteos",
+    "categoryDescriptionPlaceholder": "Ej: Productos lácteos y derivados",
+    "productDescriptionPlaceholder": "Ej: Leche entera en envase de 1 litro",
+    "isActive": "Estado",
+    "activeProduct": "Producto activo",
     "lot": "Lote",
     "receiptDate": "Fecha de recepción",
     "expirationDate": "Fecha de vencimiento",
@@ -211,6 +218,9 @@
     }
   },
 
+  "personal": {
+    "title": "Administración de Personal"
+  },
   "personalAdministration": {
     "title": "Administración de Personal",
     "search": "Buscar...",
@@ -286,12 +296,15 @@
       "title": "Listado de Proveedores",
       "subtitle": "Información completa de todos tus proveedores",
       "empty": "No hay proveedores registrados",
+      "filterByCategory": "Filtrar por categoría",
+      "allCategories": "Todas las categorías",
       "columns": {
         "name": "Nombre",
         "ruc": "RUC",
         "email": "Correo",
         "phone": "Teléfono",
-        "productCount": "Productos"
+        "productCount": "Productos",
+        "products": "Productos"
       }
     },
     "stock": {

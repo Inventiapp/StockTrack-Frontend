@@ -6,19 +6,13 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatSelectModule } from '@angular/material/select';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslatePipe } from '@ngx-translate/core';
 import { InventoryStore } from '../../application/inventory.store';
-
-interface RestockingItem {
-  productId: string;
-  name: string;
-  currentStock: number;
-  quantity: number;
-  total: number;
-}
+import { Batch } from '../../domain/model/batch.entity';
 
 @Component({
   selector: 'app-restocking-dialog',
@@ -33,6 +27,7 @@ interface RestockingItem {
     MatFormFieldModule,
     MatIconModule,
     MatDatepickerModule,
+    MatSelectModule,
     FormsModule,
     MatProgressSpinnerModule,
     TranslatePipe
@@ -43,11 +38,10 @@ export class RestockingDialogComponent implements OnInit {
   protected readonly store = inject(InventoryStore);
   private dialogRef = inject(MatDialogRef<RestockingDialogComponent>);
 
-  lote: string = '';
+  selectedProductId: string = '';
+  quantity: number = 0;
   fechaRecepcion: Date | null = null;
   fechaVencimiento: Date | null = null;
-
-  items: RestockingItem[] = [];
 
   get loading(): boolean {
     return this.store.loading();
@@ -57,25 +51,30 @@ export class RestockingDialogComponent implements OnInit {
     return this.store.error();
   }
 
-  ngOnInit(): void {
-    this.loadProductsWithStock();
+  get products() {
+    return this.store.products().filter(p => p.isActive === true);
   }
 
-  loadProductsWithStock(): void {
-    const stockMap = new Map(this.store.stock().map(s => [s.productId, s.currentStock]));
-    
-    this.items = this.store.products()
-      .filter(p => p.isActive === true)
-      .map(product => {
-        const currentStock = stockMap.get(product.id) || 0;
-        return {
-          productId: product.id,
-          name: product.name,
-          currentStock: currentStock,
-          quantity: 0,
-          total: currentStock
-        };
-      });
+  get selectedProduct() {
+    return this.products.find(p => p.id === this.selectedProductId);
+  }
+
+  get currentStock(): number {
+    if (!this.selectedProductId) return 0;
+
+    // Calculate stock from batches
+    const batches = this.store.batches();
+    return batches
+      .filter(b => b.productId === this.selectedProductId)
+      .reduce((sum, batch) => sum + batch.quantity, 0);
+  }
+
+  get totalStock(): number {
+    return this.currentStock + this.quantity;
+  }
+
+  ngOnInit(): void {
+    // No need to load anything, data is already in store
   }
 
   onCancel(): void {
@@ -83,39 +82,35 @@ export class RestockingDialogComponent implements OnInit {
   }
 
   onSave(): void {
-    this.touched = true;
     if (!this.canSave) return;
-    const itemsToSave = this.items.filter(item => item.quantity > 0);
 
-    const data = {
-      lote: this.lote,
-      fechaRecepcion: this.fechaRecepcion?.toISOString().split('T')[0] || '',
-      fechaVencimiento: this.fechaVencimiento?.toISOString().split('T')[0] || '',
-      items: itemsToSave
-    };
-    this.dialogRef.close(data);
+    const batch = new Batch({
+      id: '', // Backend will assign the ID
+      productId: this.selectedProductId,
+      quantity: this.quantity,
+      expirationDate: this.fechaVencimiento!.toISOString(),
+      receptionDate: this.fechaRecepcion!.toISOString()
+    });
+
+    this.store.addBatch(batch);
+    this.dialogRef.close(true);
   }
 
-  incrementQuantity(item: RestockingItem): void {
-    item.quantity++;
-    item.total = item.currentStock + item.quantity;
+  incrementQuantity(): void {
+    this.quantity++;
   }
 
-  decrementQuantity(item: RestockingItem): void {
-    if (item.quantity > 0) {
-      item.quantity--;
-      item.total = item.currentStock + item.quantity;
+  decrementQuantity(): void {
+    if (this.quantity > 0) {
+      this.quantity--;
     }
   }
 
-  updateTotal(item: RestockingItem): void {
-    if (item.quantity < 0) {
-      item.quantity = 0;
+  onQuantityChange(): void {
+    if (this.quantity < 0) {
+      this.quantity = 0;
     }
-    item.total = item.currentStock + item.quantity;
   }
-
-  touched = false;
 
   isValidDate(d: Date | null): boolean {
     return d !== null && d instanceof Date && !isNaN(d.getTime());
@@ -127,11 +122,11 @@ export class RestockingDialogComponent implements OnInit {
   }
 
   get canSave(): boolean {
-    const loteOk = this.lote.trim().length > 0;
-    const recOk  = this.isValidDate(this.fechaRecepcion);
-    const expOk  = this.isValidDate(this.fechaVencimiento);
+    const productOk = !!this.selectedProductId;
+    const quantityOk = this.quantity > 0;
+    const recOk = this.isValidDate(this.fechaRecepcion);
+    const expOk = this.isValidDate(this.fechaVencimiento);
     const orderOk = !this.isExpirationBeforeReception();
-    return loteOk && recOk && expOk && orderOk;
+    return productOk && quantityOk && recOk && expOk && orderOk;
   }
-
 }

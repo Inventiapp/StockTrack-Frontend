@@ -18,9 +18,8 @@ import { RestockingDialogComponent } from '../restocking-dialog/restocking-dialo
 import { NewKitDialogComponent } from '../new-kit-dialog/new-kit-dialog';
 import { Kit } from '../../domain/model/kit.entity';
 import { ProductInfoDialogComponent, ProductInfoData } from '../product-info-dialog/product-info-dialog';
-import { Restocking } from '../../domain/model/restocking.entity';
-import { RestockingItem } from '../../domain/model/restocking-item.entity';
 import { NewProductDialogComponent } from '../new-product-dialog/new-product-dialog';
+import { NewCategoryDialogComponent } from '../new-category-dialog/new-category-dialog';
 import { InventoryStore } from '../../application/inventory.store';
 
 type ProductRow = {
@@ -44,7 +43,7 @@ type ProductRow = {
   styleUrls: ['./inventory-list.css'],
   standalone: true,
   imports: [
-    CommonModule, 
+    CommonModule,
     FormsModule,
     TranslateModule,
     MatButtonModule,
@@ -69,30 +68,30 @@ export class InventoryListComponent {
   selectedCategory = signal<string>('');
   selectedProvider = signal<string>('');
   selectedStatus = signal<string>('');
-  
+
   pageIndex = signal<number>(0);
   pageSize = signal<number>(10);
 
   get activeFilters(): Array<{type: string, value: string, label: string}> {
     const filters: Array<{type: string, value: string, label: string}> = [];
-    
+
     if (this.selectedCategory()) {
       const category = this.categories.find(c => c.id === this.selectedCategory());
       if (category) {
         filters.push({ type: 'category', value: this.selectedCategory(), label: category.name });
       }
     }
-    
+
     if (this.selectedProvider()) {
       filters.push({ type: 'provider', value: this.selectedProvider(), label: this.getProviderName(this.selectedProvider()) });
     }
-    
+
     if (this.selectedStatus()) {
       const statusKey = this.selectedStatus() === 'normal' ? 'normalStock' : this.selectedStatus();
       const statusLabel = this.t(`inventory.${statusKey}`);
       filters.push({ type: 'status', value: this.selectedStatus(), label: statusLabel });
     }
-    
+
     return filters;
   }
 
@@ -114,29 +113,35 @@ export class InventoryListComponent {
   }
 
   get productsRow(): ProductRow[] {
-    const stock = this.store.stock();
-    const restockings = this.store.restockings();
+    const batches = this.store.batches();
     const products = this.store.products();
     const categories = this.store.categories();
-    
-    const stockByProduct = new Map(stock.map(s => [s.productId, s.currentStock]));
-    const categoryMap = new Map(categories.map(c => [c.id, c.name]));
-    const latestByProduct = new Map<string, { lot: string; receptionDate: string; expirationDate: string }>();
-    
-    for (const r of restockings) {
-      const recDate = new Date(r.receptionDate);
-      for (const it of r.items) {
-        const prev = latestByProduct.get(it.productId);
-        if (!prev || recDate > new Date(prev.receptionDate)) {
-          latestByProduct.set(it.productId, {
-            lot: r.lot,
-            receptionDate: r.receptionDate,
-            expirationDate: r.expirationDate
-          });
-        }
+
+    // Calculate stock by product: sum all quantities from batches
+    const stockByProduct = new Map<string, number>();
+    batches.forEach(batch => {
+      const currentStock = stockByProduct.get(batch.productId) || 0;
+      stockByProduct.set(batch.productId, currentStock + batch.quantity);
+    });
+
+    // Get latest batch info by product (most recent reception date)
+    const latestBatchByProduct = new Map<string, { lot: string; receptionDate: string; expirationDate: string }>();
+    batches.forEach(batch => {
+      const existing = latestBatchByProduct.get(batch.productId);
+      const batchReceptionDate = new Date(batch.receptionDate);
+
+      if (!existing || batchReceptionDate > new Date(existing.receptionDate)) {
+        // Use batch id as lot identifier (or you could generate a lot code)
+        latestBatchByProduct.set(batch.productId, {
+          lot: `L-${batch.id}`, // Format lot as L-{batchId}
+          receptionDate: batch.receptionDate,
+          expirationDate: batch.expirationDate
+        });
       }
-    }
-    
+    });
+
+    const categoryMap = new Map(categories.map(c => [c.id, c.name]));
+
     const allProducts = products.map(p => ({
       id: p.id,
       name: p.name,
@@ -147,16 +152,16 @@ export class InventoryListComponent {
       categoryId: p.categoryId,
       providerId: p.providerId,
       providerName: this.getProviderName(p.providerId),
-      lot: latestByProduct.get(p.id)?.lot ?? '-',
-      lastReception: latestByProduct.get(p.id)?.receptionDate ?? undefined,
-      expirationDate: latestByProduct.get(p.id)?.expirationDate ?? undefined
+      lot: latestBatchByProduct.get(p.id)?.lot ?? '-',
+      lastReception: latestBatchByProduct.get(p.id)?.receptionDate ?? undefined,
+      expirationDate: latestBatchByProduct.get(p.id)?.expirationDate ?? undefined
     }));
 
     let filtered = allProducts;
 
     const search = this.searchTerm().toLowerCase().trim();
     if (search) {
-      filtered = filtered.filter(p => 
+      filtered = filtered.filter(p =>
         p.name.toLowerCase().includes(search)
       );
     }
@@ -258,7 +263,7 @@ export class InventoryListComponent {
 
   openRestockingDialog(): void {
     const dialogRef = this.dialog.open(RestockingDialogComponent, {
-      width: '750px',
+      width: '520px',
       maxWidth: '90vw',
       panelClass: 'restocking-dialog',
       disableClose: false
@@ -266,29 +271,10 @@ export class InventoryListComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        console.log('Datos de reposición:', result);
-        this.saveRestocking(result);
+        // Batch is already created in the dialog, just refresh the data
+        this.store.refresh();
       }
     });
-  }
-
-  private saveRestocking(data: any): void {
-    const restockingItems = data.items.map((item: any) =>
-      new RestockingItem({
-        productId: item.productId,
-        quantityToAdd: item.quantity
-      })
-    );
-    
-    const restocking = new Restocking({
-      id: '',
-      lot: data.lote,
-      receptionDate: data.fechaRecepcion,
-      expirationDate: data.fechaVencimiento,
-      items: restockingItems
-    });
-
-    this.store.addRestocking(restocking);
   }
 
 
@@ -333,6 +319,20 @@ export class InventoryListComponent {
     });
   }
 
+  openNewCategoryDialog(): void {
+    const dialogRef = this.dialog.open(NewCategoryDialogComponent, {
+      width: '520px',
+      maxWidth: '90vw',
+      panelClass: 'new-category-dialog',
+      disableClose: false
+    });
+    dialogRef.afterClosed().subscribe(ok => {
+      if (ok) {
+        // Categories are already refreshed in the store when created
+      }
+    });
+  }
+
   openNewProductDialog(): void {
     const dialogRef = this.dialog.open(NewProductDialogComponent, {
       width: '750px',
@@ -340,7 +340,7 @@ export class InventoryListComponent {
       panelClass: 'new-product-dialog',
       disableClose: false
     });
-    dialogRef.afterClosed().subscribe(ok => { 
+    dialogRef.afterClosed().subscribe(ok => {
       if (ok) console.log('Producto creado exitosamente');
     });
   }

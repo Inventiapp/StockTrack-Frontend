@@ -53,16 +53,21 @@ export class ReportsComponent implements OnInit {
   private readonly excelExportService = inject(ExcelExportService);
 
   // Table columns
-  protected providersColumns: string[] = ['name', 'ruc', 'email', 'phone', 'productCount'];
+  protected providersColumns: string[] = ['name', 'ruc', 'email', 'phone', 'products'];
   protected stockColumns: string[] = ['productName', 'category', 'currentStock', 'minStock', 'unitPrice', 'totalValue', 'status'];
   protected expiringColumns: string[] = ['productName', 'category', 'expirationDate', 'daysLeft', 'currentStock', 'lot', 'status'];
-  protected lowStockColumns: string[] = ['productName', 'category', 'currentStock', 'minStock', 'difference', 'unitPrice', 'status'];
+  protected lowStockColumns: string[] = ['productName', 'category', 'currentStock', 'minStock', 'unitPrice', 'status'];
 
   // Month filter for expiring products
   protected selectedMonth: string | null = null;
   protected showAllProducts: boolean = false; // Special flag for "all products" option
   protected availableMonths: string[] = [];
   protected filteredExpiringProducts: ExpiringProductReport[] = [];
+
+  // Category filter for providers report
+  protected selectedCategoryFilter: string | null = null;
+  protected availableCategories: string[] = [];
+  protected filteredProvidersReport: ProviderReport[] = [];
 
   constructor() {
     // Watch for expiring products changes using effect
@@ -73,9 +78,26 @@ export class ReportsComponent implements OnInit {
       if (products && products.length > 0) {
         products.forEach(product => {
           if (product.expirationDate) {
-            const month = product.expirationDate.substring(0, 7); // YYYY-MM
-            if (month && month.length === 7) {
-              monthsSet.add(month);
+            try {
+              const expirationDate = new Date(product.expirationDate);
+              if (!isNaN(expirationDate.getTime())) {
+                const month = expirationDate.toISOString().substring(0, 7); // YYYY-MM
+                if (month && month.length === 7) {
+                  monthsSet.add(month);
+                }
+              } else {
+                // Fallback to substring method
+                const month = product.expirationDate.substring(0, 7);
+                if (month && month.length === 7) {
+                  monthsSet.add(month);
+                }
+              }
+            } catch {
+              // Fallback to substring method
+              const month = product.expirationDate.substring(0, 7);
+              if (month && month.length === 7) {
+                monthsSet.add(month);
+              }
             }
           }
         });
@@ -87,12 +109,30 @@ export class ReportsComponent implements OnInit {
       // Update filtered products when products change
       this.updateFilteredExpiringProducts();
     });
+
+    // Watch for providers report changes to extract available categories
+    effect(() => {
+      const providers = this.store.providersReport();
+      const categoriesSet = new Set<string>();
+
+      providers.forEach(provider => {
+        if (provider.categoryNames && provider.categoryNames.length > 0) {
+          provider.categoryNames.forEach(categoryName => {
+            categoriesSet.add(categoryName);
+          });
+        }
+      });
+
+      this.availableCategories = Array.from(categoriesSet).sort();
+      this.updateFilteredProvidersReport();
+    });
   }
 
   ngOnInit(): void {
     this.store.loadReportsData();
     // Initialize filtered products with all products initially
     this.updateFilteredExpiringProducts();
+    this.updateFilteredProvidersReport();
   }
 
   /**
@@ -137,8 +177,16 @@ export class ReportsComponent implements OnInit {
     if (this.selectedMonth) {
       this.filteredExpiringProducts = allProducts.filter(product => {
         if (!product.expirationDate) return false;
-        const productMonth = product.expirationDate.substring(0, 7);
-        return productMonth === this.selectedMonth;
+        try {
+          const expirationDate = new Date(product.expirationDate);
+          if (isNaN(expirationDate.getTime())) return false;
+          const productMonth = expirationDate.toISOString().substring(0, 7);
+          return productMonth === this.selectedMonth;
+        } catch {
+          // Try substring method as fallback
+          const productMonth = product.expirationDate.substring(0, 7);
+          return productMonth === this.selectedMonth;
+        }
       });
       return;
     }
@@ -174,6 +222,38 @@ export class ReportsComponent implements OnInit {
     this.selectedMonth = null;
     this.showAllProducts = false;
     this.updateFilteredExpiringProducts();
+  }
+
+  /**
+   * Updates filtered providers report based on selected category filter.
+   */
+  protected onCategoryFilterChange(): void {
+    this.updateFilteredProvidersReport();
+  }
+
+  /**
+   * Updates the filtered providers report list.
+   */
+  private updateFilteredProvidersReport(): void {
+    const allProviders = this.store.providersReport();
+
+    if (!this.selectedCategoryFilter || this.selectedCategoryFilter === '') {
+      this.filteredProvidersReport = allProviders;
+      return;
+    }
+
+    // Filter providers that have products in the selected category
+    this.filteredProvidersReport = allProviders.filter(provider => {
+      return provider.categoryNames && provider.categoryNames.includes(this.selectedCategoryFilter!);
+    });
+  }
+
+  /**
+   * Clears the category filter.
+   */
+  protected clearCategoryFilter(): void {
+    this.selectedCategoryFilter = null;
+    this.updateFilteredProvidersReport();
   }
 
   protected t(key: string): string {

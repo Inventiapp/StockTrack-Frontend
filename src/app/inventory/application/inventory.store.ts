@@ -4,6 +4,7 @@ import { Category } from '../domain/model/category.entity';
 import { Provider } from '../domain/model/provider.entity';
 import { Kit } from '../domain/model/kit.entity';
 import { Restocking } from '../domain/model/restocking.entity';
+import { Batch } from '../domain/model/batch.entity';
 import { ProductsApi } from '../infrastructure/products-api';
 import { CategoryApi } from '../infrastructure/category-api';
 import { ProvidersApi } from '../../providers-management/infrastructure/providers-api';
@@ -11,6 +12,7 @@ import { StockApi } from '../infrastructure/stock-api';
 import { StockResource } from '../infrastructure/stock-response';
 import { KitApi } from '../infrastructure/kit-api';
 import { RestockingApi } from '../infrastructure/restocking-api';
+import { BatchApi } from '../infrastructure/batch-api';
 
 /**
  * Store for managing inventory state and operations.
@@ -27,6 +29,7 @@ export class InventoryStore {
   private readonly stockSignal = signal<StockResource[]>([]);
   private readonly kitsSignal = signal<Kit[]>([]);
   private readonly restockingsSignal = signal<Restocking[]>([]);
+  private readonly batchesSignal = signal<Batch[]>([]);
   private readonly loadingSignal = signal<boolean>(false);
   private readonly errorSignal = signal<string | null>(null);
 
@@ -36,6 +39,7 @@ export class InventoryStore {
   readonly stock = this.stockSignal.asReadonly();
   readonly kits = this.kitsSignal.asReadonly();
   readonly restockings = this.restockingsSignal.asReadonly();
+  readonly batches = this.batchesSignal.asReadonly();
   readonly loading = this.loadingSignal.asReadonly();
   readonly error = this.errorSignal.asReadonly();
 
@@ -45,6 +49,7 @@ export class InventoryStore {
   readonly hasStock = computed(() => this.stock().length > 0);
   readonly hasKits = computed(() => this.kits().length > 0);
   readonly hasRestockings = computed(() => this.restockings().length > 0);
+  readonly hasBatches = computed(() => this.batches().length > 0);
 
   constructor(
     private productsApi: ProductsApi,
@@ -52,7 +57,8 @@ export class InventoryStore {
     private providersApi: ProvidersApi,
     private stockApi: StockApi,
     private kitApi: KitApi,
-    private restockingApi: RestockingApi
+    private restockingApi: RestockingApi,
+    private batchApi: BatchApi
   ) {
     this.loadInventoryData();
   }
@@ -73,7 +79,7 @@ export class InventoryStore {
     this.categoriesApi.getAll().subscribe({
       next: (categories: any[]) => {
         const categoryEntities = categories.map(cat => new Category({
-          id: cat.id,
+          id: String(cat.id), // Convert id to string (API returns number)
           name: cat.name
         }));
         this.categoriesSignal.set(categoryEntities);
@@ -113,10 +119,19 @@ export class InventoryStore {
     this.restockingApi.getRestockings().subscribe({
       next: (restockings: Restocking[]) => {
         this.restockingsSignal.set(restockings);
-        this.loadingSignal.set(false);
       },
       error: (err: any) => {
         this.errorSignal.set(this.formatError(err, 'Error loading restockings'));
+      }
+    });
+
+    this.batchApi.getBatches().subscribe({
+      next: (batches: Batch[]) => {
+        this.batchesSignal.set(batches);
+        this.loadingSignal.set(false);
+      },
+      error: (err: any) => {
+        this.errorSignal.set(this.formatError(err, 'Error loading batches'));
         this.loadingSignal.set(false);
       }
     });
@@ -192,11 +207,27 @@ export class InventoryStore {
 
   /**
    * Adds a new category to the store.
-   * @param category - The category to add.
+   * @param categoryData - The category data to add (name and description).
    */
-  addCategory(category: Category): void {
-    const currentCategories = this.categoriesSignal();
-    this.categoriesSignal.set([...currentCategories, category]);
+  addCategory(categoryData: { name: string; description: string }): void {
+    this.loadingSignal.set(true);
+    this.errorSignal.set(null);
+
+    this.categoriesApi.createCategory(categoryData.name, categoryData.description).subscribe({
+      next: (createdCategory: any) => {
+        const categoryEntity = new Category({
+          id: String(createdCategory.id), // Convert id to string
+          name: createdCategory.name
+        });
+        const currentCategories = this.categoriesSignal();
+        this.categoriesSignal.set([...currentCategories, categoryEntity]);
+        this.loadingSignal.set(false);
+      },
+      error: (err: any) => {
+        this.errorSignal.set(this.formatError(err, 'Error creating category'));
+        this.loadingSignal.set(false);
+      }
+    });
   }
 
   /**
@@ -304,10 +335,10 @@ export class InventoryStore {
           next: (stockResource) => {
             if (stockResource) {
               const newStock = stockResource.currentStock + item.quantityToAdd;
-              
+
               this.stockApi.updateStock(stockResource.id, newStock).subscribe({
                 next: (updatedStock) => {
-                  this.stockSignal.update(stocks => 
+                  this.stockSignal.update(stocks =>
                     stocks.map(s => s.id === updatedStock.id ? updatedStock : s)
                   );
                   resolve();
@@ -373,6 +404,27 @@ export class InventoryStore {
   removeRestocking(restockingId: string): void {
     const currentRestockings = this.restockingsSignal();
     this.restockingsSignal.set(currentRestockings.filter(r => r.id !== restockingId));
+  }
+
+  /**
+   * Adds a new batch to the store.
+   * @param batch - The batch to add.
+   */
+  addBatch(batch: Batch): void {
+    this.loadingSignal.set(true);
+    this.errorSignal.set(null);
+
+    this.batchApi.createBatch(batch).subscribe({
+      next: (createdBatch: Batch) => {
+        const currentBatches = this.batchesSignal();
+        this.batchesSignal.set([...currentBatches, createdBatch]);
+        this.loadingSignal.set(false);
+      },
+      error: (err: any) => {
+        this.errorSignal.set(this.formatError(err, 'Error creating batch'));
+        this.loadingSignal.set(false);
+      }
+    });
   }
 
   /**

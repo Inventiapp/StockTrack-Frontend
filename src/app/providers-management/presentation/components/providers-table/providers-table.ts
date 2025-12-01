@@ -48,7 +48,9 @@ export class ProvidersTable {
 
   onEdit(p: Provider) {
     const ref = this.dialog.open(ProviderFormDialog, {
-      width: '720px',
+      width: '600px',
+      maxWidth: '90vw',
+      panelClass: 'provider-form-dialog',
       data: p,
       disableClose: true
     });

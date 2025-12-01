@@ -28,28 +28,28 @@ export class ExcelExportService {
     const titleStyle = this.getTitleStyle();
 
     // Add title
-    worksheet.mergeCells('A1:E1');
+    worksheet.mergeCells('A1:F1');
     const titleRow = worksheet.getRow(1);
     titleRow.getCell(1).value = 'REPORTE DE PROVEEDORES';
     titleRow.getCell(1).style = titleStyle;
     titleRow.height = 30;
 
     // Add date
-    worksheet.mergeCells('A2:E2');
+    worksheet.mergeCells('A2:F2');
     const dateRow = worksheet.getRow(2);
     dateRow.getCell(1).value = `Fecha de generación: ${this.getFormattedDateTime()}`;
     dateRow.getCell(1).style = { font: { size: 10, italic: true } };
     dateRow.height = 20;
 
     // Add summary
-    worksheet.mergeCells('A3:E3');
+    worksheet.mergeCells('A3:F3');
     const summaryRow = worksheet.getRow(3);
     summaryRow.getCell(1).value = `Total de proveedores: ${data.length}`;
     summaryRow.getCell(1).style = { font: { size: 11, bold: true } };
     summaryRow.height = 20;
 
     // Add headers
-    const headers = ['Nombre', 'RUC', 'Correo Electrónico', 'Teléfono', 'Cantidad de Productos'];
+    const headers = ['Nombre', 'RUC', 'Correo Electrónico', 'Teléfono', 'Productos'];
     const headerRow = worksheet.getRow(4);
     headers.forEach((header, index) => {
       const cell = headerRow.getCell(index + 1);
@@ -65,8 +65,14 @@ export class ExcelExportService {
       row.getCell(2).value = provider.ruc;
       row.getCell(3).value = provider.email;
       row.getCell(4).value = provider.phoneNumber;
-      row.getCell(5).value = provider.productCount;
-      row.getCell(5).style = { alignment: { horizontal: 'center' } };
+      // Show product names instead of count
+      const productsText = provider.productNames && provider.productNames.length > 0
+        ? provider.productNames.join(', ')
+        : '-';
+      row.getCell(5).value = productsText;
+      row.getCell(5).style = {
+        alignment: { horizontal: 'left', vertical: 'top', wrapText: true }
+      };
 
       // Alternate row colors
       if (index % 2 === 0) {
@@ -83,7 +89,7 @@ export class ExcelExportService {
     worksheet.getColumn(2).width = 15;
     worksheet.getColumn(3).width = 30;
     worksheet.getColumn(4).width = 15;
-    worksheet.getColumn(5).width = 20;
+    worksheet.getColumn(5).width = 40;
 
     // Add borders
     this.addBorders(worksheet, 4, 4 + data.length, 1, 5);

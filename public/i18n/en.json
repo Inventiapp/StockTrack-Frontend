@@ -26,11 +26,11 @@
     },
     "footer": {
       "settings": "Settings",
-      "profile": "Profile",
+      "personal": "Personal administration",
       "logout": "Logout",
       "aria": {
         "settings": "Go to settings",
-        "profile": "Go to profile",
+        "personal": "Go to personal administration",
         "logout": "Logout"
       }
     }
@@ -209,6 +209,10 @@
       "expiringProduct": "Product about to expire",
       "lowStock": "Product running out"
     }
+  },
+
+  "personal": {
+    "title": "Staff Administration"
   },
   "personalAdministration": {
     "title": "Staff Administration",

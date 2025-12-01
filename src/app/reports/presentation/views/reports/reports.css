@@ -142,7 +142,15 @@
   min-width: 250px;
 }
 
+.category-filter {
+  min-width: 250px;
+}
+
 .show-all-checkbox {
+  margin-left: 0.5rem;
+}
+
+.clear-filter-btn {
   margin-left: 0.5rem;
 }
 
@@ -186,6 +194,27 @@
 
 .reports-table tr:hover {
   background-color: #F9FAFB;
+}
+
+.products-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.product-chip {
+  font-size: 0.75rem;
+  height: 24px;
+  padding: 0 8px;
+  background-color: #E5E7EB;
+  color: #374151;
+  font-weight: 500;
+}
+
+.no-products {
+  color: #9CA3AF;
+  font-style: italic;
 }
 
 .empty-state {

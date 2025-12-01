@@ -215,6 +215,14 @@
   transform: translateY(0);
 }
 
+.btn-blue {
+  background: #3b82f6;
+}
+
+.btn-blue:hover {
+  background: #2563eb;
+}
+
 .btn-purple {
   background: #8a57e9;
 }

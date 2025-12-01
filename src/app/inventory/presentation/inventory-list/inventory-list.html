@@ -6,6 +6,7 @@
           <h2>{{ 'inventory.products' | translate }}</h2>
         </div>
         <div class="toolbar-buttons">
+          <button class="btn-blue" (click)="openNewCategoryDialog()">＋ {{ 'inventory.category' | translate }}</button>
           <button class="btn-purple" (click)="openNewKitDialog()">＋ Kit</button>
           <button class="btn-green" (click)="openNewProductDialog()">＋ {{ 'inventory.product' | translate}}</button>
           <button class="btn-orange" (click)="openRestockingDialog()">＋ {{ 'inventory.newReplacement' | translate }}</button>
@@ -15,14 +16,14 @@
         <div class="action-bar">
           <mat-form-field appearance="outline" class="search-field">
             <mat-icon matPrefix>search</mat-icon>
-            <input 
-              matInput 
-              type="text" 
+            <input
+              matInput
+              type="text"
               [placeholder]="'inventory.search' | translate"
               [value]="searchTerm()"
               (input)="onSearchChange($any($event.target).value)" />
           </mat-form-field>
-          
+
           <div class="filters-container">
             <mat-form-field appearance="outline" class="filter-field-inline">
               <mat-label>{{ 'inventory.category' | translate }}</mat-label>
@@ -153,7 +154,7 @@
             </table>
           </div>
           @if (productsRow.length > 0) {
-            <mat-paginator 
+            <mat-paginator
               [length]="totalProducts"
               [pageSize]="pageSize()"
               [pageIndex]="pageIndex()"

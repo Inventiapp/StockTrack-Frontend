@@ -6,7 +6,7 @@ export class ProviderAssembler implements BaseAssembler<Provider, ProviderResour
 
   toEntityFromResource(resource: ProviderResource): Provider {
     return new Provider({
-      id: resource.id?.toString() ?? '',
+      id: String(resource.id ?? ''), // Convert id to string (API returns number)
       firstName: resource.firstName,
       lastName: resource.lastName,
       phoneNumber: resource.phone,

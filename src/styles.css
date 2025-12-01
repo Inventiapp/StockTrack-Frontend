@@ -5,25 +5,25 @@
   --color-primary-light: rgba(255, 162, 42, 0.1);
   --color-primary-medium: rgba(255, 162, 42, 0.15);
   --color-primary-dark: rgba(255, 162, 42, 0.3);
-  
+
   --color-secondary: #FFC64D;
   --color-secondary-opacity: rgba(255, 198, 77, 0.8);
   --color-secondary-light: rgba(255, 198, 77, 0.05);
-  
+
   --color-success: #f0fdf4;
   --color-success-text: #166534;
   --color-warning: #fff7ed;
   --color-warning-text: #9a3412;
   --color-error: #fef2f2;
   --color-error-text: #991b1b;
-  
+
   --color-white: #ffffff;
   --color-black: #000000;
   --color-gray-light: #f5f5f5;
   --color-gray-medium: rgba(0, 0, 0, 0.6);
   --color-gray-dark: rgba(0, 0, 0, 0.87);
   --color-gray-border: rgba(0, 0, 0, 0.12);
-  
+
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 4px 10px rgba(0, 0, 0, 0.2);
@@ -86,4 +86,19 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .new-product-dialog .mdc-dialog__content{
   padding: 0 !important;
   margin: 0 !important;
+}
+
+/* Provider Form Dialog - Prevenir scrollbar horizontal */
+.provider-form-dialog .mat-mdc-dialog-container,
+.provider-form-dialog .mdc-dialog__surface {
+  overflow-x: hidden !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.provider-form-dialog .mat-mdc-dialog-content,
+.provider-form-dialog .mdc-dialog__content {
+  overflow-x: hidden !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
 }

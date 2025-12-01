@@ -20,10 +20,12 @@ export class NewProductDialogComponent {
 
   form = {
     name: '',
+    description: '',
     categoryId: '',
     providerId: '',
     minStock: 0,
-    unitPrice: '' as string | number
+    unitPrice: '' as string | number,
+    isActive: true
   };
 
 
@@ -46,12 +48,12 @@ export class NewProductDialogComponent {
     const product = new Product({
       id: '', // El backend asignará el ID
       name: this.form.name.trim(),
-      description: '',
+      description: this.form.description.trim(),
       categoryId: this.form.categoryId,
       providerId: String(this.form.providerId),
       minStock: Number(this.form.minStock),
       unitPrice,
-      isActive: true
+      isActive: this.form.isActive
     });
 
     this.store.addProduct(product);

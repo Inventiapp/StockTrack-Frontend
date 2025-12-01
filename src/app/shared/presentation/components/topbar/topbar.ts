@@ -60,7 +60,7 @@ export class TopbarComponent {
     } else if (url.includes('/configuracion')) {
       this.pageTitle = 'settings.title';
     } else if (url.includes('/perfil')) {
-      this.pageTitle = 'profile.title';
+      this.pageTitle = 'personal.title';
     } else {
       this.pageTitle = 'app.title';
     }

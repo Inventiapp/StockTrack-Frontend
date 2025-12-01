@@ -9,11 +9,13 @@ import { ProvidersApi } from '../../providers-management/infrastructure/provider
 import { StockApi } from '../../inventory/infrastructure/stock-api';
 import { RestockingApi } from '../../inventory/infrastructure/restocking-api';
 import { CategoryApi, CategoryResource } from '../../inventory/infrastructure/category-api';
+import { BatchApi } from '../../inventory/infrastructure/batch-api';
 import { Product } from '../../inventory/domain/model/product.entity';
 import { Provider } from '../../inventory/domain/model/provider.entity';
 import { StockResource } from '../../inventory/infrastructure/stock-response';
 import { Restocking } from '../../inventory/domain/model/restocking.entity';
 import { Category } from '../../inventory/domain/model/category.entity';
+import { Batch } from '../../inventory/domain/model/batch.entity';
 
 /**
  * Store for managing reports state and operations.
@@ -48,7 +50,8 @@ export class ReportsStore {
     private providersApi: ProvidersApi,
     private stockApi: StockApi,
     private restockingApi: RestockingApi,
-    private categoryApi: CategoryApi
+    private categoryApi: CategoryApi,
+    private batchApi: BatchApi
   ) {}
 
   /**
@@ -64,12 +67,13 @@ export class ReportsStore {
       providers: this.providersApi.getProviders(),
       stock: this.stockApi.getStock(),
       restockings: this.restockingApi.getRestockings(),
-      categories: this.categoryApi.getAll()
+      categories: this.categoryApi.getAll(),
+      batches: this.batchApi.getBatches()
     }).subscribe({
-      next: ({ products, providers, stock, restockings, categories }) => {
+      next: ({ products, providers, stock, restockings, categories, batches }) => {
         // Convert CategoryResource[] to Category[]
         const categoryEntities = (categories as CategoryResource[]).map(
-          cat => new Category({ id: cat.id, name: cat.name })
+          cat => new Category({ id: String(cat.id), name: cat.name }) // Convert id to string (API returns number)
         );
 
         this.generateReports(
@@ -77,7 +81,8 @@ export class ReportsStore {
           providers as Provider[],
           stock as StockResource[],
           restockings as Restocking[],
-          categoryEntities
+          categoryEntities,
+          batches as Batch[]
         );
         this.loadingSignal.set(false);
       },
@@ -96,33 +101,47 @@ export class ReportsStore {
     providers: Provider[],
     stock: StockResource[],
     restockings: Restocking[],
-    categories: Category[]
+    categories: Category[],
+    batches: Batch[]
   ): void {
     // Generate providers report
-    this.generateProvidersReport(products, providers);
+    this.generateProvidersReport(products, providers, categories);
 
-    // Generate stock report
-    this.generateStockReport(products, stock, providers, categories);
+    // Generate stock report (using batches for stock calculation)
+    this.generateStockReport(products, batches, providers, categories);
 
-    // Generate expiring products report
-    this.generateExpiringProductsReport(products, stock, restockings, providers, categories);
+    // Generate expiring products report (using batches for expiration dates)
+    this.generateExpiringProductsReport(products, batches, providers, categories);
 
-    // Generate low stock report
-    this.generateLowStockReport(products, stock, providers, categories);
+    // Generate low stock report (using batches for stock calculation)
+    this.generateLowStockReport(products, batches, providers, categories);
   }
 
   /**
    * Generates the providers report.
    */
-  private generateProvidersReport(products: Product[], providers: Provider[]): void {
-    const productCountByProvider = new Map<string, number>();
+  private generateProvidersReport(products: Product[], providers: Provider[], categories: Category[]): void {
+    const productsByProvider = new Map<string, string[]>();
+    const categoriesByProvider = new Map<string, Set<string>>();
+    const categoryMap = new Map(categories.map(c => [c.id, c.name]));
 
     products.forEach(product => {
-      const count = productCountByProvider.get(product.providerId) || 0;
-      productCountByProvider.set(product.providerId, count + 1);
+      const providerProducts = productsByProvider.get(product.providerId) || [];
+      providerProducts.push(product.name);
+      productsByProvider.set(product.providerId, providerProducts);
+
+      // Track categories for each provider
+      const providerCategories = categoriesByProvider.get(product.providerId) || new Set<string>();
+      const categoryName = categoryMap.get(product.categoryId);
+      if (categoryName) {
+        providerCategories.add(categoryName);
+      }
+      categoriesByProvider.set(product.providerId, providerCategories);
     });
 
     const providersReport = providers.map(provider => {
+      const providerProducts = productsByProvider.get(provider.id) || [];
+      const providerCategorySet = categoriesByProvider.get(provider.id) || new Set<string>();
       return new ProviderReport({
         id: provider.id,
         firstName: provider.firstName,
@@ -130,7 +149,9 @@ export class ReportsStore {
         phoneNumber: provider.phoneNumber,
         email: provider.email,
         ruc: provider.ruc,
-        productCount: productCountByProvider.get(provider.id) || 0
+        productCount: providerProducts.length,
+        productNames: providerProducts,
+        categoryNames: Array.from(providerCategorySet)
       });
     });
 
@@ -142,27 +163,43 @@ export class ReportsStore {
    */
   private generateStockReport(
     products: Product[],
-    stock: StockResource[],
+    batches: Batch[],
     providers: Provider[],
     categories: Category[]
   ): void {
     const providerMap = new Map(providers.map(p => [p.id, `${p.firstName} ${p.lastName}`]));
     const categoryMap = new Map(categories.map(c => [c.id, c.name]));
-    const stockMap = new Map(stock.map(s => [s.productId, s]));
+
+    // Calculate stock from batches: sum all quantities by product
+    const stockByProduct = new Map<string, number>();
+    const lastUpdatedByProduct = new Map<string, string>();
+
+    batches.forEach(batch => {
+      const currentStock = stockByProduct.get(batch.productId) || 0;
+      stockByProduct.set(batch.productId, currentStock + batch.quantity);
+
+      // Track the most recent reception date as lastUpdated
+      const existingDate = lastUpdatedByProduct.get(batch.productId);
+      if (!existingDate || new Date(batch.receptionDate) > new Date(existingDate)) {
+        lastUpdatedByProduct.set(batch.productId, batch.receptionDate);
+      }
+    });
 
     const stockReport = products
       .filter(product => product.isActive)
       .map(product => {
-        const stockData = stockMap.get(product.id);
+        const currentStock = stockByProduct.get(product.id) || 0;
+        const lastUpdated = lastUpdatedByProduct.get(product.id) || new Date().toISOString().split('T')[0];
+
         return new StockReport({
-          id: stockData?.id || `stock-${product.id}`,
+          id: `stock-${product.id}`,
           productId: product.id,
           productName: product.name,
           categoryName: categoryMap.get(product.categoryId) || '-',
-          currentStock: stockData?.currentStock || 0,
+          currentStock: currentStock,
           minStock: product.minStock,
           unitPrice: product.unitPrice,
-          lastUpdated: stockData?.lastUpdated || new Date().toISOString().split('T')[0],
+          lastUpdated: lastUpdated.split('T')[0], // Format to YYYY-MM-DD
           providerName: providerMap.get(product.providerId)
         });
       });
@@ -175,63 +212,63 @@ export class ReportsStore {
    */
   private generateExpiringProductsReport(
     products: Product[],
-    stock: StockResource[],
-    restockings: Restocking[],
+    batches: Batch[],
     providers: Provider[],
     categories: Category[]
   ): void {
     const providerMap = new Map(providers.map(p => [p.id, `${p.firstName} ${p.lastName}`]));
     const categoryMap = new Map(categories.map(c => [c.id, c.name]));
-    const stockMap = new Map(stock.map(s => [s.productId, s]));
 
-    // Get latest restocking for each product (only those with valid expiration dates)
-    const latestRestockingByProduct = new Map<string, { expirationDate: string; lot: string }>();
+    // Calculate stock from batches: sum all quantities by product
+    const stockByProduct = new Map<string, number>();
+    batches.forEach(batch => {
+      const currentStock = stockByProduct.get(batch.productId) || 0;
+      stockByProduct.set(batch.productId, currentStock + batch.quantity);
+    });
 
-    restockings.forEach(restocking => {
-      // Skip restockings without valid expiration dates
-      if (!restocking.expirationDate || restocking.expirationDate.trim() === '') {
-        return;
+    // Get all batches with expiration dates, grouped by product
+    // For each product, we'll use the batch with the earliest expiration date
+    const batchesByProduct = new Map<string, Batch[]>();
+    batches.forEach(batch => {
+      if (!batch.expirationDate || batch.expirationDate.trim() === '') {
+        return; // Skip batches without expiration dates
       }
 
-      const expirationDate = new Date(restocking.expirationDate);
+      const expirationDate = new Date(batch.expirationDate);
       if (isNaN(expirationDate.getTime())) {
         return; // Skip invalid dates
       }
 
-      restocking.items.forEach(item => {
-        const existing = latestRestockingByProduct.get(item.productId);
-        // Compare by expiration date to get the most recent expiration
-        if (!existing || new Date(restocking.expirationDate) > new Date(existing.expirationDate)) {
-          latestRestockingByProduct.set(item.productId, {
-            expirationDate: restocking.expirationDate,
-            lot: restocking.lot || '-'
-          });
-        }
-      });
+      const productBatches = batchesByProduct.get(batch.productId) || [];
+      productBatches.push(batch);
+      batchesByProduct.set(batch.productId, productBatches);
     });
 
-    // Get all products with expiration dates (no time restriction)
+    // Get all products with expiration dates from batches
     const expiringProducts = products
       .filter(product => {
-        const restockingData = latestRestockingByProduct.get(product.id);
-        if (!restockingData) return false;
-
-        // Include all products with expiration dates, regardless of when they expire
-        const expirationDate = new Date(restockingData.expirationDate);
-        return !isNaN(expirationDate.getTime()); // Valid date check
+        const productBatches = batchesByProduct.get(product.id);
+        return productBatches && productBatches.length > 0;
       })
       .map(product => {
-        const restockingData = latestRestockingByProduct.get(product.id)!;
-        const stockData = stockMap.get(product.id);
+        const productBatches = batchesByProduct.get(product.id)!;
+        // Use the batch with the earliest expiration date
+        const earliestBatch = productBatches.reduce((earliest, current) => {
+          const earliestDate = new Date(earliest.expirationDate);
+          const currentDate = new Date(current.expirationDate);
+          return currentDate < earliestDate ? current : earliest;
+        });
+
+        const currentStock = stockByProduct.get(product.id) || 0;
 
         return new ExpiringProductReport({
-          id: `expiring-${product.id}`,
+          id: `expiring-${product.id}-${earliestBatch.id}`,
           productId: product.id,
           productName: product.name,
           categoryName: categoryMap.get(product.categoryId) || '-',
-          expirationDate: restockingData.expirationDate,
-          currentStock: stockData?.currentStock || 0,
-          lot: restockingData.lot,
+          expirationDate: earliestBatch.expirationDate,
+          currentStock: currentStock,
+          lot: `L-${earliestBatch.id}`,
           providerName: providerMap.get(product.providerId)
         });
       })
@@ -249,23 +286,27 @@ export class ReportsStore {
    */
   private generateLowStockReport(
     products: Product[],
-    stock: StockResource[],
+    batches: Batch[],
     providers: Provider[],
     categories: Category[]
   ): void {
     const providerMap = new Map(providers.map(p => [p.id, `${p.firstName} ${p.lastName}`]));
     const categoryMap = new Map(categories.map(c => [c.id, c.name]));
-    const stockMap = new Map(stock.map(s => [s.productId, s]));
+
+    // Calculate stock from batches: sum all quantities by product
+    const stockByProduct = new Map<string, number>();
+    batches.forEach(batch => {
+      const currentStock = stockByProduct.get(batch.productId) || 0;
+      stockByProduct.set(batch.productId, currentStock + batch.quantity);
+    });
 
     const lowStockProducts = products
       .filter(product => {
-        const stockData = stockMap.get(product.id);
-        const currentStock = stockData?.currentStock || 0;
+        const currentStock = stockByProduct.get(product.id) || 0;
         return currentStock <= product.minStock && product.isActive;
       })
       .map(product => {
-        const stockData = stockMap.get(product.id);
-        const currentStock = stockData?.currentStock || 0;
+        const currentStock = stockByProduct.get(product.id) || 0;
 
         return new LowStockReport({
           id: `low-stock-${product.id}`,

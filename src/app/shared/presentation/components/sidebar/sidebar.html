@@ -12,9 +12,9 @@
   </div>
 
   <mat-nav-list class="menu">
-    <a mat-list-item 
+    <a mat-list-item
        *ngFor="let item of menuItems"
-       [routerLink]="item.route" 
+       [routerLink]="item.route"
        routerLinkActive="active"
        [disableRipple]="true">
       <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
@@ -39,7 +39,7 @@
     </a>
     <a mat-list-item routerLink="/perfil" routerLinkActive="active" [disableRipple]="true">
       <mat-icon matListItemIcon>person</mat-icon>
-      <span matListItemTitle *ngIf="isExpanded">{{ t('sidebar.footer.profile') }}</span>
+      <span matListItemTitle *ngIf="isExpanded">{{ t('sidebar.footer.personal') }}</span>
     </a>
     <a mat-list-item (click)="logout()" class="logout-btn" [disableRipple]="true">
       <mat-icon matListItemIcon>logout</mat-icon>
