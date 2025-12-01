@@ -158,7 +158,9 @@
       "cancel": "Cancel",
       "save": "Save"
     },
-    "kits": "Kits"
+    "kits": "Kits",
+    "noKitsAvailable": "No hay kits disponibles",
+    "total": "Total"
   },
   "auth": {
     "login": {

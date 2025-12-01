@@ -1,13 +1,15 @@
 // typescript
-import { Component, inject } from '@angular/core';
-import { SalesStore } from '../../../application/sales.store';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { CommonModule } from '@angular/common';
+import {Component, inject} from '@angular/core';
+import {SalesStore} from '../../../application/sales.store';
+import {MatCardModule} from '@angular/material/card';
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+import {CommonModule} from '@angular/common';
 import {TranslatePipe} from '@ngx-translate/core';
 import {MatFormField} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
+import {KitResource} from '../../../../inventory/infrastructure/kit-response';
+import {InventoryStore} from '../../../../inventory/application/inventory.store';
 
 interface ViewProduct {
   id: string;
@@ -24,14 +26,17 @@ interface ViewProduct {
   styleUrls: ['./sales-tables.css']
 })
 export class SalesTables {
-  private readonly store = inject(SalesStore);
+  protected readonly store = inject(SalesStore);
 
-  // Devuelve la lista de productos transformada para la vista (nombre, precio y stock calculado)
+  protected readonly inventoryStore = inject(InventoryStore);
+
+  get availableKits() {
+    return this.inventoryStore.kits().filter(kit => kit.isEnabled);
+  }
   get products(): ViewProduct[] {
     const products = this.store.products();
     const batches = this.store.batches();
 
-    // Calcular stock por producto sumando las cantidades de los batches
     const stockByProduct = new Map<string, number>();
     for (const b of batches) {
       const current = stockByProduct.get(b.productId) ?? 0;
@@ -46,20 +51,31 @@ export class SalesTables {
     }));
   }
 
-  kitDetails = [
-    { qty: 1, name: 'Item A', price: 4.9 },
-    { qty: 2, name: 'Item B', price: 2.45 }
-  ];
+  get kits(): KitResource[] {
+    const kits = this.store.kits();
+
+    return kits.map(k => ({
+      id: k.id,
+      name: k.name,
+      items: k.products
+    }));
+  }
+
 
   cartItems = [
-    { name: 'Item A', unitPrice: 4.9, quantity: 1, total: 4.9 }
+    {name: 'Item A', unitPrice: 4.9, quantity: 1, total: 4.9}
   ];
 
-  get totalAmount(): number {
+  get totalAmount()
+    :
+    number {
     return this.cartItems.reduce((s, i) => s + i.total, 0);
   }
 
-  deleteItem(item: any) {
+  deleteItem(item
+             :
+             any
+  ) {
     // implementación mínima para mantener la plantilla funcional
     this.cartItems = this.cartItems.filter(i => i !== item);
   }

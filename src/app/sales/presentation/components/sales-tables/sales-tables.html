@@ -1,5 +1,5 @@
 <div class="container">
-  <h2 class="page-title">{{'sales.title' | translate}}</h2>
+  <h2 class="page-title">{{ 'sales.title' | translate }}</h2>
 
   <div class="filter-section">
     <mat-form-field appearance="outline" class="search-field">
@@ -8,7 +8,8 @@
     </mat-form-field>
 
     <button mat-stroked-button class="btn-filter">
-      <mat-icon>filter_list</mat-icon> {{'sales.filter' | translate}}
+      <mat-icon>filter_list</mat-icon>
+      {{ 'sales.filter' | translate }}
     </button>
   </div>
 
@@ -17,12 +18,12 @@
     <div class="left-column">
 
       <div class="section-container">
-        <h3 class="section-title">{{'sales.products' | translate}}</h3>
+        <h3 class="section-title">{{ 'sales.products' | translate }}</h3>
         <mat-card class="custom-card product-table-card">
           <div class="table-header dark">
-            <span>{{'sales.table.name' | translate}}</span>
-            <span>{{'sales.table.unitPrice' | translate}}</span>
-            <span>{{'sales.table.stock' | translate}}</span>
+            <span>{{ 'sales.table.name' | translate }}</span>
+            <span>{{ 'sales.table.unitPrice' | translate }}</span>
+            <span>{{ 'sales.table.stock' | translate }}</span>
           </div>
           <div class="table-body">
             <div class="row" *ngFor="let p of products">
@@ -37,36 +38,45 @@
       </div>
 
       <div class="section-container">
-        <h3 class="section-title">{{'sales.kits' | translate}}</h3>
-        <div class="kit-card">
-          <div class="kit-header">
-            Combo Película
+        <h3 class="section-title">{{ 'sales.kits' | translate }}</h3>
+
+        @if (availableKits.length === 0) {
+          <div class="empty-state">
+            <p>{{ 'sales.noKitsAvailable' | translate }}</p>
           </div>
-          <div class="kit-body">
-            <div class="kit-row" *ngFor="let k of kitDetails">
-              <span class="qty">{{ k.qty }}</span>
-              <span class="name">{{ k.name }}</span>
-              <span class="price">s/. {{ k.price | number:'1.1-1' }}</span>
+        } @else {
+          @for (kit of availableKits; track kit.id) {
+            <div class="kit-card">
+              <div class="kit-header">
+                {{ kit.name }}
+              </div>
+              <div class="kit-body">
+                <div class="kit-row" *ngFor="let product of kit.products">
+                  <span class="qty">{{ product.quantity }}</span>
+                  <span class="name">{{ product.name }}</span>
+                  <span class="price">s/. {{ product.price | number:'1.2-2' }}</span>
+                </div>
+                <div class="kit-divider"></div>
+                <div class="kit-total">
+                  <span>{{ 'sales.total' | translate }}: s/. {{ kit.price | number:'1.2-2' }}</span>
+                </div>
+              </div>
             </div>
-            <div class="kit-divider"></div>
-            <div class="kit-total">
-              <span>Total: s/. 9,80</span>
-            </div>
-          </div>
-        </div>
+          }
+        }
       </div>
 
     </div>
 
     <div class="right-column">
-      <h3 class="section-title">{{'sales.salesDraft' | translate}}</h3>
+      <h3 class="section-title">{{ 'sales.salesDraft' | translate }}</h3>
 
       <mat-card class="custom-card cart-card">
         <div class="table-header dark">
-          <span>{{'sales.table.name' | translate}}</span>
-          <span>{{'sales.table.unitPrice' | translate}}</span>
-          <span>{{'sales.table.quantity' | translate}}</span>
-          <span>{{'sales.table.totalPrice' | translate}}</span>
+          <span>{{ 'sales.table.name' | translate }}</span>
+          <span>{{ 'sales.table.unitPrice' | translate }}</span>
+          <span>{{ 'sales.table.quantity' | translate }}</span>
+          <span>{{ 'sales.table.totalPrice' | translate }}</span>
         </div>
 
         <div class="cart-body">
@@ -90,8 +100,10 @@
           </div>
 
           <div class="actions">
-            <button mat-stroked-button color="warn" class="btn-cancel" (click)="cancelOrder()">{{'sales.table.cancel' | translate}}</button>
-            <button mat-flat-button class="btn-save" (click)="saveOrder()">{{'sales.table.save' | translate}}</button>
+            <button mat-stroked-button color="warn" class="btn-cancel"
+                    (click)="cancelOrder()">{{ 'sales.table.cancel' | translate }}
+            </button>
+            <button mat-flat-button class="btn-save" (click)="saveOrder()">{{ 'sales.table.save' | translate }}</button>
           </div>
         </div>
       </mat-card>

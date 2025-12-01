@@ -2,7 +2,7 @@ import {BaseResource, BaseResponse} from '../../shared/infrastructure/base-respo
 
 
 export interface ProviderResource extends BaseResource {
-  id: number | string; // API returns number, but we convert to string in assembler
+  id: number | string;
   firstName: string;
   lastName: string;
   phone?: string;
