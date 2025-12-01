@@ -170,7 +170,7 @@
 
     <div class="kits-column">
       <div class="section-title">
-        <h2>Kits</h2>
+        <h2>{{ 'inventory.kits' | translate }}</h2>
       </div>
 
       <div class="kits-content">
@@ -195,14 +195,31 @@
               <mat-card-title>{{ kit.name }}</mat-card-title>
             </mat-card-header>
             <mat-card-content>
-              <div class="kit-product" *ngFor="let product of kit.products">
-                <span>{{ product.quantity }}</span>
-                <span>{{ product.name }}</span>
+              <div class="kit-products-list">
+                <div class="kit-product" *ngFor="let product of kit.products">
+                  <div class="kit-product-left">
+                    <span class="kit-product-quantity">{{ product.quantity }}x</span>
+                    <span class="kit-product-name">{{ getProductName(product.productId) }}</span>
+                  </div>
+                  <div class="kit-product-right">
+                    <div class="kit-product-price-row">
+                      <span class="kit-product-label">{{ 'inventory.kitProductUnitPrice' | translate }}:</span>
+                      <span class="kit-product-unit-price">S/ {{ product.price | number: '1.2-2' }}</span>
+                    </div>
+                    <div class="kit-product-price-row">
+                      <span class="kit-product-label">{{ 'inventory.kitProductTotal' | translate }}:</span>
+                      <span class="kit-product-subtotal">S/ {{ getProductSubtotal(product) | number: '1.2-2' }}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </mat-card-content>
             <mat-card-footer class="kit-footer">
-              <span>Total:</span>
-              <span class="kit-price">s/ {{ kit.price | number: '1.2-2' }}</span>
+
+              <div class="kit-footer-total">
+                <span>{{ 'inventory.kitProductTotal' | translate }}:</span>
+                <span class="kit-price">S/ {{ getKitTotalPrice(kit) | number: '1.2-2' }}</span>
+              </div>
             </mat-card-footer>
           </mat-card>
         </div>

@@ -8,12 +8,13 @@ import {BaseEntity} from '../../../shared/infrastructure/base-entity';
  * @see {@link BaseEntity}
  */
 /**
- * Represents a product within a kit with its quantity
+ * Represents a product within a kit with its quantity and price
  */
 export interface KitProduct {
   productId: string;
   name: string;
   quantity: number;
+  price: number;
 }
 
 export class Kit implements BaseEntity {
