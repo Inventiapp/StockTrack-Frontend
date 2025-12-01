@@ -1,76 +1,74 @@
-import { Component } from '@angular/core';
-import {DecimalPipe, NgForOf} from '@angular/common';
-import { MatIcon } from '@angular/material/icon';
-import {MatCard} from '@angular/material/card';
+// typescript
+import { Component, inject } from '@angular/core';
+import { SalesStore } from '../../../application/sales.store';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { CommonModule } from '@angular/common';
+import {TranslatePipe} from '@ngx-translate/core';
 import {MatFormField} from '@angular/material/form-field';
-import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatInput} from '@angular/material/input';
 
-interface Product {
+interface ViewProduct {
+  id: string;
   name: string;
   price: number;
   stock: number;
 }
 
-interface CartItem {
-  name: string;
-  unitPrice: number;
-  quantity: number;
-  total: number;
-}
-
-interface KitItem {
-  qty: number;
-  name: string;
-  price: number;
-}
-
 @Component({
   selector: 'app-sales-tables',
+  standalone: true,
+  imports: [CommonModule, MatCardModule, MatIconModule, MatButtonModule, TranslatePipe, MatFormField, MatInput],
   templateUrl: './sales-tables.html',
-  imports: [
-    DecimalPipe,
-    MatIcon,
-    MatCard,
-    MatFormField,
-    NgForOf,
-    MatIconButton,
-    MatButton,
-    MatInput
-  ],
   styleUrls: ['./sales-tables.css']
 })
 export class SalesTables {
+  private readonly store = inject(SalesStore);
 
-  // Datos simulados
-  products: Product[] = [
-    { name: 'Bolsa Papitas Lays Grande', price: 2.50, stock: 7 }
+  // Devuelve la lista de productos transformada para la vista (nombre, precio y stock calculado)
+  get products(): ViewProduct[] {
+    const products = this.store.products();
+    const batches = this.store.batches();
+
+    // Calcular stock por producto sumando las cantidades de los batches
+    const stockByProduct = new Map<string, number>();
+    for (const b of batches) {
+      const current = stockByProduct.get(b.productId) ?? 0;
+      stockByProduct.set(b.productId, current + (b.quantity ?? 0));
+    }
+
+    return products.map(p => ({
+      id: p.id,
+      name: p.name,
+      price: (p.unitPrice ?? 0),
+      stock: stockByProduct.get(p.id) ?? 0
+    }));
+  }
+
+  kitDetails = [
+    { qty: 1, name: 'Item A', price: 4.9 },
+    { qty: 2, name: 'Item B', price: 2.45 }
   ];
 
-  cartItems: CartItem[] = [
-    { name: 'Papel Toalla', unitPrice: 5.00, quantity: 2, total: 5.00 },
-    { name: 'Combo Película - Inka Cola 1L', unitPrice: 6.00, quantity: 1, total: 6.00 },
-    { name: 'Combo Película - Bolsa Papitas Lays Grande', unitPrice: 1.90, quantity: 2, total: 3.80 }
-  ];
-
-  kitDetails: KitItem[] = [
-    { qty: 2, name: 'Bolsa Papitas Lays Grande', price: 3.8 },
-    { qty: 1, name: 'Inca Cola 1L', price: 6.0 }
+  cartItems = [
+    { name: 'Item A', unitPrice: 4.9, quantity: 1, total: 4.9 }
   ];
 
   get totalAmount(): number {
-    return 14.80;
+    return this.cartItems.reduce((s, i) => s + i.total, 0);
   }
 
-  deleteItem(item: CartItem) {
-    console.log('Eliminar item:', item.name);
-  }
-
-  saveOrder() {
-    console.log('Guardar orden');
+  deleteItem(item: any) {
+    // implementación mínima para mantener la plantilla funcional
+    this.cartItems = this.cartItems.filter(i => i !== item);
   }
 
   cancelOrder() {
-    console.log('Cancelar');
+    this.cartItems = [];
+  }
+
+  saveOrder() {
+    console.log('Guardar orden (no implementado)');
   }
 }

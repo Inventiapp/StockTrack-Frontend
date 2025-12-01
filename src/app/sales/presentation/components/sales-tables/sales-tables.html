@@ -1,5 +1,5 @@
 <div class="container">
-  <h2 class="page-title">Salida de productos</h2>
+  <h2 class="page-title">{{'sales.title' | translate}}</h2>
 
   <div class="filter-section">
     <mat-form-field appearance="outline" class="search-field">
@@ -8,7 +8,7 @@
     </mat-form-field>
 
     <button mat-stroked-button class="btn-filter">
-      <mat-icon>filter_list</mat-icon> Filtro
+      <mat-icon>filter_list</mat-icon> {{'sales.filter' | translate}}
     </button>
   </div>
 
@@ -17,12 +17,12 @@
     <div class="left-column">
 
       <div class="section-container">
-        <h3 class="section-title">Productos</h3>
+        <h3 class="section-title">{{'sales.products' | translate}}</h3>
         <mat-card class="custom-card product-table-card">
           <div class="table-header dark">
-            <span>Nombre</span>
-            <span>Precio unitario</span>
-            <span>Stock actual</span>
+            <span>{{'sales.table.name' | translate}}</span>
+            <span>{{'sales.table.unitPrice' | translate}}</span>
+            <span>{{'sales.table.stock' | translate}}</span>
           </div>
           <div class="table-body">
             <div class="row" *ngFor="let p of products">
@@ -37,7 +37,7 @@
       </div>
 
       <div class="section-container">
-        <h3 class="section-title">Kits</h3>
+        <h3 class="section-title">{{'sales.kits' | translate}}</h3>
         <div class="kit-card">
           <div class="kit-header">
             Combo Película
@@ -59,14 +59,14 @@
     </div>
 
     <div class="right-column">
-      <h3 class="section-title">Borrador salida de productos</h3>
+      <h3 class="section-title">{{'sales.salesDraft' | translate}}</h3>
 
       <mat-card class="custom-card cart-card">
         <div class="table-header dark">
-          <span>Nombre</span>
-          <span>Precio unitario</span>
-          <span>Cantidad</span>
-          <span>Precio</span>
+          <span>{{'sales.table.name' | translate}}</span>
+          <span>{{'sales.table.unitPrice' | translate}}</span>
+          <span>{{'sales.table.quantity' | translate}}</span>
+          <span>{{'sales.table.totalPrice' | translate}}</span>
         </div>
 
         <div class="cart-body">
@@ -90,8 +90,8 @@
           </div>
 
           <div class="actions">
-            <button mat-stroked-button color="warn" class="btn-cancel" (click)="cancelOrder()">Cancelar</button>
-            <button mat-flat-button class="btn-save" (click)="saveOrder()">Guardar</button>
+            <button mat-stroked-button color="warn" class="btn-cancel" (click)="cancelOrder()">{{'sales.table.cancel' | translate}}</button>
+            <button mat-flat-button class="btn-save" (click)="saveOrder()">{{'sales.table.save' | translate}}</button>
           </div>
         </div>
       </mat-card>
