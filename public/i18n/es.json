@@ -39,15 +39,6 @@
     "title": "Bienvenido a StockTrack",
     "subtitle": "Sistema de gestión de inventario"
   },
-  "sales": {
-    "title": "Gestión de Ventas",
-    "subtitle": "Administra tus ventas y transacciones",
-    "emptyState": {
-      "title": "Ventas",
-      "description": "Esta es la pantalla de ventas",
-      "message": "Próximamente podrás gestionar todas tus ventas aquí"
-    }
-  },
   "inventory": {
     "title": "Gestión de Inventario",
     "subtitle": "Administra tus productos y stock",
@@ -154,6 +145,35 @@
       "ruc-invalid": "El RUC debe tener exactamente 11 dígitos"
     }
   },
+  "sales": {
+    "title": "Gestión de Ventas",
+    "subtitle": "Administra tus ventas y transacciones",
+    "filter": "Filtro",
+    "emptyState": {
+      "title": "Ventas",
+      "description": "Esta es la pantalla de ventas",
+      "message": "Próximamente podrás gestionar todas tus ventas aquí"
+    },
+    "products": "Productos",
+    "salesDraft": "Borrador salida de productos",
+    "table": {
+      "name": "Nombre",
+      "unitPrice": "Precio unitario",
+      "stock": "Stock",
+      "quantity": "Cantidad",
+      "totalPrice": "Precio total",
+      "actions": "Acciones",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "cancel": "Cancelar",
+      "save": "Guardar"
+    },
+    "kits": "Kits",
+    "noKitsAvailable": "No hay kits disponibles",
+    "total": "Total",
+    "kit": "Kit",
+    "emptyCart": "El borrador está vacío. Agrega productos o kits para comenzar."
+  },
   "auth": {
     "login": {
       "title": "Inicia sesión",
@@ -188,7 +208,6 @@
       "confirmRequired": "Confirmación es requerida"
     }
   },
-
   "dashboard": {
     "greeting": "Buenos días",
     "notifications": {
@@ -221,7 +240,6 @@
       "lowStock": "Producto a agotarse"
     }
   },
-
   "personal": {
     "title": "Administración de Personal"
   },
@@ -294,7 +312,8 @@
       "providers": "Proveedores",
       "stock": "Stock Actual",
       "expiring": "Por Vencer",
-      "lowStock": "Stock Bajo"
+      "lowStock": "Stock Bajo",
+      "sales": "Ventas"
     },
     "providers": {
       "title": "Listado de Proveedores",
@@ -374,8 +393,17 @@
         "low": "Bajo",
         "normal": "Normal"
       }
+    },
+    "sales": {
+      "title": "Reporte de Ventas",
+      "subtitle": "Historial de todas las ventas realizadas",
+      "empty": "No hay ventas registradas",
+      "columns": {
+        "id": "ID",
+        "totalAmount": "Monto Total",
+        "products": "Detalles de Productos"
+      }
     }
   }
-
 }
 

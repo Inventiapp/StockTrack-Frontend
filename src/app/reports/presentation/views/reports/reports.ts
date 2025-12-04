@@ -13,12 +13,19 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { forkJoin, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import { ReportsStore } from '../../../application/reports.store';
 import { ExcelExportService } from '../../../infrastructure/excel-export.service';
 import { ProviderReport } from '../../../domain/model/provider-report.entity';
 import { StockReport } from '../../../domain/model/stock-report.entity';
 import { ExpiringProductReport } from '../../../domain/model/expiring-product-report.entity';
 import { LowStockReport } from '../../../domain/model/low-stock-report.entity';
+import { ProductsApi } from '../../../../inventory/infrastructure/products-api';
+import { KitApi } from '../../../../inventory/infrastructure/kit-api';
+import { Product } from '../../../../inventory/domain/model/product.entity';
+import { Kit } from '../../../../inventory/domain/model/kit.entity';
+import { SaleResponse, SaleDetail } from '../../../../sales/infrastructure/sales-api-endpoint';
 
 /**
  * Reports component displaying various reports.
@@ -51,12 +58,20 @@ export class ReportsComponent implements OnInit {
   protected readonly store = inject(ReportsStore);
   private readonly translate = inject(TranslateService);
   private readonly excelExportService = inject(ExcelExportService);
+  private readonly productsApi = inject(ProductsApi);
+  private readonly kitsApi = inject(KitApi);
+
+  // Cache para nombres de productos y kits
+  private productNameCache = new Map<number, string>();
+  private kitNameCache = new Map<number, string>();
+  private loadingNames = new Set<number>();
 
   // Table columns
   protected providersColumns: string[] = ['name', 'ruc', 'email', 'phone', 'products'];
   protected stockColumns: string[] = ['productName', 'category', 'currentStock', 'minStock', 'unitPrice', 'totalValue', 'status'];
   protected expiringColumns: string[] = ['productName', 'category', 'expirationDate', 'daysLeft', 'currentStock', 'lot', 'status'];
   protected lowStockColumns: string[] = ['productName', 'category', 'currentStock', 'minStock', 'unitPrice', 'status'];
+  protected salesColumns: string[] = ['id', 'totalAmount', 'products'];
 
   // Month filter for expiring products
   protected selectedMonth: string | null = null;
@@ -133,6 +148,13 @@ export class ReportsComponent implements OnInit {
     // Initialize filtered products with all products initially
     this.updateFilteredExpiringProducts();
     this.updateFilteredProvidersReport();
+
+    // Pre-cargar nombres cuando las ventas estén disponibles
+    effect(() => {
+      if (this.store.hasSalesReport()) {
+        this.preloadProductAndKitNames();
+      }
+    });
   }
 
   /**
@@ -380,5 +402,100 @@ export class ReportsComponent implements OnInit {
       this.excelExportService.exportLowStockReport(data);
     }
   }
+
+  exportSalesReport(): void {
+    if (this.store.hasSalesReport()) {
+      // TODO: Implementar exportación de ventas si es necesario
+      console.log('Exportar ventas:', this.store.salesReport());
+    }
+  }
+
+  /**
+   * Obtiene el nombre de un producto por su ID
+   */
+  getProductName(productId: number): string {
+    if (this.productNameCache.has(productId)) {
+      return this.productNameCache.get(productId)!;
+    }
+
+    // Si no está en cache y no se está cargando, cargarlo
+    if (!this.loadingNames.has(productId)) {
+      this.loadingNames.add(productId);
+      this.productsApi.getProductById(productId).subscribe({
+        next: (product: Product) => {
+          this.productNameCache.set(productId, product.name);
+          this.loadingNames.delete(productId);
+        },
+        error: () => {
+          this.productNameCache.set(productId, `Producto #${productId}`);
+          this.loadingNames.delete(productId);
+        }
+      });
+    }
+
+    return `Producto #${productId}`;
+  }
+
+  /**
+   * Obtiene el nombre de un kit por su ID
+   */
+  getKitName(kitId: number): string {
+    if (this.kitNameCache.has(kitId)) {
+      return this.kitNameCache.get(kitId)!;
+    }
+
+    // Si no está en cache y no se está cargando, cargarlo
+    if (!this.loadingNames.has(kitId)) {
+      this.loadingNames.add(kitId);
+      this.kitsApi.getKitById(kitId).subscribe({
+        next: (kit: Kit) => {
+          this.kitNameCache.set(kitId, kit.name);
+          this.loadingNames.delete(kitId);
+        },
+        error: () => {
+          this.kitNameCache.set(kitId, `Kit #${kitId}`);
+          this.loadingNames.delete(kitId);
+        }
+      });
+    }
+
+    return `Kit #${kitId}`;
+  }
+
+  /**
+   * Pre-carga los nombres de productos y kits de todas las ventas
+   */
+  preloadProductAndKitNames(): void {
+    const sales = this.store.salesReport();
+    const productIds = new Set<number>();
+
+    // Recopilar todos los IDs únicos
+    sales.forEach(sale => {
+      sale.details?.forEach(detail => {
+        productIds.add(detail.productId);
+      });
+    });
+
+    // Cargar todos los productos en paralelo
+    const productRequests = Array.from(productIds)
+      .filter(id => !this.productNameCache.has(id) && !this.loadingNames.has(id))
+      .map(id => {
+        this.loadingNames.add(id);
+        return this.productsApi.getProductById(id).pipe(
+          map((product: Product) => ({ id, name: product.name })),
+          catchError(() => of({ id, name: `Producto #${id}` }))
+        );
+      });
+
+    if (productRequests.length > 0) {
+      forkJoin(productRequests).subscribe(results => {
+        results.forEach(({ id, name }) => {
+          this.productNameCache.set(id, name);
+          this.loadingNames.delete(id);
+        });
+      });
+    }
+  }
+
 }
 

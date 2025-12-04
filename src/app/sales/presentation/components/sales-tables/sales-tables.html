@@ -1,5 +1,5 @@
 <div class="container">
-  <h2 class="page-title">Salida de productos</h2>
+  <h2 class="page-title">{{ 'sales.title' | translate }}</h2>
 
   <div class="filter-section">
     <mat-form-field appearance="outline" class="search-field">
@@ -8,7 +8,8 @@
     </mat-form-field>
 
     <button mat-stroked-button class="btn-filter">
-      <mat-icon>filter_list</mat-icon> Filtro
+      <mat-icon>filter_list</mat-icon>
+      {{ 'sales.filter' | translate }}
     </button>
   </div>
 
@@ -17,18 +18,28 @@
     <div class="left-column">
 
       <div class="section-container">
-        <h3 class="section-title">Productos</h3>
+        <h3 class="section-title">{{ 'sales.products' | translate }}</h3>
         <mat-card class="custom-card product-table-card">
           <div class="table-header dark">
-            <span>Nombre</span>
-            <span>Precio unitario</span>
-            <span>Stock actual</span>
+            <span>{{ 'sales.table.name' | translate }}</span>
+            <span>{{ 'sales.table.unitPrice' | translate }}</span>
+            <span>{{ 'sales.table.stock' | translate }}</span>
+            <span class="actions-header"></span>
           </div>
           <div class="table-body">
-            <div class="row" *ngFor="let p of products">
+            <div class="row" *ngFor="let p of products()">
               <span class="prod-name">{{ p.name }}</span>
               <span>s/. {{ p.price | number:'1.2-2' }}</span>
               <span>{{ p.stock }}</span>
+              <button
+                mat-icon-button
+                class="add-btn"
+                (click)="addProductToCart(p); $event.stopPropagation()"
+                [disabled]="p.stock === 0"
+                [matTooltip]="p.stock === 0 ? 'Sin stock' : 'Agregar al borrador'"
+                type="button">
+                <mat-icon>add_shopping_cart</mat-icon>
+              </button>
             </div>
             <div class="row empty-row"></div>
             <div class="row empty-row"></div>
@@ -37,50 +48,85 @@
       </div>
 
       <div class="section-container">
-        <h3 class="section-title">Kits</h3>
-        <div class="kit-card">
-          <div class="kit-header">
-            Combo Película
+        <h3 class="section-title">{{ 'sales.kits' | translate }}</h3>
+
+        @if (availableKits.length === 0) {
+          <div class="empty-state">
+            <p>{{ 'sales.noKitsAvailable' | translate }}</p>
           </div>
-          <div class="kit-body">
-            <div class="kit-row" *ngFor="let k of kitDetails">
-              <span class="qty">{{ k.qty }}</span>
-              <span class="name">{{ k.name }}</span>
-              <span class="price">s/. {{ k.price | number:'1.1-1' }}</span>
+        } @else {
+          @for (kit of availableKits; track kit.id) {
+            <div class="kit-card">
+              <div class="kit-header">
+                {{ kit.name }}
+                <button mat-icon-button class="kit-add-btn" (click)="addKitToCart(kit)" [matTooltip]="'Agregar al borrador'">
+                  <mat-icon>add_shopping_cart</mat-icon>
+                </button>
+              </div>
+              <div class="kit-body">
+                <div class="kit-row" *ngFor="let product of kit.products">
+                  <span class="qty">{{ product.quantity }}</span>
+                  <span class="name">{{ getProductName(product.productId) }}</span>
+                  <span class="price">s/. {{ product.price | number:'1.2-2' }}</span>
+                </div>
+                <div class="kit-divider"></div>
+                <div class="kit-total">
+                  <span>{{ 'sales.total' | translate }}: s/. {{ getTotalKitPrice(kit) | number:'1.2-2' }}</span>
+                </div>
+              </div>
             </div>
-            <div class="kit-divider"></div>
-            <div class="kit-total">
-              <span>Total: s/. 9,80</span>
-            </div>
-          </div>
-        </div>
+          }
+        }
       </div>
 
     </div>
 
     <div class="right-column">
-      <h3 class="section-title">Borrador salida de productos</h3>
+      <h3 class="section-title">{{ 'sales.salesDraft' | translate }}</h3>
 
       <mat-card class="custom-card cart-card">
         <div class="table-header dark">
-          <span>Nombre</span>
-          <span>Precio unitario</span>
-          <span>Cantidad</span>
-          <span>Precio</span>
+          <span>{{ 'sales.table.name' | translate }}</span>
+          <span>{{ 'sales.table.unitPrice' | translate }}</span>
+          <span>{{ 'sales.table.quantity' | translate }}</span>
+          <span>{{ 'sales.table.totalPrice' | translate }}</span>
         </div>
 
         <div class="cart-body">
-          <div class="cart-row" *ngFor="let item of cartItems">
-            <button mat-icon-button color="warn" (click)="deleteItem(item)">
-              <mat-icon>delete</mat-icon>
-            </button>
-            <div class="item-details">
-              <span class="item-name">{{ item.name }}</span>
+          @if (cartItems.length === 0) {
+            <div class="empty-cart">
+              <mat-icon>shopping_cart</mat-icon>
+              <p>{{ 'sales.emptyCart' | translate }}</p>
             </div>
-            <span class="item-price">s/. {{ item.unitPrice | number:'1.1-2' }}</span>
-            <span class="item-qty">{{ item.quantity }}</span>
-            <span class="item-total">s/. {{ item.total | number:'1.2-2' }}</span>
-          </div>
+          } @else {
+            <div class="cart-row" *ngFor="let item of cartItems">
+              <button mat-icon-button color="warn" (click)="deleteItem(item)" [matTooltip]="'Eliminar'">
+                <mat-icon>delete</mat-icon>
+              </button>
+              <div class="item-details">
+                <span class="item-name">{{ item.name }}</span>
+                @if (item.type === 'kit') {
+                  <span class="item-type">{{ 'sales.kit' | translate }}</span>
+                }
+              </div>
+              <span class="item-price">s/. {{ item.unitPrice | number:'1.2-2' }}</span>
+              <div class="quantity-control">
+                <button mat-icon-button (click)="updateQuantity(item, item.quantity - 1)" [matTooltip]="'Disminuir cantidad'">
+                  <mat-icon>remove</mat-icon>
+                </button>
+                <input
+                  type="number"
+                  [ngModel]="item.quantity"
+                  (ngModelChange)="updateQuantity(item, $event)"
+                  min="1"
+                  class="quantity-input">
+                <button mat-icon-button (click)="updateQuantity(item, item.quantity + 1)" [matTooltip]="'Aumentar cantidad'">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </div>
+              <span class="item-total">s/. {{ item.total | number:'1.2-2' }}</span>
+            </div>
+          }
         </div>
 
         <div class="cart-footer">
@@ -90,8 +136,10 @@
           </div>
 
           <div class="actions">
-            <button mat-stroked-button color="warn" class="btn-cancel" (click)="cancelOrder()">Cancelar</button>
-            <button mat-flat-button class="btn-save" (click)="saveOrder()">Guardar</button>
+            <button mat-stroked-button color="warn" class="btn-cancel"
+                    (click)="cancelOrder()">{{ 'sales.table.cancel' | translate }}
+            </button>
+            <button mat-flat-button class="btn-save" (click)="saveOrder()">{{ 'sales.table.save' | translate }}</button>
           </div>
         </div>
       </mat-card>

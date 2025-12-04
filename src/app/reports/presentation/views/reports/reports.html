@@ -392,6 +392,79 @@
           </mat-card>
         </div>
       </mat-tab>
+
+      <!-- Sales Tab -->
+      <mat-tab [label]="t('reports.tabs.sales')">
+        <div class="tab-content">
+          <mat-card class="report-card">
+            <mat-card-header>
+              <div class="card-header-content">
+                <div>
+                  <mat-card-title>
+                    {{ t('reports.sales.title') }}
+                  </mat-card-title>
+                  <mat-card-subtitle>{{ t('reports.sales.subtitle') }}</mat-card-subtitle>
+                </div>
+                <button
+                  mat-icon-button
+                  color="primary"
+                  (click)="exportSalesReport()"
+                  [disabled]="!store.hasSalesReport()"
+                  [matTooltip]="t('reports.export')">
+                  <mat-icon>download</mat-icon>
+                </button>
+              </div>
+            </mat-card-header>
+            <mat-card-content>
+              @if (store.hasSalesReport()) {
+                <table mat-table [dataSource]="store.salesReport()" class="reports-table">
+                  <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef>{{ t('reports.sales.columns.id') }}</th>
+                    <td mat-cell *matCellDef="let sale">{{ sale.id }}</td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="totalAmount">
+                    <th mat-header-cell *matHeaderCellDef>{{ t('reports.sales.columns.totalAmount') }}</th>
+                    <td mat-cell *matCellDef="let sale">s/ {{ sale.totalAmount | number:'1.2-2' }}</td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="products">
+                    <th mat-header-cell *matHeaderCellDef>{{ t('reports.sales.columns.products') }}</th>
+                    <td mat-cell *matCellDef="let sale">
+                      @if (sale.details && sale.details.length > 0) {
+                        <div class="sales-details-list">
+                          @for (detail of sale.details; track detail.id) {
+                            <div class="sales-detail-item">
+                              <div class="detail-info">
+                                <span class="detail-quantity">{{ detail.quantity }}x</span>
+                                <span class="detail-name">{{ getProductName(detail.productId) }}</span>
+                              </div>
+                              <div class="detail-prices">
+                                <span class="detail-unit-price">s/ {{ detail.unitPrice | number:'1.2-2' }}</span>
+                                <span class="detail-total-price">s/ {{ detail.totalPrice | number:'1.2-2' }}</span>
+                              </div>
+                            </div>
+                          }
+                        </div>
+                      } @else {
+                        <span class="no-products">-</span>
+                      }
+                    </td>
+                  </ng-container>
+
+                  <tr mat-header-row *matHeaderRowDef="salesColumns"></tr>
+                  <tr mat-row *matRowDef="let row; columns: salesColumns;"></tr>
+                </table>
+              } @else {
+                <div class="empty-state">
+                  <mat-icon>info</mat-icon>
+                  <p>{{ t('reports.sales.empty') }}</p>
+                </div>
+              }
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-tab>
     </mat-tab-group>
   }
 </div>

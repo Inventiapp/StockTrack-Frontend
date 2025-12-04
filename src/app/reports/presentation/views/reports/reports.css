@@ -212,6 +212,69 @@
   font-weight: 500;
 }
 
+/* Estilos mejorados para detalles de ventas */
+.sales-details-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.sales-detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: #F9FAFB;
+  border-radius: 6px;
+  border-left: 3px solid #3B82F6;
+  transition: background-color 0.2s;
+}
+
+.sales-detail-item:hover {
+  background-color: #F3F4F6;
+}
+
+.detail-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.detail-quantity {
+  font-weight: 600;
+  color: #1F2937;
+  font-size: 0.875rem;
+  min-width: 32px;
+}
+
+.detail-name {
+  color: #374151;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.detail-prices {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.detail-unit-price {
+  color: #6B7280;
+  font-size: 0.8125rem;
+  font-weight: 400;
+}
+
+.detail-total-price {
+  color: #059669;
+  font-size: 0.875rem;
+  font-weight: 600;
+  min-width: 70px;
+  text-align: right;
+}
+
 .no-products {
   color: #9CA3AF;
   font-style: italic;

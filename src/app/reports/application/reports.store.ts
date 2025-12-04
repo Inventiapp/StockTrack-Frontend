@@ -10,6 +10,8 @@ import { StockApi } from '../../inventory/infrastructure/stock-api';
 import { RestockingApi } from '../../inventory/infrastructure/restocking-api';
 import { CategoryApi, CategoryResource } from '../../inventory/infrastructure/category-api';
 import { BatchApi } from '../../inventory/infrastructure/batch-api';
+import { SalesApi } from '../../sales/infrastructure/sales-api';
+import { SaleResponse } from '../../sales/infrastructure/sales-api-endpoint';
 import { Product } from '../../inventory/domain/model/product.entity';
 import { Provider } from '../../inventory/domain/model/provider.entity';
 import { StockResource } from '../../inventory/infrastructure/stock-response';
@@ -30,6 +32,7 @@ export class ReportsStore {
   private readonly stockReportSignal = signal<StockReport[]>([]);
   private readonly expiringProductsReportSignal = signal<ExpiringProductReport[]>([]);
   private readonly lowStockReportSignal = signal<LowStockReport[]>([]);
+  private readonly salesReportSignal = signal<SaleResponse[]>([]);
   private readonly loadingSignal = signal<boolean>(false);
   private readonly errorSignal = signal<string | null>(null);
 
@@ -37,6 +40,7 @@ export class ReportsStore {
   readonly stockReport = this.stockReportSignal.asReadonly();
   readonly expiringProductsReport = this.expiringProductsReportSignal.asReadonly();
   readonly lowStockReport = this.lowStockReportSignal.asReadonly();
+  readonly salesReport = this.salesReportSignal.asReadonly();
   readonly loading = this.loadingSignal.asReadonly();
   readonly error = this.errorSignal.asReadonly();
 
@@ -44,6 +48,7 @@ export class ReportsStore {
   readonly hasStockReport = computed(() => this.stockReport().length > 0);
   readonly hasExpiringProductsReport = computed(() => this.expiringProductsReport().length > 0);
   readonly hasLowStockReport = computed(() => this.lowStockReport().length > 0);
+  readonly hasSalesReport = computed(() => this.salesReport().length > 0);
 
   constructor(
     private productsApi: ProductsApi,
@@ -51,7 +56,8 @@ export class ReportsStore {
     private stockApi: StockApi,
     private restockingApi: RestockingApi,
     private categoryApi: CategoryApi,
-    private batchApi: BatchApi
+    private batchApi: BatchApi,
+    private salesApi: SalesApi
   ) {}
 
   /**
@@ -68,9 +74,10 @@ export class ReportsStore {
       stock: this.stockApi.getStock(),
       restockings: this.restockingApi.getRestockings(),
       categories: this.categoryApi.getAll(),
-      batches: this.batchApi.getBatches()
+      batches: this.batchApi.getBatches(),
+      sales: this.salesApi.getAllSales()
     }).subscribe({
-      next: ({ products, providers, stock, restockings, categories, batches }) => {
+      next: ({ products, providers, stock, restockings, categories, batches, sales }) => {
         // Convert CategoryResource[] to Category[]
         const categoryEntities = (categories as CategoryResource[]).map(
           cat => new Category({ id: String(cat.id), name: cat.name }) // Convert id to string (API returns number)
@@ -84,6 +91,10 @@ export class ReportsStore {
           categoryEntities,
           batches as Batch[]
         );
+
+        // Set sales report
+        this.salesReportSignal.set(sales as SaleResponse[]);
+
         this.loadingSignal.set(false);
       },
       error: (err: any) => {
