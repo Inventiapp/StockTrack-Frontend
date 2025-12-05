@@ -314,7 +314,6 @@
     "noUsersFiltered": "No users found with the applied filters",
     "noUsersYet": "You haven't added any users to your business yet",
     "admin": "Administrator",
-    "user": "User",
     "admins": "Admins",
     "users": "Users",
     "cannotDeleteSelf": "You cannot delete yourself",
@@ -342,7 +341,8 @@
     "cancel": "Cancel",
     "save": "Save",
     "saveChanges": "Save Changes",
-    "delete": "Delete"
+    "delete": "Delete",
+    "loading": "Loading..."
   },
   "notFound": {
     "title": "Page Not Found",

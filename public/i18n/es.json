@@ -346,7 +346,8 @@
     "cancel": "Cancelar",
     "save": "Guardar",
     "saveChanges": "Guardar Cambios",
-    "delete": "Eliminar"
+    "delete": "Eliminar",
+    "loading": "Cargando..."
   },
   "notFound": {
     "title": "Página No Encontrada",
