@@ -6,16 +6,12 @@ import { ExpiringProductReport } from '../domain/model/expiring-product-report.e
 import { LowStockReport } from '../domain/model/low-stock-report.entity';
 import { ProductsApi } from '../../inventory/infrastructure/products-api';
 import { ProvidersApi } from '../../providers-management/infrastructure/providers-api';
-import { StockApi } from '../../inventory/infrastructure/stock-api';
-import { RestockingApi } from '../../inventory/infrastructure/restocking-api';
 import { CategoryApi, CategoryResource } from '../../inventory/infrastructure/category-api';
 import { BatchApi } from '../../inventory/infrastructure/batch-api';
 import { SalesApi } from '../../sales/infrastructure/sales-api';
 import { SaleResponse } from '../../sales/infrastructure/sales-api-endpoint';
 import { Product } from '../../inventory/domain/model/product.entity';
 import { Provider } from '../../inventory/domain/model/provider.entity';
-import { StockResource } from '../../inventory/infrastructure/stock-response';
-import { Restocking } from '../../inventory/domain/model/restocking.entity';
 import { Category } from '../../inventory/domain/model/category.entity';
 import { Batch } from '../../inventory/domain/model/batch.entity';
 
@@ -23,6 +19,7 @@ import { Batch } from '../../inventory/domain/model/batch.entity';
  * Store for managing reports state and operations.
  * @remarks
  * This service orchestrates reports use cases and manages reports state.
+ * Stock is calculated from batches (no separate stock API).
  */
 @Injectable({
   providedIn: 'root'
@@ -53,8 +50,6 @@ export class ReportsStore {
   constructor(
     private productsApi: ProductsApi,
     private providersApi: ProvidersApi,
-    private stockApi: StockApi,
-    private restockingApi: RestockingApi,
     private categoryApi: CategoryApi,
     private batchApi: BatchApi,
     private salesApi: SalesApi
@@ -71,23 +66,19 @@ export class ReportsStore {
     forkJoin({
       products: this.productsApi.getProducts(),
       providers: this.providersApi.getProviders(),
-      stock: this.stockApi.getStock(),
-      restockings: this.restockingApi.getRestockings(),
       categories: this.categoryApi.getAll(),
       batches: this.batchApi.getBatches(),
       sales: this.salesApi.getAllSales()
     }).subscribe({
-      next: ({ products, providers, stock, restockings, categories, batches, sales }) => {
+      next: ({ products, providers, categories, batches, sales }) => {
         // Convert CategoryResource[] to Category[]
         const categoryEntities = (categories as CategoryResource[]).map(
-          cat => new Category({ id: String(cat.id), name: cat.name }) // Convert id to string (API returns number)
+          cat => new Category({ id: String(cat.id), name: cat.name })
         );
 
         this.generateReports(
           products as Product[],
           providers as Provider[],
-          stock as StockResource[],
-          restockings as Restocking[],
           categoryEntities,
           batches as Batch[]
         );
@@ -110,8 +101,6 @@ export class ReportsStore {
   private generateReports(
     products: Product[],
     providers: Provider[],
-    stock: StockResource[],
-    restockings: Restocking[],
     categories: Category[],
     batches: Batch[]
   ): void {
@@ -238,7 +227,6 @@ export class ReportsStore {
     });
 
     // Get all batches with expiration dates, grouped by product
-    // For each product, we'll use the batch with the earliest expiration date
     const batchesByProduct = new Map<string, Batch[]>();
     batches.forEach(batch => {
       if (!batch.expirationDate || batch.expirationDate.trim() === '') {
@@ -359,4 +347,3 @@ export class ReportsStore {
     return defaultMessage;
   }
 }
-

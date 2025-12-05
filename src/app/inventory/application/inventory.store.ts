@@ -3,21 +3,27 @@ import { Product } from '../domain/model/product.entity';
 import { Category } from '../domain/model/category.entity';
 import { Provider } from '../domain/model/provider.entity';
 import { Kit } from '../domain/model/kit.entity';
-import { Restocking } from '../domain/model/restocking.entity';
 import { Batch } from '../domain/model/batch.entity';
 import { ProductsApi } from '../infrastructure/products-api';
 import { CategoryApi } from '../infrastructure/category-api';
 import { ProvidersApi } from '../../providers-management/infrastructure/providers-api';
-import { StockApi } from '../infrastructure/stock-api';
-import { StockResource } from '../infrastructure/stock-response';
 import { KitApi } from '../infrastructure/kit-api';
-import { RestockingApi } from '../infrastructure/restocking-api';
 import { BatchApi } from '../infrastructure/batch-api';
+
+/**
+ * Interface for calculated stock from batches.
+ */
+export interface StockInfo {
+  productId: string;
+  currentStock: number;
+  lastUpdated: string;
+}
 
 /**
  * Store for managing inventory state and operations.
  * @remarks
  * This service orchestrates inventory use cases and manages inventory state.
+ * Stock is calculated from batches (sum of quantities per product).
  */
 @Injectable({
   providedIn: 'root'
@@ -26,9 +32,7 @@ export class InventoryStore {
   private readonly productsSignal = signal<Product[]>([]);
   private readonly categoriesSignal = signal<Category[]>([]);
   private readonly providersSignal = signal<Provider[]>([]);
-  private readonly stockSignal = signal<StockResource[]>([]);
   private readonly kitsSignal = signal<Kit[]>([]);
-  private readonly restockingsSignal = signal<Restocking[]>([]);
   private readonly batchesSignal = signal<Batch[]>([]);
   private readonly loadingSignal = signal<boolean>(false);
   private readonly errorSignal = signal<string | null>(null);
@@ -36,28 +40,55 @@ export class InventoryStore {
   readonly products = this.productsSignal.asReadonly();
   readonly categories = this.categoriesSignal.asReadonly();
   readonly providers = this.providersSignal.asReadonly();
-  readonly stock = this.stockSignal.asReadonly();
   readonly kits = this.kitsSignal.asReadonly();
-  readonly restockings = this.restockingsSignal.asReadonly();
   readonly batches = this.batchesSignal.asReadonly();
   readonly loading = this.loadingSignal.asReadonly();
   readonly error = this.errorSignal.asReadonly();
+
+  /**
+   * Computed stock from batches - calculates total quantity per product.
+   */
+  readonly stock = computed<StockInfo[]>(() => {
+    const batches = this.batches();
+    const stockMap = new Map<string, { quantity: number; lastDate: string }>();
+
+    batches.forEach(batch => {
+      const productId = String(batch.productId);
+      const existing = stockMap.get(productId);
+      const batchDate = batch.receptionDate || new Date().toISOString();
+
+      if (existing) {
+        existing.quantity += batch.quantity;
+        if (batchDate > existing.lastDate) {
+          existing.lastDate = batchDate;
+        }
+      } else {
+        stockMap.set(productId, {
+          quantity: batch.quantity,
+          lastDate: batchDate
+        });
+      }
+    });
+
+    return Array.from(stockMap.entries()).map(([productId, data]) => ({
+      productId,
+      currentStock: data.quantity,
+      lastUpdated: data.lastDate.split('T')[0]
+    }));
+  });
 
   readonly hasProducts = computed(() => this.products().length > 0);
   readonly hasCategories = computed(() => this.categories().length > 0);
   readonly hasProviders = computed(() => this.providers().length > 0);
   readonly hasStock = computed(() => this.stock().length > 0);
   readonly hasKits = computed(() => this.kits().length > 0);
-  readonly hasRestockings = computed(() => this.restockings().length > 0);
   readonly hasBatches = computed(() => this.batches().length > 0);
 
   constructor(
     private productsApi: ProductsApi,
     private categoriesApi: CategoryApi,
     private providersApi: ProvidersApi,
-    private stockApi: StockApi,
     private kitApi: KitApi,
-    private restockingApi: RestockingApi,
     private batchApi: BatchApi
   ) {
     this.loadInventoryData();
@@ -98,15 +129,6 @@ export class InventoryStore {
       }
     });
 
-    this.stockApi.getStock().subscribe({
-      next: (stock: StockResource[]) => {
-        this.stockSignal.set(stock);
-      },
-      error: (err: any) => {
-        this.errorSignal.set(this.formatError(err, 'Error loading stock'));
-      }
-    });
-
     this.kitApi.getKits().subscribe({
       next: (kits: Kit[]) => {
         this.kitsSignal.set(kits);
@@ -116,15 +138,7 @@ export class InventoryStore {
       }
     });
 
-    this.restockingApi.getRestockings().subscribe({
-      next: (restockings: Restocking[]) => {
-        this.restockingsSignal.set(restockings);
-      },
-      error: (err: any) => {
-        this.errorSignal.set(this.formatError(err, 'Error loading restockings'));
-      }
-    });
-
+    // Load batches - stock is calculated from batches
     this.batchApi.getBatches().subscribe({
       next: (batches: Batch[]) => {
         this.batchesSignal.set(batches);
@@ -322,92 +336,7 @@ export class InventoryStore {
   }
 
   /**
-   * Adds stock to products (restocking functionality).
-   * @param restocking - The restocking data containing lot and items.
-   */
-  addRestocking(restocking: Restocking): void {
-    this.loadingSignal.set(true);
-    this.errorSignal.set(null);
-
-    const updatePromises = restocking.items.map(item => {
-      return new Promise<void>((resolve, reject) => {
-        this.stockApi.getStockByProductId(item.productId).subscribe({
-          next: (stockResource) => {
-            if (stockResource) {
-              const newStock = stockResource.currentStock + item.quantityToAdd;
-
-              this.stockApi.updateStock(stockResource.id, newStock).subscribe({
-                next: (updatedStock) => {
-                  this.stockSignal.update(stocks =>
-                    stocks.map(s => s.id === updatedStock.id ? updatedStock : s)
-                  );
-                  resolve();
-                },
-                error: (err: any) => {
-                  this.errorSignal.set(this.formatError(err, 'Error updating stock'));
-                  reject(err);
-                }
-              });
-            } else {
-              this.stockApi.createStock(item.productId, item.quantityToAdd).subscribe({
-                next: (newStock) => {
-                  this.stockApi.getStock().subscribe({
-                    next: (allStock) => {
-                      this.stockSignal.set(allStock);
-                      resolve();
-                    },
-                    error: (err) => {
-                      reject(err);
-                    }
-                  });
-                },
-                error: (err: any) => {
-                  this.errorSignal.set(this.formatError(err, 'Error creating stock'));
-                  reject(err);
-                }
-              });
-            }
-          },
-          error: (err: any) => {
-            this.errorSignal.set(this.formatError(err, 'Error getting stock'));
-            reject(err);
-          }
-        });
-      });
-    });
-
-    Promise.all(updatePromises).then(() => {
-      this.loadingSignal.set(false);
-    }).catch((err) => {
-      this.loadingSignal.set(false);
-    });
-  }
-
-  /**
-   * Updates an existing restocking in the store.
-   * @param restocking - The updated restocking.
-   */
-  updateRestocking(restocking: Restocking): void {
-    const currentRestockings = this.restockingsSignal();
-    const index = currentRestockings.findIndex(r => r.id === restocking.id);
-    if (index > -1) {
-      const updatedRestockings = [...currentRestockings];
-      updatedRestockings[index] = restocking;
-      this.restockingsSignal.set(updatedRestockings);
-    }
-  }
-
-  /**
-   * Removes a restocking from the store.
-   * @param restockingId - The ID of the restocking to remove.
-   */
-  removeRestocking(restockingId: string): void {
-    const currentRestockings = this.restockingsSignal();
-    this.restockingsSignal.set(currentRestockings.filter(r => r.id !== restockingId));
-  }
-
-  /**
-   * Adds a new batch to the store.
+   * Adds a new batch to the store (replaces old restocking functionality).
    * @param batch - The batch to add.
    */
   addBatch(batch: Batch): void {
@@ -425,6 +354,25 @@ export class InventoryStore {
         this.loadingSignal.set(false);
       }
     });
+  }
+
+  /**
+   * Gets current stock for a specific product.
+   * @param productId - The product ID.
+   * @returns The current stock quantity for the product.
+   */
+  getStockForProduct(productId: string): number {
+    const stockInfo = this.stock().find(s => s.productId === productId);
+    return stockInfo?.currentStock || 0;
+  }
+
+  /**
+   * Gets batches for a specific product.
+   * @param productId - The product ID.
+   * @returns Array of batches for the product.
+   */
+  getBatchesForProduct(productId: string): Batch[] {
+    return this.batches().filter(b => String(b.productId) === productId);
   }
 
   /**
