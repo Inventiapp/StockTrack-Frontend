@@ -1,6 +1,17 @@
 import { Injectable } from '@angular/core';
 
 /**
+ * Decoded JWT token structure
+ */
+export interface DecodedToken {
+  sub: string;
+  email?: string;
+  roles?: string[];
+  iat?: number;
+  exp?: number;
+}
+
+/**
  * Service for managing JWT tokens.
  * @remarks
  * This service handles storage and retrieval of JWT access tokens using localStorage.
@@ -46,13 +57,13 @@ export class JwtTokenService {
    * Decodes the JWT token payload.
    * @returns The decoded token payload or null if invalid.
    */
-  decodeToken(): any {
+  decodeToken(): DecodedToken | null {
     const token = this.getToken();
     if (!token) return null;
 
     try {
       const payload = token.split('.')[1];
-      return JSON.parse(atob(payload));
+      return JSON.parse(atob(payload)) as DecodedToken;
     } catch (error) {
       console.error('Error decoding token:', error);
       return null;
