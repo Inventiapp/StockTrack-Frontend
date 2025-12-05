@@ -8,13 +8,15 @@
       <button
         mat-icon-button
         [matMenuTriggerFor]="notificationsMenu"
-        [attr.aria-label]="t('dashboard.notifications.title')"
+        [attr.aria-label]="getNotificationCount() > 0 ? 
+          t('dashboard.notifications.title') + ' (' + getNotificationCount() + ')' : 
+          t('dashboard.notifications.title')"
         [attr.aria-haspopup]="true"
         [attr.aria-expanded]="false">
         <mat-icon [matBadge]="getNotificationCount()" 
                   matBadgeColor="warn" 
                   matBadgeSize="small"
-                  [attr.aria-hidden]="true">notifications</mat-icon>
+                  aria-hidden="false">notifications</mat-icon>
       </button>
 
       <mat-menu #notificationsMenu="matMenu" class="notifications-menu">
