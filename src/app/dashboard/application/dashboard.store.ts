@@ -4,11 +4,13 @@ import { MonthlyIncome } from '../domain/model/monthly-income.entity';
 import { ProductSales } from '../domain/model/product-sales.entity';
 import { DashboardNotification } from '../domain/model/notification.entity';
 import { DashboardApi } from '../infrastructure/dashboard-api';
+import { Dashboard } from '../domain/model/dashboard.entity';
 
 /**
  * Store for managing dashboard state and operations.
  * @remarks
  * This service orchestrates dashboard use cases and manages dashboard state.
+ * Uses a single API call to get all dashboard data from the backend.
  */
 @Injectable({
   providedIn: 'root'
@@ -35,47 +37,22 @@ export class DashboardStore {
   }
 
   /**
-   * Loads all dashboard data.
+   * Loads all dashboard data from a single API call.
    */
   loadDashboardData(): void {
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
 
-    this.dashboardApi.getDashboardStats().subscribe({
-      next: (stats: DashboardStats) => {
-        this.statsSignal.set(stats);
-      },
-      error: (err: Error) => {
-        this.errorSignal.set(this.formatError(err, 'Error loading dashboard stats'));
-        this.loadingSignal.set(false);
-      }
-    });
-
-    this.dashboardApi.getMonthlyIncome().subscribe({
-      next: (data: MonthlyIncome[]) => {
-        this.monthlyIncomeSignal.set(data);
-      },
-      error: (err: Error) => {
-        this.errorSignal.set(this.formatError(err, 'Error loading monthly income'));
-      }
-    });
-
-    this.dashboardApi.getProductSales().subscribe({
-      next: (data: ProductSales[]) => {
-        this.productSalesSignal.set(data);
-      },
-      error: (err: Error) => {
-        this.errorSignal.set(this.formatError(err, 'Error loading product sales'));
-      }
-    });
-
-    this.dashboardApi.getNotifications().subscribe({
-      next: (data: DashboardNotification[]) => {
-        this.notificationsSignal.set(data);
+    this.dashboardApi.getDashboard().subscribe({
+      next: (dashboard: Dashboard) => {
+        this.statsSignal.set(dashboard.stats);
+        this.monthlyIncomeSignal.set(dashboard.monthlyIncome);
+        this.productSalesSignal.set(dashboard.productSales);
+        this.notificationsSignal.set(dashboard.notifications);
         this.loadingSignal.set(false);
       },
       error: (err: Error) => {
-        this.errorSignal.set(this.formatError(err, 'Error loading notifications'));
+        this.errorSignal.set(this.formatError(err, 'Error loading dashboard'));
         this.loadingSignal.set(false);
       }
     });
