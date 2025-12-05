@@ -254,7 +254,8 @@ export class InventoryListComponent {
   }
 
   get kits(): Kit[] {
-    return this.store.kits().filter(k => k.isEnabled);
+    // All kits from backend are considered active (no isEnabled field)
+    return this.store.kits();
   }
 
   getProductName(productId: string): string {

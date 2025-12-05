@@ -1,18 +1,18 @@
 import {BaseEntity} from '../../../shared/infrastructure/base-entity';
 
 /**
- * Represents a Kit entity int the application.
+ * Represents a Kit entity in the application.
  * @remarks
- * This class is used as a domain model for kits in inventory
+ * This class is used as a domain model for kits in inventory.
  * It implements the BaseEntity interface to ensure consistency across entities.
  * @see {@link BaseEntity}
  */
+
 /**
- * Represents a product within a kit with its quantity and price
+ * Represents a product within a kit with its quantity and price.
  */
 export interface KitProduct {
   productId: string;
-  name: string;
   quantity: number;
   price: number;
 }
@@ -20,20 +20,18 @@ export interface KitProduct {
 export class Kit implements BaseEntity {
   /**
    * Creates a new Kit instance.
-   * @param kit - An object containing the id, name, price, isEnabled and products of the kit.
+   * @param kit - An object containing the id, name, price (totalPrice) and products (items) of the kit.
    * @returns A new instance of Kit.
    */
   constructor(kit: {
     id: string;
     name: string;
-    price: number;
-    isEnabled: boolean;
-    products?: KitProduct[];
+    price: number; // Maps to totalPrice from backend
+    products?: KitProduct[]; // Maps to items from backend
   }) {
     this._id = kit.id;
     this._name = kit.name;
     this._price = kit.price;
-    this._isEnabled = kit.isEnabled;
     this._products = kit.products || [];
   }
 
@@ -49,7 +47,7 @@ export class Kit implements BaseEntity {
   }
 
   /**
-   * The name of the kit
+   * The name of the kit.
    */
   private _name: string;
   get name(): string {
@@ -60,7 +58,7 @@ export class Kit implements BaseEntity {
   }
 
   /**
-   * The price of the kit
+   * The total price of the kit (calculated by backend from items).
    */
   private _price: number;
   get price(): number {
@@ -70,16 +68,8 @@ export class Kit implements BaseEntity {
     this._price = value;
   }
 
-  private _isEnabled: boolean;
-  get isEnabled(): boolean {
-    return this._isEnabled;
-  }
-  set isEnabled(value: boolean) {
-    this._isEnabled = value;
-  }
-
   /**
-   * The products included in the kit with their quantities
+   * The products (items) included in the kit with their quantities and prices.
    */
   private _products: KitProduct[];
   get products(): KitProduct[] {
@@ -87,5 +77,13 @@ export class Kit implements BaseEntity {
   }
   set products(value: KitProduct[]) {
     this._products = value;
+  }
+
+  /**
+   * Calculates the total price from items if not provided by backend.
+   * @returns The sum of (quantity * price) for all products.
+   */
+  calculateTotalPrice(): number {
+    return this._products.reduce((sum, p) => sum + (p.quantity * p.price), 0);
   }
 }

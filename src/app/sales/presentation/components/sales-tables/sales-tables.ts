@@ -53,7 +53,8 @@ export class SalesTables {
   private cdr = inject(ChangeDetectorRef);
 
   get availableKits() {
-    return this.inventoryStore.kits().filter(kit => kit.isEnabled);
+    // All kits from backend are considered active (no isEnabled field)
+    return this.inventoryStore.kits();
   }
 
   // Usar computed para evitar ejecuciones repetidas
@@ -91,9 +92,13 @@ export class SalesTables {
     const kits = this.store.kits();
 
     return kits.map(k => ({
-      id: k.id,
+      id: Number(k.id) || 0,
       name: k.name,
-      items: k.products
+      items: k.products.map(p => ({
+        productId: Number(p.productId),
+        quantity: p.quantity,
+        price: p.price
+      }))
     }));
   }
 

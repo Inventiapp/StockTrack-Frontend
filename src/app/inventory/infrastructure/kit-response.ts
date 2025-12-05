@@ -1,18 +1,34 @@
 import {BaseResource, BaseResponse} from '../../shared/infrastructure/base-response';
 
+/**
+ * Resource for a kit item (product with quantity and price).
+ */
 export interface KitProductResource {
-  productId: number | string;
+  productId: number;
   quantity: number;
   price: number;
 }
 
+/**
+ * Resource for a kit from the backend API.
+ * Backend returns: { id, name, items, totalPrice, createdAt, updatedAt }
+ */
 export interface KitResource extends BaseResource {
-  id?: number | string;
+  id?: number;
   name: string;
-  price?: number;
-  isEnabled?: boolean;
-  items?: KitProductResource[]; // Para el request/response del backend
-  products?: KitProductResource[]; // Para compatibilidad interna
+  items?: KitProductResource[];
+  totalPrice?: number; // Backend calculates this from items
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+/**
+ * Resource for creating a kit.
+ * Backend expects: { name, items }
+ */
+export interface CreateKitResource {
+  name: string;
+  items: KitProductResource[];
 }
 
 export interface KitResponse extends BaseResponse {

@@ -91,7 +91,6 @@ export class NewKitDialogComponent implements OnInit {
 
     const kitProducts: KitProduct[] = itemsToSave.map(item => ({
       productId: item.productId,
-      name: item.name,
       quantity: item.quantity,
       price: item.price
     }));
@@ -99,8 +98,7 @@ export class NewKitDialogComponent implements OnInit {
     const newKit = new Kit({
       id: '',
       name: this.nombre,
-      price: 0, // El precio ya no es global, se calcula por item
-      isEnabled: true,
+      price: 0, // Backend calculates totalPrice from items
       products: kitProducts
     });
 

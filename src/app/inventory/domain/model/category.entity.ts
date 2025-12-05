@@ -10,8 +10,8 @@ import {BaseEntity} from '../../../shared/infrastructure/base-entity';
 export class Category implements BaseEntity {
   /**
    * Creates a new Category instance.
-   * @param category - An object containing the id, name, price, isEnabled of the kit.
-   * @returns A new instance of category.
+   * @param category - An object containing the id and name of the category.
+   * @returns A new instance of Category.
    */
   constructor(category: {
     id: string;
