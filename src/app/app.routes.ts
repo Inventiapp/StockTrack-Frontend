@@ -9,7 +9,7 @@ import { NotFound } from './shared/presentation/views/not-found/not-found';
 import { ReportsComponent } from './reports/presentation/views/reports/reports';
 import { SettingsComponent } from './settings/presentation/views/settings/settings';
 import { authGuard } from './auth/infrastructure/auth-guard';
-import { roleGuard } from './auth/infrastructure/role-guard';
+import { permissionGuard } from './auth/infrastructure/permission-guard';
 
 export const routes: Routes = [
   {
@@ -33,21 +33,27 @@ export const routes: Routes = [
       },
       {
         path: 'dashboard',
-        component: DashboardComponent
+        component: DashboardComponent,
+        canActivate: [permissionGuard],
+        data: { permissions: ['dashboard_access'] }
       },
       {
         path: 'inventory',
-        component: InventoryListComponent
+        component: InventoryListComponent,
+        canActivate: [permissionGuard],
+        data: { permissions: ['inventory_access'] }
       },
       {
         path: 'inventario',
-        component: InventoryListComponent
+        component: InventoryListComponent,
+        canActivate: [permissionGuard],
+        data: { permissions: ['inventory_access'] }
       },
       {
         path: 'reportes',
         component: ReportsComponent,
-        canActivate: [roleGuard],
-        data: { roles: ['ROLE_ADMIN'] }
+        canActivate: [permissionGuard],
+        data: { permissions: ['reports_access'] }
       },
       {
         path: 'configuracion',
@@ -55,17 +61,21 @@ export const routes: Routes = [
       },
       {
         path: 'proveedores',
-        component: ProviderComponent
+        component: ProviderComponent,
+        canActivate: [permissionGuard],
+        data: { permissions: ['providers_access'] }
       },
       {
         path: 'venta',
-        component: SalesComponent
+        component: SalesComponent,
+        canActivate: [permissionGuard],
+        data: { permissions: ['sales_access'] }
       },
       {
         path: 'perfil',
         component: PersonalAdministrationComponent,
-        canActivate: [roleGuard],
-        data: { roles: ['ROLE_ADMIN'] }
+        canActivate: [permissionGuard],
+        data: { permissions: ['user_management_access'] }
       }
     ]
   },
