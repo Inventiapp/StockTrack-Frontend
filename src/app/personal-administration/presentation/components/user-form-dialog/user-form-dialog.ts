@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
@@ -13,15 +13,24 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { UserStore } from '../../../application/user.store';
-import { User, Permission } from '../../../domain/user.model';
+import { User } from '../../../domain/user.model';
+import { PermissionApi } from '../../../infrastructure/permission-api';
+import { PermissionWithMetadata } from '../../../infrastructure/permission-response';
+import { PermissionConfigService } from '../../../infrastructure/permission-config.service';
 
+/**
+ * Data passed to the user form dialog.
+ */
 export interface UserFormDialogData {
   mode: 'create' | 'edit';
   user?: User;
 }
 
+/**
+ * Dialog component for creating and editing users.
+ */
 @Component({
   selector: 'app-user-form-dialog',
   standalone: true,
@@ -43,72 +52,29 @@ export interface UserFormDialogData {
 })
 export class UserFormDialog implements OnInit {
   saving = false;
+  loadingPermissions = true;
   form!: FormGroup;
-
-  readonly Permission = Permission;
-  
-  readonly availablePermissions = [
-    { 
-      value: Permission.DASHBOARD_ACCESS, 
-      i18nKey: 'personalAdministration.permissionDashboard',
-      icon: 'dashboard',
-      color: '#3b82f6'
-    },
-    { 
-      value: Permission.INVENTORY_ACCESS, 
-      i18nKey: 'personalAdministration.permissionInventory',
-      icon: 'inventory_2',
-      color: '#10b981'
-    },
-    { 
-      value: Permission.SALES_ACCESS, 
-      i18nKey: 'personalAdministration.permissionSales',
-      icon: 'point_of_sale',
-      color: '#f59e0b'
-    },
-    { 
-      value: Permission.PROVIDERS_ACCESS, 
-      i18nKey: 'personalAdministration.permissionProviders',
-      icon: 'local_shipping',
-      color: '#8b5cf6'
-    },
-    { 
-      value: Permission.REPORTS_ACCESS, 
-      i18nKey: 'personalAdministration.permissionReports',
-      icon: 'assessment',
-      color: '#ef4444'
-    },
-    { 
-      value: Permission.USER_MANAGEMENT_ACCESS, 
-      i18nKey: 'personalAdministration.permissionUserManagement',
-      icon: 'people',
-      color: '#06b6d4'
-    }
-  ];
+  availablePermissions: PermissionWithMetadata[] = [];
 
   constructor(
     private fb: FormBuilder,
     private userStore: UserStore,
+    private permissionApi: PermissionApi,
+    private permissionConfigService: PermissionConfigService,
     private ref: MatDialogRef<UserFormDialog>,
-    private translate: TranslateService,
     @Inject(MAT_DIALOG_DATA) public data: UserFormDialogData
-  ) {}
+  ) {
+    effect(() => {
+      if (this.saving && !this.userStore.loading()) {
+        this.saving = false;
+        this.ref.close(true);
+      }
+    });
+  }
 
   ngOnInit(): void {
-    const isEditMode = this.data.mode === 'edit' && this.data.user;
-    const user = this.data.user;
-    
-    // Initialize permissions based on mode
-    const permissionControls = this.availablePermissions.map(perm => {
-      const hasPermission = isEditMode && user ? user.hasPermission(perm.value) : false;
-      return this.fb.control(hasPermission);
-    });
-    
-    this.form = this.fb.group({
-      email: [isEditMode && user ? user.email : '', [Validators.required, Validators.email]],
-      password: ['', isEditMode ? [] : [Validators.required, Validators.minLength(6)]],
-      permissions: this.fb.array(permissionControls)
-    });
+    this.initializeForm();
+    this.loadPermissions();
   }
 
   get permissionsFormArray(): FormArray {
@@ -132,37 +98,56 @@ export class UserFormDialog implements OnInit {
     this.saving = true;
     const { email, password, permissions } = this.form.value;
     
-    // Get selected permissions
     const selectedPermissions = this.availablePermissions
       .filter((_, index) => permissions[index])
       .map(perm => perm.value);
     
     if (this.data.mode === 'edit' && this.data.user) {
-      // Update user
       const updatePassword = password && password.trim() !== '' ? password : undefined;
       this.userStore.updateUser(this.data.user.id, email, updatePassword, selectedPermissions);
     } else {
-      // Create user
       this.userStore.createUser(email, password, selectedPermissions);
     }
+  }
+
+  private initializeForm(): void {
+    const isEditMode = this.data.mode === 'edit' && this.data.user;
+    const user = this.data.user;
     
-    // Wait for loading to complete, then close dialog
-    const checkLoading = setInterval(() => {
-      if (!this.userStore.loading()) {
-        clearInterval(checkLoading);
-        this.saving = false;
-        this.ref.close(true);
+    this.form = this.fb.group({
+      email: [isEditMode && user ? user.email : '', [Validators.required, Validators.email]],
+      password: ['', isEditMode ? [] : [Validators.required, Validators.minLength(6)]],
+      permissions: this.fb.array([])
+    });
+  }
+
+  private loadPermissions(): void {
+    this.loadingPermissions = true;
+    this.permissionApi.getAllPermissions().subscribe({
+      next: (permissions) => {
+        this.availablePermissions = this.permissionConfigService.enrichPermissionsWithMetadata(permissions);
+        this.updateFormWithPermissions();
+        this.loadingPermissions = false;
+      },
+      error: () => {
+        this.loadingPermissions = false;
       }
-    }, 100);
+    });
+  }
+
+  private updateFormWithPermissions(): void {
+    const isEditMode = this.data.mode === 'edit' && this.data.user;
+    const user = this.data.user;
     
-    // Timeout fallback (5 seconds)
-    setTimeout(() => {
-      clearInterval(checkLoading);
-      if (this.saving) {
-        this.saving = false;
-        this.ref.close(true);
-      }
-    }, 5000);
+    const permissionsArray = this.permissionsFormArray;
+    while (permissionsArray.length !== 0) {
+      permissionsArray.removeAt(0);
+    }
+    
+    this.availablePermissions.forEach(perm => {
+      const hasPermission = isEditMode && user ? user.hasPermission(perm.value) : false;
+      permissionsArray.push(this.fb.control(hasPermission));
+    });
   }
 }
 
