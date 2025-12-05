@@ -42,6 +42,7 @@ export class AuthStore {
 
   /**
    * Initializes authentication state from stored token.
+   * Reads user ID, email and roles from JWT, then fetches permissions from backend.
    */
   private initializeAuth(): void {
     this.initializationPromise = new Promise<void>((resolve) => {
@@ -49,33 +50,22 @@ export class AuthStore {
         const decoded = this.tokenService.decodeToken();
         if (decoded) {
           const userId = String(decoded.sub);
+          const email = decoded.email || '';
+          const roles = decoded.roles || [];
 
-          // Obtener información completa del usuario incluyendo los roles y permisos
-          this.authApi.getUserById(userId).subscribe({
-            next: (userData) => {
-              this.userSignal.set(new User({
-                id: userId,
-                email: userData.email || decoded.email,
-                roles: userData.roles || [],
-                permissions: userData.permissions || [],
-                token: this.tokenService.getToken() || undefined
-              }));
-              this.initializedSignal.set(true);
-              resolve();
-            },
-            error: () => {
-              // Si falla la petición, usar datos básicos del JWT
-              this.userSignal.set(new User({
-                id: userId,
-                email: decoded.email,
-                roles: [],
-                permissions: [],
-                token: this.tokenService.getToken() || undefined
-              }));
-              this.initializedSignal.set(true);
-              resolve();
-            }
+          this.userSignal.set(new User({
+            id: userId,
+            email: email,
+            roles: Array.isArray(roles) ? roles : [],
+            permissions: [],
+            token: this.tokenService.getToken() || undefined
+          }));
+
+          this.loadUserPermissions(userId).then(() => {
           });
+
+          this.initializedSignal.set(true);
+          resolve();
         } else {
           this.initializedSignal.set(true);
           resolve();
@@ -84,6 +74,39 @@ export class AuthStore {
         this.initializedSignal.set(true);
         resolve();
       }
+    });
+  }
+
+  /**
+   * Loads user permissions from backend and updates the user signal
+   * <p>
+   *     This method fetches the complete user data from the backend to get the latest permissions.
+   *     Permissions are not included in JWT as they change frequently.
+   * </p>
+   * @param userId The user ID
+   * @returns Promise that resolves when permissions are loaded
+   */
+  private loadUserPermissions(userId: string): Promise<void> {
+    return new Promise((resolve) => {
+      this.authApi.getUserById(userId).subscribe({
+        next: (userData) => {
+          const currentUser = this.userSignal();
+          if (currentUser) {
+            this.userSignal.set(new User({
+              id: currentUser.id,
+              email: currentUser.email,
+              roles: currentUser.roles,
+              permissions: userData.permissions || [],
+              token: currentUser.token
+            }));
+          }
+          resolve();
+        },
+        error: (err) => {
+          console.warn('Failed to load user permissions:', err);
+          resolve();
+        }
+      });
     });
   }
 
@@ -100,46 +123,48 @@ export class AuthStore {
 
   /**
    * Authenticates a user with the provided credentials.
-   * @param credentials - The login credentials.
-   * @param returnUrl - Optional URL to redirect to after successful login.
+   * <p>
+   *     This method handles the sign-in process, stores the JWT token, loads user permissions,
+   *     and navigates to the specified return URL after successful authentication.
+   * </p>
+   * @param credentials The login credentials
+   * @param returnUrl Optional URL to redirect to after successful login
    */
   login(credentials: LoginCredentials, returnUrl: string = '/dashboard'): void {
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
 
     this.authApi.signIn(credentials).subscribe({
-      next: (response) => {
+      next: async (response) => {
         this.tokenService.setToken(response.token);
 
-        const userId = String(response.id);
+        const decoded = this.tokenService.decodeToken();
+        if (decoded) {
+          const userId = String(decoded.sub || response.id);
+          const email = decoded.email || response.email;
+          const roles = decoded.roles || [];
 
-        this.authApi.getUserById(userId).subscribe({
-          next: (userData) => {
-            this.userSignal.set(new User({
-              id: userId,
-              email: response.email,
-              roles: userData.roles || [],
-              permissions: userData.permissions || [],
-              token: response.token
-            }));
+          this.userSignal.set(new User({
+            id: userId,
+            email: email,
+            roles: Array.isArray(roles) ? roles : [],
+            permissions: [],
+            token: response.token
+          }));
 
-            this.loadingSignal.set(false);
-            this.router.navigateByUrl(returnUrl);
-          },
-          error: () => {
-            // If user fetch fails, use basic data from sign-in response
-            this.userSignal.set(new User({
-              id: userId,
-              email: response.email,
-              roles: [],
-              permissions: [],
-              token: response.token
-            }));
+          await this.loadUserPermissions(userId);
+        } else {
+          this.userSignal.set(new User({
+            id: String(response.id),
+            email: response.email,
+            roles: [],
+            permissions: [],
+            token: response.token
+          }));
+        }
 
-            this.loadingSignal.set(false);
-            this.router.navigateByUrl(returnUrl);
-          }
-        });
+        this.loadingSignal.set(false);
+        this.router.navigateByUrl(returnUrl);
       },
       error: (err: Error) => {
         this.errorSignal.set(this.formatError(err, 'Error durante el inicio de sesión'));
@@ -150,11 +175,13 @@ export class AuthStore {
 
   /**
    * Registers a new user with the provided data.
-   * Automatically logs in the user after successful registration.
-   * @param data - The registration data.
+   * <p>
+   *     This method handles the sign-up process, validates passwords match, stores the JWT token,
+   *     loads user permissions, and automatically logs in the user after successful registration.
+   * </p>
+   * @param data The registration data
    */
   register(data: RegisterData): void {
-    // Validate passwords match before sending to API
     if (!data.passwordsMatch()) {
       this.errorSignal.set('Las contraseñas no coinciden');
       return;
@@ -164,44 +191,35 @@ export class AuthStore {
     this.errorSignal.set(null);
 
     this.authApi.signUp(data).subscribe({
-      next: (response) => {
-        // Sign-up response includes token for auto-login
-        // Store the token FIRST
+      next: async (response) => {
         this.tokenService.setToken(response.token);
 
-        const userId = String(response.id);
+        const decoded = this.tokenService.decodeToken();
+        if (decoded) {
+          const userId = String(decoded.sub || response.id);
+          const email = decoded.email || response.email;
+          const roles = decoded.roles || [];
 
-        // Set user immediately with basic info from response to ensure authGuard passes
-        // New sign-up users are always ROLE_ADMIN
-        this.userSignal.set(new User({
-          id: userId,
-          email: response.email,
-          roles: ['ROLE_ADMIN'],
-          permissions: [],
-          token: response.token
-        }));
+          this.userSignal.set(new User({
+            id: userId,
+            email: email,
+            roles: Array.isArray(roles) ? roles : [],
+            permissions: [],
+            token: response.token
+          }));
 
-        // Get complete user info including roles and permissions (async, update later)
-        this.authApi.getUserById(userId).subscribe({
-          next: (userData) => {
-            // Update user with complete information
-            this.userSignal.set(new User({
-              id: userId,
-              email: response.email,
-              roles: userData.roles || ['ROLE_ADMIN'],
-              permissions: userData.permissions || [],
-              token: response.token
-            }));
-          },
-          error: () => {
-            // If user fetch fails, keep the basic user info already set
-            // This is fine, user is already authenticated
-          }
-        });
+          await this.loadUserPermissions(userId);
+        } else {
+          this.userSignal.set(new User({
+            id: String(response.id),
+            email: response.email,
+            roles: ['ROLE_ADMIN'],
+            permissions: [],
+            token: response.token
+          }));
+        }
 
         this.loadingSignal.set(false);
-        // Redirect to dashboard after successful registration and auto-login
-        // User is already set, so authGuard will pass
         this.router.navigate(['/dashboard']).catch(err => {
           console.error('Navigation error:', err);
         });
@@ -239,6 +257,40 @@ export class AuthStore {
   hasAnyRole(roles: string[]): boolean {
     const userRoles = this.currentUserRoles();
     return roles.some(role => userRoles.includes(role));
+  }
+
+  /**
+   * Checks if the current user has a specific permission.
+   * ROLE_ADMIN has access to everything (bypass permissions).
+   * @param permission - The permission to check.
+   * @returns True if the user has the permission or is admin.
+   */
+  hasPermission(permission: string): boolean {
+    const user = this.user();
+    if (!user) return false;
+    
+    if (user.isAdmin()) {
+      return true;
+    }
+    
+    return user.hasPermission(permission);
+  }
+
+  /**
+   * Checks if the current user has any of the specified permissions.
+   * ROLE_ADMIN has access to everything (bypass permissions).
+   * @param permissions - Array of permissions to check.
+   * @returns True if the user has at least one of the permissions or is admin.
+   */
+  hasAnyPermission(permissions: string[]): boolean {
+    const user = this.user();
+    if (!user) return false;
+    
+    if (user.isAdmin()) {
+      return true;
+    }
+    
+    return permissions.some(permission => user.hasPermission(permission));
   }
 
   /**
