@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
@@ -13,6 +13,7 @@ interface MenuItem {
   titleKey: string;
   icon: string;
   route: string;
+  requiredRoles?: string[]; // If undefined, visible to all authenticated users
 }
 
 @Component({
@@ -36,7 +37,7 @@ export class SidebarComponent {
   protected authStore = inject(AuthStore);
   isExpanded = true;
 
-  menuItems: MenuItem[] = [
+  private allMenuItems: MenuItem[] = [
     {
       titleKey: 'sidebar.menu.home',
       icon: 'home',
@@ -61,8 +62,31 @@ export class SidebarComponent {
       titleKey: 'sidebar.menu.reports',
       icon: 'description',
       route: '/reportes',
+      requiredRoles: ['ROLE_ADMIN'], // Only visible to admins
     },
   ];
+
+  /**
+   * Computed property that filters menu items based on user roles.
+   * ROLE_ADMIN sees all items, ROLE_SELLER doesn't see Reports.
+   */
+  menuItems = computed(() => {
+    return this.allMenuItems.filter(item => {
+      // If no roles required, show to everyone
+      if (!item.requiredRoles || item.requiredRoles.length === 0) {
+        return true;
+      }
+      // Check if user has any of the required roles
+      return this.authStore.hasAnyRole(item.requiredRoles);
+    });
+  });
+
+  /**
+   * Check if user can access personal administration (admin only).
+   */
+  canAccessPersonalAdmin = computed(() => {
+    return this.authStore.hasRole('ROLE_ADMIN');
+  });
 
   toggleSidebar() {
     this.isExpanded = !this.isExpanded;
