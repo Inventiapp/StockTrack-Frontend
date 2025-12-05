@@ -1,4 +1,4 @@
-import { Component, inject, computed, ViewChild } from '@angular/core';
+import {Component, inject, computed, ViewChild, signal} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -34,7 +34,7 @@ import { DashboardNotification } from '../../../domain/model/notification.entity
   styleUrl: './dashboard.css'
 })
 export class DashboardComponent {
-  protected readonly store = inject(DashboardStore);
+  protected readonly dashboardStore = inject(DashboardStore);
   protected readonly authStore = inject(AuthStore);
   private readonly translate = inject(TranslateService);
 
@@ -43,11 +43,20 @@ export class DashboardComponent {
   protected expandedNotification: number | null = null;
   protected expandedSidebarNotification: number | null = null;
 
-  protected currentUserName = this.authStore.currentUserName;
+  private readonly authInitialized = signal(false);
 
+  readonly currentUserName = computed(() => {
+    if (!this.authInitialized()) return 'Cargando...';
+    return this.authStore.currentUserName();
+  });
+
+  async ngOnInit() {
+    await this.authStore.waitForInitialization();
+    this.authInitialized.set(true);
+  }
   public barChartType: ChartType = 'bar';
   public barChartData = computed<ChartData<'bar'>>(() => {
-    const data = this.store.monthlyIncome();
+    const data = this.dashboardStore.monthlyIncome();
     return {
       labels: data.map(d => d.month),
       datasets: [{
@@ -104,7 +113,7 @@ export class DashboardComponent {
 
   public doughnutChartType: ChartType = 'doughnut';
   public doughnutChartData = computed<ChartData<'doughnut'>>(() => {
-    const data = this.store.productSales();
+    const data = this.dashboardStore.productSales();
     return {
       labels: data.map(d => d.productName),
       datasets: [{

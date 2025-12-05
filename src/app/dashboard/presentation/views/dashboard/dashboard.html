@@ -6,12 +6,12 @@
         <h2 class="dashboard-subtitle">{{ currentUserName() }}</h2>
       </div>
       <div class="notifications-trigger-mobile">
-        <button 
-          mat-icon-button 
-          [matMenuTriggerFor]="notificationsMenu" 
+        <button
+          mat-icon-button
+          [matMenuTriggerFor]="notificationsMenu"
           class="notifications-button"
           [attr.aria-label]="t('dashboard.notifications.button')">
-          <mat-icon [matBadge]="store.notifications().length" matBadgeColor="warn" matBadgeSize="small" aria-hidden="false">{{ t('dashboard.notifications.icon') }}</mat-icon>
+          <mat-icon [matBadge]="dashboardStore.notifications().length" matBadgeColor="warn" matBadgeSize="small" aria-hidden="false">{{ t('dashboard.notifications.icon') }}</mat-icon>
         </button>
       </div>
     </div>
@@ -22,10 +22,10 @@
           <h3 class="notifications-title">{{ t('dashboard.notifications.title') }}</h3>
         </div>
         <div class="notifications-list">
-          @for (notification of store.notifications(); track notification.id; let i = $index) {
-            <div 
-              [class]="'notification-item notification-' + notification.type" 
-              [class.expanded]="expandedNotification === i" 
+          @for (notification of dashboardStore.notifications(); track notification.id; let i = $index) {
+            <div
+              [class]="'notification-item notification-' + notification.type"
+              [class.expanded]="expandedNotification === i"
               (click)="toggleNotification(i)"
               role="menuitem"
               [attr.aria-label]="t('dashboard.notificationTitles.' + notification.title)"
@@ -51,28 +51,28 @@
     <mat-card class="stat-card stat-card-dark" role="article" [attr.aria-label]="t('dashboard.stats.productsInInventory')">
       <mat-card-content>
         <div class="stat-label">{{ t('dashboard.stats.productsInInventory') }}</div>
-        <div class="stat-value" [attr.aria-label]="store.stats()?.productsInInventory || 0">{{ store.stats()?.productsInInventory || 0 }}</div>
+        <div class="stat-value" [attr.aria-label]="dashboardStore.stats()?.productsInInventory || 0">{{ dashboardStore.stats()?.productsInInventory || 0 }}</div>
       </mat-card-content>
     </mat-card>
 
     <mat-card class="stat-card stat-card-green" role="article" [attr.aria-label]="t('dashboard.stats.monthlyIncome')">
       <mat-card-content>
         <div class="stat-label">{{ t('dashboard.stats.monthlyIncome') }}</div>
-        <div class="stat-value" [attr.aria-label]="'s/. ' + (store.stats()?.monthlyIncome || 0)">s/. {{ store.stats()?.monthlyIncome || 0 | number:'1.2-2' }}</div>
+        <div class="stat-value" [attr.aria-label]="'s/. ' + (dashboardStore.stats()?.monthlyIncome || 0)">s/. {{ dashboardStore.stats()?.monthlyIncome || 0 | number:'1.2-2' }}</div>
       </mat-card-content>
     </mat-card>
 
     <mat-card class="stat-card stat-card-dark" role="article" [attr.aria-label]="t('dashboard.stats.salesThisMonth')">
       <mat-card-content>
         <div class="stat-label">{{ t('dashboard.stats.salesThisMonth') }}</div>
-        <div class="stat-value" [attr.aria-label]="store.stats()?.salesThisMonth || 0">{{ store.stats()?.salesThisMonth || 0 }}</div>
+        <div class="stat-value" [attr.aria-label]="dashboardStore.stats()?.salesThisMonth || 0">{{ dashboardStore.stats()?.salesThisMonth || 0 }}</div>
       </mat-card-content>
     </mat-card>
 
     <mat-card class="stat-card stat-card-red" role="article" [attr.aria-label]="t('dashboard.stats.productsWithAlerts')">
       <mat-card-content>
         <div class="stat-label">{{ t('dashboard.stats.productsWithAlerts') }}</div>
-        <div class="stat-value" [attr.aria-label]="store.stats()?.productsWithAlerts || 0">{{ store.stats()?.productsWithAlerts || 0 }}</div>
+        <div class="stat-value" [attr.aria-label]="dashboardStore.stats()?.productsWithAlerts || 0">{{ dashboardStore.stats()?.productsWithAlerts || 0 }}</div>
       </mat-card-content>
     </mat-card>
   </div>
@@ -91,7 +91,7 @@
           </canvas>
         </div>
         <div class="chart-legend" role="list" [attr.aria-label]="t('dashboard.charts.topProducts')">
-                @for (item of store.productSales(); track item.productName; let i = $index) {
+                @for (item of dashboardStore.productSales(); track item.productName; let i = $index) {
                   <div class="legend-item" role="listitem">
                     <span class="legend-color" [style.background-color]="getProductColor(item.productName, i)" [attr.aria-hidden]="true"></span>
                     <span class="legend-label">{{ item.productName }}</span>
@@ -122,15 +122,15 @@
   <div class="dashboard-sidebar" role="complementary" [attr.aria-label]="t('dashboard.notifications.title')">
     <div class="notifications-header">
       <button mat-icon-button [attr.aria-label]="t('dashboard.notifications.title')">
-        <mat-icon [matBadge]="store.notifications().length" matBadgeColor="warn" matBadgeSize="small" aria-hidden="false">{{ t('dashboard.notifications.icon') }}</mat-icon>
+        <mat-icon [matBadge]="dashboardStore.notifications().length" matBadgeColor="warn" matBadgeSize="small" aria-hidden="false">{{ t('dashboard.notifications.icon') }}</mat-icon>
       </button>
       <span class="notifications-label">{{ t('dashboard.notifications.title') }}</span>
     </div>
     <div class="notifications-panel" role="list">
-      @for (notification of store.notifications(); track notification.id; let i = $index) {
-        <div 
-          [class]="'notification-item notification-' + notification.type" 
-          [class.expanded]="expandedSidebarNotification === i" 
+      @for (notification of dashboardStore.notifications(); track notification.id; let i = $index) {
+        <div
+          [class]="'notification-item notification-' + notification.type"
+          [class.expanded]="expandedSidebarNotification === i"
           (click)="toggleSidebarNotification(i)"
           role="listitem"
           [attr.aria-label]="t('dashboard.notificationTitles.' + notification.title)"

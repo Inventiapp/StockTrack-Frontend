@@ -1,4 +1,4 @@
-import { BaseEntity } from '../../../shared/infrastructure/base-entity';
+import {BaseEntity} from '../../../shared/infrastructure/base-entity';
 
 /**
  * Represents a User entity in the application.
@@ -34,6 +34,7 @@ export class User implements BaseEntity {
   get id(): string {
     return this._id;
   }
+
   set id(value: string) {
     this._id = value;
   }
@@ -45,6 +46,7 @@ export class User implements BaseEntity {
   get email(): string {
     return this._email;
   }
+
   set email(value: string) {
     this._email = value;
   }
@@ -56,6 +58,7 @@ export class User implements BaseEntity {
   get roles(): string[] {
     return this._roles;
   }
+
   set roles(value: string[]) {
     this._roles = value;
   }
@@ -67,6 +70,7 @@ export class User implements BaseEntity {
   get permissions(): string[] {
     return this._permissions;
   }
+
   set permissions(value: string[]) {
     this._permissions = value;
   }
@@ -102,6 +106,9 @@ export class User implements BaseEntity {
    * @returns The part of email before @.
    */
   get displayName(): string {
+    if (!this._email) {
+      return 'Usuario';
+    }
     return this._email.split('@')[0];
   }
 
@@ -112,6 +119,7 @@ export class User implements BaseEntity {
   get token(): string | undefined {
     return this._token;
   }
+
   set token(value: string | undefined) {
     this._token = value;
   }
