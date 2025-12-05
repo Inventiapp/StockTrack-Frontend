@@ -13,7 +13,7 @@ interface MenuItem {
   titleKey: string;
   icon: string;
   route: string;
-  requiredRoles?: string[]; // If undefined, visible to all authenticated users
+  requiredPermission?: string; // If undefined, visible to all authenticated users
 }
 
 @Component({
@@ -42,50 +42,56 @@ export class SidebarComponent {
       titleKey: 'sidebar.menu.home',
       icon: 'home',
       route: '/dashboard',
+      requiredPermission: 'dashboard_access'
     },
     {
       titleKey: 'sidebar.menu.inventory',
       icon: 'inventory_2',
       route: '/inventario',
+      requiredPermission: 'inventory_access'
     },
     {
       titleKey: 'sidebar.menu.providers',
       icon: 'people',
       route: '/proveedores',
+      requiredPermission: 'providers_access'
     },
     {
       titleKey: 'sidebar.menu.sales',
       icon: 'shopping_cart',
       route: '/venta',
+      requiredPermission: 'sales_access'
     },
     {
       titleKey: 'sidebar.menu.reports',
       icon: 'description',
       route: '/reportes',
-      requiredRoles: ['ROLE_ADMIN'], // Only visible to admins
+      requiredPermission: 'reports_access'
     },
   ];
 
   /**
-   * Computed property that filters menu items based on user roles.
-   * ROLE_ADMIN sees all items, ROLE_SELLER doesn't see Reports.
+   * Computed property that filters menu items based on user permissions.
+   * ROLE_ADMIN sees all items (has all permissions).
+   * ROLE_USER sees only items for which they have permissions.
    */
   menuItems = computed(() => {
     return this.allMenuItems.filter(item => {
-      // If no roles required, show to everyone
-      if (!item.requiredRoles || item.requiredRoles.length === 0) {
+      // If no permission required, show to everyone
+      if (!item.requiredPermission) {
         return true;
       }
-      // Check if user has any of the required roles
-      return this.authStore.hasAnyRole(item.requiredRoles);
+      // Check if user has the required permission (or is admin)
+      return this.authStore.hasPermission(item.requiredPermission);
     });
   });
 
   /**
-   * Check if user can access personal administration (admin only).
+   * Check if user can access personal administration.
+   * ROLE_ADMIN has access, ROLE_USER needs user_management_access permission.
    */
   canAccessPersonalAdmin = computed(() => {
-    return this.authStore.hasRole('ROLE_ADMIN');
+    return this.authStore.hasPermission('user_management_access');
   });
 
   toggleSidebar() {
