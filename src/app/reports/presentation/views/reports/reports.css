@@ -100,24 +100,29 @@
 
 .reports-tabs {
   background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   overflow: hidden;
 }
 
 .tab-content {
-  padding: 1.5rem;
+  padding: 2rem;
+  background-color: #FAFBFC;
 }
 
 .report-card {
-  box-shadow: none !important;
-  background-color: transparent !important;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1) !important;
+  background-color: white !important;
+  border-radius: 12px;
+  padding: 0;
+  overflow: hidden;
 }
 
 .report-card mat-card-header {
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #E5E7EB;
+  margin-bottom: 0;
+  padding: 1.5rem 1.5rem 1rem;
+  border-bottom: 2px solid #F3F4F6;
+  background: linear-gradient(to right, #FAFBFC, #FFFFFF);
 }
 
 .card-header-content {
@@ -132,10 +137,12 @@
   align-items: center;
   gap: 1rem;
   margin-bottom: 1.5rem;
-  padding: 1rem;
-  background-color: #F9FAFB;
-  border-radius: 8px;
+  padding: 1.25rem;
+  background: linear-gradient(to right, #F9FAFB, #FFFFFF);
+  border-radius: 10px;
+  border: 1px solid #E5E7EB;
   flex-wrap: wrap;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
 }
 
 .month-filter {
@@ -174,9 +181,16 @@
   margin-top: 0.25rem;
 }
 
+.report-card mat-card-content {
+  padding: 1.5rem;
+  background-color: white;
+}
+
 .reports-table {
   width: 100%;
   background-color: white;
+  border-collapse: separate;
+  border-spacing: 0;
 }
 
 .reports-table th {
@@ -185,15 +199,28 @@
   font-size: 0.875rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  padding: 1rem 1.25rem;
+  background-color: #F9FAFB;
+  border-bottom: 2px solid #E5E7EB;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .reports-table td {
   color: #4B5563;
   font-size: 0.875rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #F3F4F6;
 }
 
 .reports-table tr:hover {
   background-color: #F9FAFB;
+  transition: background-color 0.15s ease;
+}
+
+.reports-table tr:last-child td {
+  border-bottom: none;
 }
 
 .products-list {
@@ -224,15 +251,19 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 12px;
-  background-color: #F9FAFB;
-  border-radius: 6px;
-  border-left: 3px solid #3B82F6;
-  transition: background-color 0.2s;
+  padding: 10px 14px;
+  background: linear-gradient(to right, #F9FAFB, #FFFFFF);
+  border-radius: 8px;
+  border-left: 4px solid #3B82F6;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  margin-bottom: 2px;
 }
 
 .sales-detail-item:hover {
-  background-color: #F3F4F6;
+  background: linear-gradient(to right, #F3F4F6, #FAFBFC);
+  transform: translateX(2px);
+  box-shadow: 0 2px 4px 0 rgb(0 0 0 / 0.1);
 }
 
 .detail-info {

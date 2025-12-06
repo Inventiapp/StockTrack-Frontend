@@ -462,6 +462,7 @@
       "empty": "No hay ventas registradas",
       "columns": {
         "id": "ID",
+        "date": "Fecha",
         "totalAmount": "Monto Total",
         "products": "Detalles de Productos"
       }

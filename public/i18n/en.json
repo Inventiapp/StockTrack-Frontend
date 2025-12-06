@@ -458,6 +458,7 @@
       "empty": "No sales registered",
       "columns": {
         "id": "ID",
+        "date": "Date",
         "totalAmount": "Total Amount",
         "products": "Product Details"
       }

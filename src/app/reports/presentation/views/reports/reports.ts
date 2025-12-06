@@ -71,7 +71,7 @@ export class ReportsComponent implements OnInit {
   protected stockColumns: string[] = ['productName', 'category', 'currentStock', 'minStock', 'unitPrice', 'totalValue', 'status'];
   protected expiringColumns: string[] = ['productName', 'category', 'expirationDate', 'daysLeft', 'currentStock', 'lot', 'status'];
   protected lowStockColumns: string[] = ['productName', 'category', 'currentStock', 'minStock', 'unitPrice', 'status'];
-  protected salesColumns: string[] = ['id', 'totalAmount', 'products'];
+  protected salesColumns: string[] = ['id', 'date', 'totalAmount', 'products'];
 
   // Month filter for expiring products
   protected selectedMonth: string | null = null;
@@ -309,6 +309,27 @@ export class ReportsComponent implements OnInit {
         return 'accent';
       default:
         return 'primary';
+    }
+  }
+
+  /**
+   * Formats a date string to a readable format.
+   */
+  protected formatDate(dateString: string): string {
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        return dateString;
+      }
+      return date.toLocaleDateString('es-PE', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch {
+      return dateString;
     }
   }
 

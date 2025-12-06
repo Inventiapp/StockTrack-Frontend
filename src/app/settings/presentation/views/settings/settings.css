@@ -103,6 +103,28 @@
   margin-top: 8px;
 }
 
+/* Estilos específicos para los botones de idioma en settings */
+.language-section ::ng-deep .language-switcher {
+  background: rgba(249, 250, 251, 0.8);
+  border: 1px solid #E5E7EB;
+}
+
+.language-section ::ng-deep .lang-btn {
+  color: #1F2937 !important;
+  font-weight: 600;
+}
+
+.language-section ::ng-deep .lang-btn:hover {
+  background: rgba(249, 250, 251, 1);
+  color: #111827 !important;
+}
+
+.language-section ::ng-deep .lang-btn.active {
+  background: #FF662A !important;
+  color: white !important;
+  box-shadow: 0 2px 4px rgba(255, 102, 42, 0.3);
+}
+
 @media (max-width: 768px) {
   .settings-container {
     padding: 16px;

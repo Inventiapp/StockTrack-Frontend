@@ -25,6 +25,7 @@ export interface SaleDetail {
 export interface SaleResponse {
   id: number;
   totalAmount: number;
+  createdAt: string;
   details: SaleDetail[];
 }
 
